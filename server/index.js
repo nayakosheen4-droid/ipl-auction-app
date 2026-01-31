@@ -417,7 +417,7 @@ app.get('/api/players/available', async (req, res) => {
   }
 });
 
-// Get team players
+// Get team players with position breakdown
 app.get('/api/team/:teamId/players', async (req, res) => {
   try {
     const teamId = parseInt(req.params.teamId);
@@ -426,9 +426,59 @@ app.get('/api/team/:teamId/players', async (req, res) => {
     const team = auctionState.teams.find(t => t.id === teamId);
     console.log(`  Team found in auctionState: ${team ? team.name : 'NOT FOUND'}`);
     console.log(`  Budget: ${team ? team.budget : 'N/A'}`);
+    
+    // Calculate position counts
+    const positionCounts = {
+      'Batsman': 0,
+      'Bowler': 0,
+      'All-rounder': 0,
+      'Wicket-keeper': 0
+    };
+    
+    players.forEach(player => {
+      if (positionCounts.hasOwnProperty(player.position)) {
+        positionCounts[player.position]++;
+      }
+    });
+    
+    // Calculate max bid (16 players minimum with 0.5 Cr each)
+    const totalPlayers = players.length;
+    const playersNeeded = Math.max(0, 16 - totalPlayers);
+    const reservedForMinimum = playersNeeded * 0.5;
+    const maxBid = Math.max(0.5, team ? team.budget - reservedForMinimum : 0);
+    
+    // Check squad composition requirements
+    const minRequirements = {
+      'Wicket-keeper': 1,
+      'Bowler': 3,
+      'Batsman': 3,
+      'All-rounder': 2
+    };
+    
+    const squadStatus = {
+      meetsMinimum: totalPlayers >= 16,
+      atMaximum: totalPlayers >= 18,
+      requirements: {}
+    };
+    
+    Object.keys(minRequirements).forEach(position => {
+      const count = positionCounts[position];
+      const min = minRequirements[position];
+      squadStatus.requirements[position] = {
+        current: count,
+        minimum: min,
+        met: count >= min,
+        needed: Math.max(0, min - count)
+      };
+    });
+    
     const response = { 
       players, 
-      budget: team ? team.budget : 100 
+      budget: team ? team.budget : 100,
+      positionCounts,
+      maxBid: Math.round(maxBid * 10) / 10, // Round to 1 decimal
+      squadStatus,
+      totalPlayers
     };
     console.log(`  Returning:`, response);
     res.json(response);
@@ -574,6 +624,26 @@ app.get('/api/teams', (req, res) => {
     budget: t.budget,
     color: t.color
   })));
+});
+
+// Get all teams with detailed info (player counts, etc)
+app.get('/api/teams/detailed', async (req, res) => {
+  try {
+    const teamsWithDetails = await Promise.all(auctionState.teams.map(async (team) => {
+      const players = await getTeamPlayers(team.id);
+      return {
+        id: team.id,
+        name: team.name,
+        budget: team.budget,
+        color: team.color,
+        playerCount: players.length,
+        rtmUsed: team.rtmUsed
+      };
+    }));
+    res.json(teamsWithDetails);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Reset auction (admin function)

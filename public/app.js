@@ -9,6 +9,7 @@ let isAdmin = false;
 let ws = null;
 let availablePlayers = [];
 let allTeams = [];
+let leftPanelView = 'players'; // 'players' or 'teams'
 
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
@@ -82,6 +83,10 @@ function setupEventListeners() {
     viewTeamBtn.addEventListener('click', () => showMyTeam());
     positionFilter.addEventListener('change', filterPlayers);
     searchPlayer.addEventListener('input', filterPlayers);
+    
+    // Left panel toggle
+    document.getElementById('togglePlayers').addEventListener('click', () => switchLeftPanel('players'));
+    document.getElementById('toggleTeams').addEventListener('click', () => switchLeftPanel('teams'));
     
     document.querySelector('.close-modal').addEventListener('click', () => {
         myTeamModal.classList.add('hidden');
@@ -446,6 +451,13 @@ async function nominatePlayer(player) {
 // Place bid
 async function placeBid(increment) {
     try {
+        // Validate squad before bidding
+        const validation = await validateBid();
+        if (!validation.canBid) {
+            showToast(validation.message, 'error');
+            return;
+        }
+        
         const response = await fetch(`${API_BASE}/api/auction/bid`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -465,9 +477,56 @@ async function placeBid(increment) {
     }
 }
 
+// Validate if team can bid
+async function validateBid() {
+    try {
+        const response = await fetch(`${API_BASE}/api/team/${currentTeam.id}/players`);
+        const data = await response.json();
+        
+        const squadStatus = data.squadStatus;
+        
+        // Check if squad is full
+        if (squadStatus.atMaximum) {
+            return {
+                canBid: false,
+                message: '⚠️ Cannot buy more players - Maximum 18 players reached!'
+            };
+        }
+        
+        // Check if approaching maximum without meeting minimums
+        if (data.totalPlayers >= 16) {
+            const unmetRequirements = [];
+            Object.keys(squadStatus.requirements).forEach(position => {
+                const req = squadStatus.requirements[position];
+                if (!req.met) {
+                    unmetRequirements.push(`${position} (need ${req.needed})`);
+                }
+            });
+            
+            if (unmetRequirements.length > 0 && data.totalPlayers >= 17) {
+                return {
+                    canBid: false,
+                    message: `⚠️ You must complete minimum requirements first: ${unmetRequirements.join(', ')}`
+                };
+            }
+        }
+        
+        return { canBid: true };
+    } catch (err) {
+        return { canBid: true }; // Allow bid if validation fails
+    }
+}
+
 // Mark out
 async function markOut() {
     try {
+        // Validate squad can afford to pass
+        const validation = await validateMarkOut();
+        if (!validation.canMarkOut) {
+            const confirm = window.confirm(`${validation.message}\n\nAre you sure you want to mark out?`);
+            if (!confirm) return;
+        }
+        
         const response = await fetch(`${API_BASE}/api/auction/out`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -485,6 +544,49 @@ async function markOut() {
         }
     } catch (err) {
         showToast('Failed to mark out', 'error');
+    }
+}
+
+// Validate if team can mark out
+async function validateMarkOut() {
+    try {
+        const response = await fetch(`${API_BASE}/api/team/${currentTeam.id}/players`);
+        const data = await response.json();
+        
+        const squadStatus = data.squadStatus;
+        
+        // Check if close to minimum without meeting requirements
+        if (data.totalPlayers < 16) {
+            const playersNeeded = 16 - data.totalPlayers;
+            const budgetNeeded = playersNeeded * 0.5;
+            
+            if (data.budget < budgetNeeded + 1) {
+                return {
+                    canMarkOut: false,
+                    message: `⚠️ Warning: You may not have enough budget to complete minimum 16 players!`
+                };
+            }
+        }
+        
+        // Warn if missing minimum requirements
+        const unmetRequirements = [];
+        Object.keys(squadStatus.requirements).forEach(position => {
+            const req = squadStatus.requirements[position];
+            if (!req.met) {
+                unmetRequirements.push(`${position} (need ${req.needed})`);
+            }
+        });
+        
+        if (unmetRequirements.length > 0) {
+            return {
+                canMarkOut: false,
+                message: `⚠️ Warning: Missing required positions - ${unmetRequirements.join(', ')}`
+            };
+        }
+        
+        return { canMarkOut: true };
+    } catch (err) {
+        return { canMarkOut: true }; // Allow mark out if validation fails
     }
 }
 
@@ -563,13 +665,44 @@ async function showMyTeam(teamIdOverride = null) {
         console.log('Team info:', teamInfo);
         
         const budgetInfo = document.getElementById('myTeamBudget');
+        const squadStatus = data.squadStatus || {};
+        const requirements = squadStatus.requirements || {};
+        
+        // Create position breakdown HTML
+        let positionHTML = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">';
+        ['Wicket-keeper', 'Batsman', 'Bowler', 'All-rounder'].forEach(position => {
+            const req = requirements[position] || { current: 0, minimum: 0, met: false };
+            const statusColor = req.met ? '#28a745' : (req.needed > 0 ? '#dc3545' : '#ffc107');
+            const statusIcon = req.met ? '✓' : (req.needed > 0 ? '⚠' : '○');
+            positionHTML += `
+                <div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px;">
+                    <div style="font-size: 0.85rem; opacity: 0.9;">${position}</div>
+                    <div style="font-size: 1.1rem; font-weight: bold;">
+                        <span style="color: ${statusColor};">${statusIcon}</span>
+                        ${req.current}/${req.minimum}
+                        ${req.needed > 0 ? ` <span style="font-size: 0.8rem; color: #dc3545;">(need ${req.needed})</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        positionHTML += '</div>';
+        
         budgetInfo.innerHTML = `
             <h3>${teamInfo.name}</h3>
             <div class="budget">Budget: ₹${data.budget} Cr</div>
-            <div style="margin-top: 10px; opacity: 0.9;">
-                Players: ${data.players.length} | 
-                Spent: ₹${(100 - data.budget).toFixed(1)} Cr
+            <div style="margin-top: 10px; opacity: 0.9; display: flex; justify-content: space-between;">
+                <span>Players: ${data.totalPlayers || data.players.length}/18</span>
+                <span>Spent: ₹${(100 - data.budget).toFixed(1)} Cr</span>
             </div>
+            <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
+                <strong>Max Bid: ₹${data.maxBid || data.budget} Cr</strong>
+                <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 3px;">
+                    (Based on 16 player minimum)
+                </div>
+            </div>
+            ${positionHTML}
+            ${squadStatus.atMaximum ? '<div style="margin-top: 10px; padding: 8px; background: #dc3545; border-radius: 6px; font-size: 0.9rem;">⚠️ Squad Full (18 players)</div>' : ''}
+            ${!squadStatus.meetsMinimum && data.totalPlayers >= 14 ? '<div style="margin-top: 10px; padding: 8px; background: #ffc107; color: #000; border-radius: 6px; font-size: 0.9rem;">⚠️ Complete minimum requirements!</div>' : ''}
         `;
         
         const playersDiv = document.getElementById('myTeamPlayers');
@@ -726,6 +859,63 @@ document.getElementById('adminTeamViewer').addEventListener('change', (e) => {
         e.target.value = ''; // Reset dropdown
     }
 });
+
+// Left panel switcher
+function switchLeftPanel(view) {
+    leftPanelView = view;
+    
+    const togglePlayers = document.getElementById('togglePlayers');
+    const toggleTeams = document.getElementById('toggleTeams');
+    const playersList = document.getElementById('playersList');
+    const teamsList = document.getElementById('teamsList');
+    const playerFilters = document.getElementById('playerFilters');
+    
+    if (view === 'players') {
+        togglePlayers.classList.add('active');
+        toggleTeams.classList.remove('active');
+        playersList.classList.remove('hidden');
+        teamsList.classList.add('hidden');
+        playerFilters.classList.remove('hidden');
+        filterPlayers();
+    } else {
+        toggleTeams.classList.add('active');
+        togglePlayers.classList.remove('active');
+        playersList.classList.add('hidden');
+        teamsList.classList.remove('hidden');
+        playerFilters.classList.add('hidden');
+        displayAllTeams();
+    }
+}
+
+// Display all teams in left panel
+async function displayAllTeams() {
+    const teamsList = document.getElementById('teamsList');
+    teamsList.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">Loading teams...</div>';
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/teams/detailed`);
+        const teamsData = await response.json();
+        
+        teamsList.innerHTML = '';
+        
+        teamsData.forEach(team => {
+            const div = document.createElement('div');
+            div.className = 'team-card';
+            div.style.borderLeftColor = team.color;
+            div.innerHTML = `
+                <h3 style="color: ${team.color};">${team.name}</h3>
+                <div class="team-card-info">
+                    <span class="team-card-players">Players: ${team.playerCount}</span>
+                    <span class="team-card-budget">₹${team.budget} Cr</span>
+                </div>
+            `;
+            div.addEventListener('click', () => showMyTeam(team.id));
+            teamsList.appendChild(div);
+        });
+    } catch (err) {
+        teamsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc3545;">Failed to load teams</div>';
+    }
+}
 
 // Initialize app
 init();

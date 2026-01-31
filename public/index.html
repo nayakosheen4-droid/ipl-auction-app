@@ -44,11 +44,14 @@
         </header>
 
         <div class="main-content">
-            <!-- Left Panel: Player Selection -->
+            <!-- Left Panel: Player Selection / Teams View -->
             <div class="left-panel">
                 <div class="panel-header">
-                    <h2>Available Players</h2>
-                    <div class="filter-group">
+                    <div class="panel-toggle">
+                        <button id="togglePlayers" class="toggle-btn active">Available Players</button>
+                        <button id="toggleTeams" class="toggle-btn">All Teams</button>
+                    </div>
+                    <div id="playerFilters" class="filter-group">
                         <select id="positionFilter">
                             <option value="">All Positions</option>
                             <option value="Batsman">Batsman</option>
@@ -60,6 +63,7 @@
                     </div>
                 </div>
                 <div id="playersList" class="players-list"></div>
+                <div id="teamsList" class="teams-list hidden"></div>
             </div>
 
             <!-- Center Panel: Current Auction -->
