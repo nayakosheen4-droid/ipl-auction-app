@@ -1,6 +1,7 @@
 // Configuration
 const API_BASE = window.location.origin;
-const WS_BASE = `ws://${window.location.host}`;
+const WS_PROTOCOL = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+const WS_BASE = `${WS_PROTOCOL}//${window.location.host}`;
 
 // State
 let currentTeam = null;
