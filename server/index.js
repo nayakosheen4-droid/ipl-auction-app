@@ -217,6 +217,7 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
 // Load team state from Excel (budgets and RTM usage)
 async function loadTeamStateFromExcel() {
   try {
+    console.log('📖 Loading team state from Excel...');
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     
@@ -232,6 +233,8 @@ async function loadTeamStateFromExcel() {
         const finalPrice = row.getCell(6).value;
         const rtmUsed = row.getCell(7).value === 'Yes';
         
+        console.log(`  Processing: Team ${teamId}, Price ${finalPrice}, RTM ${rtmUsed}`);
+        
         if (!teamSpending[teamId]) {
           teamSpending[teamId] = 0;
         }
@@ -243,14 +246,17 @@ async function loadTeamStateFromExcel() {
       }
     });
     
+    console.log('💰 Team spending:', teamSpending);
+    
     // Update team budgets and RTM status
     auctionState.teams.forEach(team => {
       const spent = teamSpending[team.id] || 0;
       team.budget = 100 - spent; // Initial budget is 100
       team.rtmUsed = teamRTMUsed[team.id] || false;
+      console.log(`  Team ${team.id} (${team.name}): Spent ₹${spent} Cr, Budget ₹${team.budget} Cr`);
     });
     
-    console.log('Team state loaded from Excel');
+    console.log('✅ Team state loaded from Excel');
   } catch (err) {
     console.error('Error loading team state:', err);
   }
@@ -407,13 +413,19 @@ app.get('/api/players/available', async (req, res) => {
 app.get('/api/team/:teamId/players', async (req, res) => {
   try {
     const teamId = parseInt(req.params.teamId);
+    console.log(`\n🔍 API Request: Get players for team ${teamId}`);
     const players = await getTeamPlayers(teamId);
     const team = auctionState.teams.find(t => t.id === teamId);
-    res.json({ 
+    console.log(`  Team found in auctionState: ${team ? team.name : 'NOT FOUND'}`);
+    console.log(`  Budget: ${team ? team.budget : 'N/A'}`);
+    const response = { 
       players, 
       budget: team ? team.budget : 100 
-    });
+    };
+    console.log(`  Returning:`, response);
+    res.json(response);
   } catch (err) {
+    console.error(`❌ Error getting team players:`, err);
     res.status(500).json({ error: err.message });
   }
 });
