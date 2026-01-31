@@ -172,22 +172,43 @@ async function getTeamPlayers(teamId) {
 
 // Save sold player
 async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = false) {
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(DATA_PATH);
-  
-  const soldSheet = workbook.getWorksheet('Sold Players');
-  soldSheet.addRow({
-    playerId: player.id,
-    playerName: player.name,
-    position: player.position,
-    teamId: teamId,
-    teamName: teamName,
-    finalPrice: finalPrice,
-    rtmUsed: rtmUsed ? 'Yes' : 'No'
-  });
-
-  await workbook.xlsx.writeFile(DATA_PATH);
-  console.log(`Player ${player.name} saved to Excel for team ${teamName} at ₹${finalPrice} Cr`);
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    
+    // Add the row with explicit column values
+    const newRow = soldSheet.addRow([
+      player.id,
+      player.name,
+      player.position,
+      teamId,
+      teamName,
+      finalPrice,
+      rtmUsed ? 'Yes' : 'No'
+    ]);
+    
+    // Commit the row
+    newRow.commit();
+    
+    // Write to file
+    await workbook.xlsx.writeFile(DATA_PATH);
+    
+    // Verify the save worked
+    const verifyWorkbook = new ExcelJS.Workbook();
+    await verifyWorkbook.xlsx.readFile(DATA_PATH);
+    const verifySoldSheet = verifyWorkbook.getWorksheet('Sold Players');
+    let rowCount = 0;
+    verifySoldSheet.eachRow((row, num) => {
+      if (num > 1) rowCount++;
+    });
+    
+    console.log(`✅ Player ${player.name} saved to Excel for team ${teamName} at ₹${finalPrice} Cr (Total sold: ${rowCount})`);
+  } catch (err) {
+    console.error(`❌ Error saving player ${player.name}:`, err.message);
+    throw err;
+  }
 }
 
 // Load team state from Excel (budgets and RTM usage)
@@ -246,40 +267,49 @@ function broadcast(data) {
 
 // Complete auction helper
 async function completeAuction(winningTeam, finalPrice, isRTM) {
-  winningTeam.budget -= finalPrice;
-  if (isRTM) {
-    winningTeam.rtmUsed = true;
+  try {
+    console.log(`🔄 Completing auction: ${auctionState.currentPlayer.name} to ${winningTeam.name} for ₹${finalPrice} Cr`);
+    
+    winningTeam.budget -= finalPrice;
+    if (isRTM) {
+      winningTeam.rtmUsed = true;
+    }
+    
+    await saveSoldPlayer(
+      auctionState.currentPlayer,
+      winningTeam.id,
+      winningTeam.name,
+      finalPrice,
+      isRTM
+    );
+
+    broadcast({ 
+      type: 'auction_complete', 
+      winner: winningTeam.name,
+      player: auctionState.currentPlayer.name,
+      price: finalPrice,
+      rtmUsed: isRTM,
+      teams: auctionState.teams
+    });
+
+    auctionState = {
+      currentPlayer: null,
+      currentBid: 0,
+      currentBidder: null,
+      teamsOut: [],
+      auctionActive: false,
+      rtmPhase: false,
+      rtmEligibleTeam: null,
+      pendingWinner: null,
+      pendingPrice: null,
+      teams: auctionState.teams
+    };
+    
+    console.log(`✅ Auction completed successfully`);
+  } catch (err) {
+    console.error(`❌ Error completing auction:`, err);
+    throw err;
   }
-  
-  await saveSoldPlayer(
-    auctionState.currentPlayer,
-    winningTeam.id,
-    winningTeam.name,
-    finalPrice,
-    isRTM
-  );
-
-  broadcast({ 
-    type: 'auction_complete', 
-    winner: winningTeam.name,
-    player: auctionState.currentPlayer.name,
-    price: finalPrice,
-    rtmUsed: isRTM,
-    teams: auctionState.teams
-  });
-
-  auctionState = {
-    currentPlayer: null,
-    currentBid: 0,
-    currentBidder: null,
-    teamsOut: [],
-    auctionActive: false,
-    rtmPhase: false,
-    rtmEligibleTeam: null,
-    pendingWinner: null,
-    pendingPrice: null,
-    teams: auctionState.teams
-  };
 }
 
 // WebSocket connection handler
@@ -573,20 +603,25 @@ app.post('/api/auction/rtm', async (req, res) => {
 // Admin: Manually complete auction
 app.post('/api/admin/complete-auction', async (req, res) => {
   try {
+    console.log('📋 Admin complete auction request:', req.body);
     const { teamId } = req.body;
 
     if (!auctionState.auctionActive) {
+      console.log('❌ No active auction');
       return res.status(400).json({ error: 'No active auction' });
     }
 
     const team = auctionState.teams.find(t => t.id === teamId);
     if (!team) {
+      console.log('❌ Team not found:', teamId);
       return res.status(404).json({ error: 'Team not found' });
     }
 
+    console.log(`✅ Admin awarding ${auctionState.currentPlayer.name} to ${team.name}`);
     await completeAuction(team, auctionState.currentBid, false);
     res.json({ success: true });
   } catch (err) {
+    console.error('❌ Admin complete auction error:', err);
     res.status(500).json({ error: err.message });
   }
 });
