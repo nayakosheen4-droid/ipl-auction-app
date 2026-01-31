@@ -139,11 +139,35 @@ function handleLogout() {
 function showAuctionScreen() {
     loginScreen.classList.add('hidden');
     auctionScreen.classList.remove('hidden');
-    teamInfo.innerHTML = `
-        <span style="color: ${currentTeam.color}; font-weight: bold;">
-            ${currentTeam.name}
-        </span>
-    `;
+    
+    if (isAdmin) {
+        teamInfo.innerHTML = `
+            <span style="color: #000; font-weight: bold;">
+                👤 Admin Mode - Full Access
+            </span>
+        `;
+        // Show admin team viewer and hide "View My Team" button
+        const adminTeamViewer = document.getElementById('adminTeamViewer');
+        adminTeamViewer.classList.remove('hidden');
+        viewTeamBtn.style.display = 'none';
+        
+        // Populate with teams
+        adminTeamViewer.innerHTML = '<option value="">View Team...</option>';
+        allTeams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.id;
+            option.textContent = `${team.name} (Budget: ₹${team.budget} Cr)`;
+            adminTeamViewer.appendChild(option);
+        });
+    } else {
+        teamInfo.innerHTML = `
+            <span style="color: ${currentTeam.color}; font-weight: bold;">
+                ${currentTeam.name}
+            </span>
+        `;
+        document.getElementById('adminTeamViewer').classList.add('hidden');
+        viewTeamBtn.style.display = 'inline-block';
+    }
 }
 
 // Connect WebSocket
@@ -447,6 +471,14 @@ async function loadTeamsBudget() {
 
 // Update teams budget display
 function updateTeamsBudget(teams) {
+    // Update local teams array with latest budget data
+    teams.forEach(updatedTeam => {
+        const team = allTeams.find(t => t.id === updatedTeam.id);
+        if (team) {
+            team.budget = updatedTeam.budget;
+        }
+    });
+    
     teamsBudget.innerHTML = '';
     
     teams.forEach(team => {
@@ -463,17 +495,38 @@ function updateTeamsBudget(teams) {
         
         teamsBudget.appendChild(div);
     });
+    
+    // Update admin team viewer dropdown if admin is logged in
+    if (isAdmin) {
+        const adminTeamViewer = document.getElementById('adminTeamViewer');
+        const currentValue = adminTeamViewer.value;
+        adminTeamViewer.innerHTML = '<option value="">View Team...</option>';
+        teams.forEach(team => {
+            const option = document.createElement('option');
+            option.value = team.id;
+            option.textContent = `${team.name} (Budget: ₹${team.budget} Cr)`;
+            adminTeamViewer.appendChild(option);
+        });
+        adminTeamViewer.value = currentValue;
+    }
 }
 
 // Show my team
-async function showMyTeam() {
+async function showMyTeam(teamIdOverride = null) {
     try {
-        const response = await fetch(`${API_BASE}/api/team/${currentTeam.id}/players`);
+        const teamId = teamIdOverride || currentTeam.id;
+        const response = await fetch(`${API_BASE}/api/team/${teamId}/players`);
         const data = await response.json();
+        
+        // Find team info
+        let teamInfo = currentTeam;
+        if (teamIdOverride) {
+            teamInfo = allTeams.find(t => t.id === teamIdOverride) || currentTeam;
+        }
         
         const budgetInfo = document.getElementById('myTeamBudget');
         budgetInfo.innerHTML = `
-            <h3>${currentTeam.name}</h3>
+            <h3>${teamInfo.name}</h3>
             <div class="budget">Budget: ₹${data.budget} Cr</div>
             <div style="margin-top: 10px; opacity: 0.9;">
                 Players: ${data.players.length} | 
@@ -616,6 +669,15 @@ async function adminCompleteAuction() {
 }
 
 document.getElementById('adminCompleteBtn').addEventListener('click', adminCompleteAuction);
+
+// Admin team viewer
+document.getElementById('adminTeamViewer').addEventListener('change', (e) => {
+    const teamId = parseInt(e.target.value);
+    if (teamId) {
+        showMyTeam(teamId);
+        e.target.value = ''; // Reset dropdown
+    }
+});
 
 // Initialize app
 init();

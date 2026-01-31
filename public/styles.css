@@ -473,6 +473,23 @@ header {
     background: #e0a800;
 }
 
+.admin-team-selector {
+    padding: 10px 15px;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-size: 1rem;
+    background: white;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 200px;
+}
+
+.admin-team-selector:focus {
+    outline: none;
+    border-color: #5568d3;
+}
+
 /* Teams Status */
 .teams-status {
     background: white;
