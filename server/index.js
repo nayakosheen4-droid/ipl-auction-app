@@ -187,6 +187,48 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
   await workbook.xlsx.writeFile(DATA_PATH);
 }
 
+// Load team state from Excel (budgets and RTM usage)
+async function loadTeamStateFromExcel() {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    
+    // Calculate spending and RTM usage for each team
+    const teamSpending = {};
+    const teamRTMUsed = {};
+    
+    soldSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) { // Skip header
+        const teamId = row.getCell(4).value;
+        const finalPrice = row.getCell(6).value;
+        const rtmUsed = row.getCell(7).value === 'Yes';
+        
+        if (!teamSpending[teamId]) {
+          teamSpending[teamId] = 0;
+        }
+        teamSpending[teamId] += finalPrice;
+        
+        if (rtmUsed) {
+          teamRTMUsed[teamId] = true;
+        }
+      }
+    });
+    
+    // Update team budgets and RTM status
+    auctionState.teams.forEach(team => {
+      const spent = teamSpending[team.id] || 0;
+      team.budget = 100 - spent; // Initial budget is 100
+      team.rtmUsed = teamRTMUsed[team.id] || false;
+    });
+    
+    console.log('Team state loaded from Excel');
+  } catch (err) {
+    console.error('Error loading team state:', err);
+  }
+}
+
 // Broadcast to all connected clients
 function broadcast(data) {
   const message = JSON.stringify(data);
@@ -547,7 +589,8 @@ app.post('/api/admin/complete-auction', async (req, res) => {
 });
 
 // Initialize and start server
-initializeExcel().then(() => {
+initializeExcel().then(async () => {
+  await loadTeamStateFromExcel();
   const PORT = process.env.PORT || 3000;
   server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
