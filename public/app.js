@@ -4,6 +4,7 @@ const WS_BASE = `ws://${window.location.host}`;
 
 // State
 let currentTeam = null;
+let isAdmin = false;
 let ws = null;
 let availablePlayers = [];
 let allTeams = [];
@@ -38,6 +39,13 @@ async function loadTeams() {
         allTeams = await response.json();
         
         teamSelect.innerHTML = '<option value="">Select Team</option>';
+        
+        // Add Admin option
+        const adminOption = document.createElement('option');
+        adminOption.value = 0;
+        adminOption.textContent = 'Admin';
+        teamSelect.appendChild(adminOption);
+        
         allTeams.forEach(team => {
             const option = document.createElement('option');
             option.value = team.id;
@@ -74,7 +82,13 @@ async function handleLogin(e) {
     
     const teamId = parseInt(teamSelect.value);
     const password = document.getElementById('passwordInput').value;
-    const teamName = allTeams.find(t => t.id === teamId)?.name;
+    let teamName;
+    
+    if (teamId === 0) {
+        teamName = 'Admin';
+    } else {
+        teamName = allTeams.find(t => t.id === teamId)?.name;
+    }
     
     if (!teamName) {
         showToast('Please select a team', 'error');
@@ -92,10 +106,15 @@ async function handleLogin(e) {
         
         if (data.success) {
             currentTeam = data.team;
+            isAdmin = data.isAdmin || false;
             showAuctionScreen();
             connectWebSocket();
             await loadAvailablePlayers();
             await loadTeamsBudget();
+            
+            if (isAdmin) {
+                populateAdminTeamSelect();
+            }
         } else {
             showToast(data.message || 'Invalid credentials', 'error');
         }
@@ -110,6 +129,7 @@ function handleLogout() {
         ws.close();
     }
     currentTeam = null;
+    isAdmin = false;
     loginScreen.classList.remove('hidden');
     auctionScreen.classList.add('hidden');
     loginForm.reset();
@@ -174,9 +194,13 @@ function handleWebSocketMessage(data) {
         case 'team_out':
             updateAuctionState(data.state);
             break;
+        case 'rtm_opportunity':
+            showRTMPhase(data);
+            break;
         case 'auction_complete':
+            const rtmText = data.rtmUsed ? ' (RTM Used)' : '';
             showToast(
-                `${data.player} sold to ${data.winner} for ₹${data.price} Cr!`,
+                `${data.player} sold to ${data.winner} for ₹${data.price} Cr${rtmText}!`,
                 'success'
             );
             updateTeamsBudget(data.teams);
@@ -184,6 +208,7 @@ function handleWebSocketMessage(data) {
             setTimeout(() => {
                 noAuction.classList.remove('hidden');
                 activeAuction.classList.add('hidden');
+                document.getElementById('rtmPhase').classList.add('hidden');
             }, 2000);
             break;
         case 'reset':
@@ -199,10 +224,21 @@ function updateAuctionState(state) {
     if (state.auctionActive && state.currentPlayer) {
         noAuction.classList.add('hidden');
         activeAuction.classList.remove('hidden');
+        document.getElementById('rtmPhase').classList.add('hidden');
         
         document.getElementById('currentPlayerName').textContent = state.currentPlayer.name;
         document.getElementById('currentPlayerPosition').textContent = state.currentPlayer.position;
         document.getElementById('currentBidAmount').textContent = `₹${state.currentBid} Cr`;
+        
+        // Show franchise badge
+        const franchiseBadge = document.getElementById('franchiseBadge');
+        if (state.currentPlayer.franchiseId) {
+            const franchiseTeam = allTeams.find(t => t.id === state.currentPlayer.franchiseId);
+            franchiseBadge.textContent = franchiseTeam ? `${franchiseTeam.name} Player` : '';
+            franchiseBadge.style.display = 'inline-block';
+        } else {
+            franchiseBadge.style.display = 'none';
+        }
         
         const bidderTeam = allTeams.find(t => t.id === state.currentBidder);
         document.getElementById('currentBidder').textContent = 
@@ -212,23 +248,38 @@ function updateAuctionState(state) {
         const bidButtons = document.querySelectorAll('.bid-btn');
         const myTeam = state.teams.find(t => t.id === currentTeam.id);
         const isOut = state.teamsOut.includes(currentTeam.id);
+        const isCurrentBidder = state.currentBidder === currentTeam.id;
         
         bidButtons.forEach(btn => {
             const increment = parseFloat(btn.dataset.increment);
             const newBid = state.currentBid + increment;
-            btn.disabled = isOut || !myTeam || newBid > myTeam.budget;
+            // Disable if: out, insufficient budget, admin, or already highest bidder
+            btn.disabled = isAdmin || isOut || !myTeam || newBid > myTeam.budget || isCurrentBidder;
         });
         
         // Update out button
         const outBtn = document.getElementById('markOutBtn');
-        if (isOut) {
-            outBtn.textContent = 'Marked Out';
-            outBtn.classList.add('marked');
-            outBtn.disabled = true;
+        if (isAdmin) {
+            outBtn.style.display = 'none';
         } else {
-            outBtn.textContent = 'Mark Out';
-            outBtn.classList.remove('marked');
-            outBtn.disabled = false;
+            outBtn.style.display = 'block';
+            if (isOut) {
+                outBtn.textContent = 'Marked Out';
+                outBtn.classList.add('marked');
+                outBtn.disabled = true;
+            } else {
+                outBtn.textContent = 'Mark Out';
+                outBtn.classList.remove('marked');
+                outBtn.disabled = false;
+            }
+        }
+        
+        // Show/hide admin controls
+        const adminControls = document.getElementById('adminControls');
+        if (isAdmin) {
+            adminControls.classList.remove('hidden');
+        } else {
+            adminControls.classList.add('hidden');
         }
         
         // Update teams status
@@ -236,6 +287,7 @@ function updateAuctionState(state) {
     } else {
         noAuction.classList.remove('hidden');
         activeAuction.classList.add('hidden');
+        document.getElementById('rtmPhase').classList.add('hidden');
     }
 }
 
@@ -475,6 +527,95 @@ activeAuction.addEventListener('click', (e) => {
 });
 
 document.getElementById('markOutBtn').addEventListener('click', markOut);
+
+// RTM Phase
+function showRTMPhase(data) {
+    noAuction.classList.add('hidden');
+    activeAuction.classList.remove('hidden');
+    document.getElementById('rtmPhase').classList.remove('hidden');
+    
+    const rtmMessage = document.getElementById('rtmMessage');
+    rtmMessage.textContent = `${data.franchiseTeam} has the Right to Match for ${data.player}. Current bid: ₹${data.price} Cr by ${data.winningTeam}`;
+    
+    const useRTMBtn = document.getElementById('useRTMBtn');
+    const declineRTMBtn = document.getElementById('declineRTMBtn');
+    
+    // Only show buttons for eligible team
+    if (currentTeam.id === data.state.rtmEligibleTeam) {
+        useRTMBtn.style.display = 'inline-block';
+        declineRTMBtn.style.display = 'inline-block';
+    } else {
+        useRTMBtn.style.display = 'none';
+        declineRTMBtn.style.display = 'none';
+    }
+}
+
+// Use RTM
+async function useRTM(useIt) {
+    try {
+        const response = await fetch(`${API_BASE}/api/auction/rtm`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                teamId: currentTeam.id,
+                useRTM: useIt
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+            showToast(data.error || 'RTM action failed', 'error');
+        }
+    } catch (err) {
+        showToast('RTM action failed', 'error');
+    }
+}
+
+document.getElementById('useRTMBtn').addEventListener('click', () => useRTM(true));
+document.getElementById('declineRTMBtn').addEventListener('click', () => useRTM(false));
+
+// Admin Functions
+function populateAdminTeamSelect() {
+    const select = document.getElementById('adminTeamSelect');
+    select.innerHTML = '<option value="">Select Team to Award</option>';
+    allTeams.forEach(team => {
+        const option = document.createElement('option');
+        option.value = team.id;
+        option.textContent = team.name;
+        select.appendChild(option);
+    });
+}
+
+async function adminCompleteAuction() {
+    const teamId = parseInt(document.getElementById('adminTeamSelect').value);
+    
+    if (!teamId) {
+        showToast('Please select a team', 'error');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/api/admin/complete-auction`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ teamId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Player marked as sold!', 'success');
+            document.getElementById('adminTeamSelect').value = '';
+        } else {
+            showToast(data.error || 'Failed to complete auction', 'error');
+        }
+    } catch (err) {
+        showToast('Failed to complete auction', 'error');
+    }
+}
+
+document.getElementById('adminCompleteBtn').addEventListener('click', adminCompleteAuction);
 
 // Initialize app
 init();

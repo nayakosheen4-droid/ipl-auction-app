@@ -12,6 +12,9 @@ A real-time web-based IPL auction game with Excel backend for managing player au
 - 👥 **Team Management**: View your current team roster and spending
 - 🔐 **Multi-user Login**: Multiple users can login to the same team with a shared password
 - ⚡ **Real-time Updates**: WebSocket-based live updates for all participants
+- 🎴 **RTM (Right to Match)**: Franchise teams can use their RTM card once to match the winning bid
+- 🔧 **Admin Panel**: Admin access to manually award players for testing
+- 🛡️ **Smart Bidding**: Prevents teams from bidding on their own highest bid
 
 🎁 **Additional Features:**
 - 🎨 Modern, beautiful UI with team colors
@@ -74,6 +77,7 @@ http://localhost:3000
 - Punjab Kings: `pbks2024`
 - Rajasthan Royals: `rr2024`
 - Sunrisers Hyderabad: `srh2024`
+- **Admin**: `admin2024`
 
 ### Starting an Auction
 1. Browse available players in the left panel
@@ -100,6 +104,22 @@ http://localhost:3000
 - View remaining budget and total spent
 - Track team composition by position
 
+### RTM (Right to Match)
+- Players are assigned to franchise teams
+- When a player's auction ends, their franchise team gets an RTM opportunity
+- The franchise team can match the winning bid to acquire the player
+- Each team can use RTM only once during the entire auction
+- RTM option appears only if:
+  - Team hasn't used RTM yet
+  - Team is not the current winning bidder
+  - Team has sufficient budget
+
+### Admin Features
+- Login with Admin credentials to access admin panel
+- Manually award any player to any team during testing
+- Useful for quickly testing different auction scenarios
+- Admin can see all auction activity but cannot bid
+
 ## Excel Database Structure
 
 The application automatically creates an Excel file at `data/auction_data.xlsx` with two sheets:
@@ -111,6 +131,7 @@ The application automatically creates an Excel file at `data/auction_data.xlsx` 
 | Name | Player name |
 | Position | Batsman/Bowler/All-rounder/Wicket-keeper |
 | Base Price | Starting price for auction (₹0.5 Cr) |
+| Franchise ID | Team ID of franchise team (for RTM) |
 
 ### Sold Players Sheet
 | Column | Description |
@@ -121,6 +142,7 @@ The application automatically creates an Excel file at `data/auction_data.xlsx` 
 | Team ID | ID of the team that bought the player |
 | Team Name | Name of the team |
 | Final Price | Winning bid amount |
+| RTM Used | Whether RTM card was used (Yes/No) |
 
 ## Configuration
 
@@ -159,8 +181,12 @@ Edit the base price in the sample players array or modify directly in Excel
 - `POST /api/auction/nominate` - Nominate a player for auction
 - `POST /api/auction/bid` - Place a bid
 - `POST /api/auction/out` - Mark team as out
+- `POST /api/auction/rtm` - Use or decline RTM card
 - `GET /api/auction/state` - Get current auction state
 - `POST /api/auction/reset` - Reset auction (admin)
+
+### Admin
+- `POST /api/admin/complete-auction` - Manually complete auction and award player
 
 ### Teams
 - `GET /api/teams` - Get all teams with budgets
@@ -180,7 +206,8 @@ Edit the base price in the sample players array or modify directly in Excel
 - `auction_start` - New auction started
 - `bid_update` - Bid placed
 - `team_out` - Team marked out
-- `auction_complete` - Player sold
+- `rtm_opportunity` - RTM card available for franchise team
+- `auction_complete` - Player sold (with RTM status)
 - `reset` - Auction reset
 
 ## Troubleshooting

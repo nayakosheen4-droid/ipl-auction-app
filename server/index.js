@@ -18,15 +18,16 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Constants
 const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
+const ADMIN_PASSWORD = 'admin2024';
 const TEAMS = [
-  { id: 1, name: 'Mumbai Indians', password: 'mi2024', budget: 100, color: '#004BA0' },
-  { id: 2, name: 'Chennai Super Kings', password: 'csk2024', budget: 100, color: '#FDB913' },
-  { id: 3, name: 'Royal Challengers Bangalore', password: 'rcb2024', budget: 100, color: '#EC1C24' },
-  { id: 4, name: 'Kolkata Knight Riders', password: 'kkr2024', budget: 100, color: '#3A225D' },
-  { id: 5, name: 'Delhi Capitals', password: 'dc2024', budget: 100, color: '#004C93' },
-  { id: 6, name: 'Punjab Kings', password: 'pbks2024', budget: 100, color: '#DD1F2D' },
-  { id: 7, name: 'Rajasthan Royals', password: 'rr2024', budget: 100, color: '#254AA5' },
-  { id: 8, name: 'Sunrisers Hyderabad', password: 'srh2024', budget: 100, color: '#FF822A' }
+  { id: 1, name: 'Mumbai Indians', password: 'mi2024', budget: 100, color: '#004BA0', rtmUsed: false },
+  { id: 2, name: 'Chennai Super Kings', password: 'csk2024', budget: 100, color: '#FDB913', rtmUsed: false },
+  { id: 3, name: 'Royal Challengers Bangalore', password: 'rcb2024', budget: 100, color: '#EC1C24', rtmUsed: false },
+  { id: 4, name: 'Kolkata Knight Riders', password: 'kkr2024', budget: 100, color: '#3A225D', rtmUsed: false },
+  { id: 5, name: 'Delhi Capitals', password: 'dc2024', budget: 100, color: '#004C93', rtmUsed: false },
+  { id: 6, name: 'Punjab Kings', password: 'pbks2024', budget: 100, color: '#DD1F2D', rtmUsed: false },
+  { id: 7, name: 'Rajasthan Royals', password: 'rr2024', budget: 100, color: '#254AA5', rtmUsed: false },
+  { id: 8, name: 'Sunrisers Hyderabad', password: 'srh2024', budget: 100, color: '#FF822A', rtmUsed: false }
 ];
 
 // In-memory state
@@ -36,6 +37,10 @@ let auctionState = {
   currentBidder: null,
   teamsOut: [],
   auctionActive: false,
+  rtmPhase: false,
+  rtmEligibleTeam: null,
+  pendingWinner: null,
+  pendingPrice: null,
   teams: JSON.parse(JSON.stringify(TEAMS)) // Deep copy
 };
 
@@ -57,31 +62,32 @@ async function initializeExcel() {
       { header: 'ID', key: 'id', width: 10 },
       { header: 'Name', key: 'name', width: 30 },
       { header: 'Position', key: 'position', width: 20 },
-      { header: 'Base Price', key: 'basePrice', width: 15 }
+      { header: 'Base Price', key: 'basePrice', width: 15 },
+      { header: 'Franchise ID', key: 'franchiseId', width: 15 }
     ];
 
-    // Sample players
+    // Sample players with franchise assignments
     const samplePlayers = [
-      { id: 1, name: 'Virat Kohli', position: 'Batsman', basePrice: 0.5 },
-      { id: 2, name: 'Rohit Sharma', position: 'Batsman', basePrice: 0.5 },
-      { id: 3, name: 'Jasprit Bumrah', position: 'Bowler', basePrice: 0.5 },
-      { id: 4, name: 'Rashid Khan', position: 'All-rounder', basePrice: 0.5 },
-      { id: 5, name: 'KL Rahul', position: 'Wicket-keeper', basePrice: 0.5 },
-      { id: 6, name: 'Mohammed Shami', position: 'Bowler', basePrice: 0.5 },
-      { id: 7, name: 'Hardik Pandya', position: 'All-rounder', basePrice: 0.5 },
-      { id: 8, name: 'Ravindra Jadeja', position: 'All-rounder', basePrice: 0.5 },
-      { id: 9, name: 'Rishabh Pant', position: 'Wicket-keeper', basePrice: 0.5 },
-      { id: 10, name: 'Yuzvendra Chahal', position: 'Bowler', basePrice: 0.5 },
-      { id: 11, name: 'Shikhar Dhawan', position: 'Batsman', basePrice: 0.5 },
-      { id: 12, name: 'David Warner', position: 'Batsman', basePrice: 0.5 },
-      { id: 13, name: 'AB de Villiers', position: 'Batsman', basePrice: 0.5 },
-      { id: 14, name: 'Glenn Maxwell', position: 'All-rounder', basePrice: 0.5 },
-      { id: 15, name: 'Kagiso Rabada', position: 'Bowler', basePrice: 0.5 },
-      { id: 16, name: 'Jos Buttler', position: 'Wicket-keeper', basePrice: 0.5 },
-      { id: 17, name: 'Pat Cummins', position: 'Bowler', basePrice: 0.5 },
-      { id: 18, name: 'Trent Boult', position: 'Bowler', basePrice: 0.5 },
-      { id: 19, name: 'Andre Russell', position: 'All-rounder', basePrice: 0.5 },
-      { id: 20, name: 'Suryakumar Yadav', position: 'Batsman', basePrice: 0.5 }
+      { id: 1, name: 'Virat Kohli', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
+      { id: 2, name: 'Rohit Sharma', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
+      { id: 3, name: 'Jasprit Bumrah', position: 'Bowler', basePrice: 0.5, franchiseId: 1 },
+      { id: 4, name: 'Rashid Khan', position: 'All-rounder', basePrice: 0.5, franchiseId: 8 },
+      { id: 5, name: 'KL Rahul', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 6 },
+      { id: 6, name: 'Mohammed Shami', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
+      { id: 7, name: 'Hardik Pandya', position: 'All-rounder', basePrice: 0.5, franchiseId: 1 },
+      { id: 8, name: 'Ravindra Jadeja', position: 'All-rounder', basePrice: 0.5, franchiseId: 2 },
+      { id: 9, name: 'Rishabh Pant', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 5 },
+      { id: 10, name: 'Yuzvendra Chahal', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
+      { id: 11, name: 'Shikhar Dhawan', position: 'Batsman', basePrice: 0.5, franchiseId: 6 },
+      { id: 12, name: 'David Warner', position: 'Batsman', basePrice: 0.5, franchiseId: 8 },
+      { id: 13, name: 'AB de Villiers', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
+      { id: 14, name: 'Glenn Maxwell', position: 'All-rounder', basePrice: 0.5, franchiseId: 3 },
+      { id: 15, name: 'Kagiso Rabada', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
+      { id: 16, name: 'Jos Buttler', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 7 },
+      { id: 17, name: 'Pat Cummins', position: 'Bowler', basePrice: 0.5, franchiseId: 4 },
+      { id: 18, name: 'Trent Boult', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
+      { id: 19, name: 'Andre Russell', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 20, name: 'Suryakumar Yadav', position: 'Batsman', basePrice: 0.5, franchiseId: 1 }
     ];
 
     playersSheet.addRows(samplePlayers);
@@ -94,7 +100,8 @@ async function initializeExcel() {
       { header: 'Position', key: 'position', width: 20 },
       { header: 'Team ID', key: 'teamId', width: 10 },
       { header: 'Team Name', key: 'teamName', width: 30 },
-      { header: 'Final Price', key: 'finalPrice', width: 15 }
+      { header: 'Final Price', key: 'finalPrice', width: 15 },
+      { header: 'RTM Used', key: 'rtmUsed', width: 10 }
     ];
 
     await workbook.xlsx.writeFile(DATA_PATH);
@@ -126,7 +133,8 @@ async function getAvailablePlayers() {
           id: playerId,
           name: row.getCell(2).value,
           position: row.getCell(3).value,
-          basePrice: row.getCell(4).value
+          basePrice: row.getCell(4).value,
+          franchiseId: row.getCell(5).value
         });
       }
     }
@@ -161,7 +169,7 @@ async function getTeamPlayers(teamId) {
 }
 
 // Save sold player
-async function saveSoldPlayer(player, teamId, teamName, finalPrice) {
+async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = false) {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(DATA_PATH);
   
@@ -172,7 +180,8 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice) {
     position: player.position,
     teamId: teamId,
     teamName: teamName,
-    finalPrice: finalPrice
+    finalPrice: finalPrice,
+    rtmUsed: rtmUsed ? 'Yes' : 'No'
   });
 
   await workbook.xlsx.writeFile(DATA_PATH);
@@ -188,6 +197,44 @@ function broadcast(data) {
       }
     });
   });
+}
+
+// Complete auction helper
+async function completeAuction(winningTeam, finalPrice, isRTM) {
+  winningTeam.budget -= finalPrice;
+  if (isRTM) {
+    winningTeam.rtmUsed = true;
+  }
+  
+  await saveSoldPlayer(
+    auctionState.currentPlayer,
+    winningTeam.id,
+    winningTeam.name,
+    finalPrice,
+    isRTM
+  );
+
+  broadcast({ 
+    type: 'auction_complete', 
+    winner: winningTeam.name,
+    player: auctionState.currentPlayer.name,
+    price: finalPrice,
+    rtmUsed: isRTM,
+    teams: auctionState.teams
+  });
+
+  auctionState = {
+    currentPlayer: null,
+    currentBid: 0,
+    currentBidder: null,
+    teamsOut: [],
+    auctionActive: false,
+    rtmPhase: false,
+    rtmEligibleTeam: null,
+    pendingWinner: null,
+    pendingPrice: null,
+    teams: auctionState.teams
+  };
 }
 
 // WebSocket connection handler
@@ -236,11 +283,27 @@ wss.on('connection', (ws) => {
 // Login
 app.post('/api/login', (req, res) => {
   const { teamName, password } = req.body;
+  
+  // Check for admin login
+  if (teamName === 'Admin' && password === ADMIN_PASSWORD) {
+    res.json({ 
+      success: true, 
+      isAdmin: true,
+      team: { 
+        id: 0, 
+        name: 'Admin', 
+        color: '#000000' 
+      } 
+    });
+    return;
+  }
+  
   const team = TEAMS.find(t => t.name === teamName && t.password === password);
   
   if (team) {
     res.json({ 
-      success: true, 
+      success: true,
+      isAdmin: false,
       team: { 
         id: team.id, 
         name: team.name, 
@@ -357,35 +420,38 @@ app.post('/api/auction/out', async (req, res) => {
     const activeTeams = auctionState.teams.length - auctionState.teamsOut.length;
     
     if (activeTeams <= 1) {
-      // Auction complete
+      // Check if RTM is applicable
       const winningTeam = auctionState.teams.find(t => t.id === auctionState.currentBidder);
+      const franchiseTeam = auctionState.teams.find(t => t.id === auctionState.currentPlayer.franchiseId);
       
-      if (winningTeam) {
-        winningTeam.budget -= auctionState.currentBid;
+      // RTM is applicable if:
+      // 1. Player has a franchise assignment
+      // 2. Franchise team hasn't used RTM yet
+      // 3. Franchise team is not the winning bidder
+      // 4. Franchise team has enough budget
+      if (franchiseTeam && 
+          !franchiseTeam.rtmUsed && 
+          franchiseTeam.id !== winningTeam.id &&
+          franchiseTeam.budget >= auctionState.currentBid) {
         
-        await saveSoldPlayer(
-          auctionState.currentPlayer,
-          winningTeam.id,
-          winningTeam.name,
-          auctionState.currentBid
-        );
-
+        // Enter RTM phase
+        auctionState.rtmPhase = true;
+        auctionState.rtmEligibleTeam = franchiseTeam.id;
+        auctionState.pendingWinner = winningTeam;
+        auctionState.pendingPrice = auctionState.currentBid;
+        auctionState.auctionActive = false;
+        
         broadcast({ 
-          type: 'auction_complete', 
-          winner: winningTeam.name,
+          type: 'rtm_opportunity',
+          state: auctionState,
+          franchiseTeam: franchiseTeam.name,
+          winningTeam: winningTeam.name,
           player: auctionState.currentPlayer.name,
-          price: auctionState.currentBid,
-          teams: auctionState.teams
+          price: auctionState.currentBid
         });
-
-        auctionState = {
-          currentPlayer: null,
-          currentBid: 0,
-          currentBidder: null,
-          teamsOut: [],
-          auctionActive: false,
-          teams: auctionState.teams
-        };
+      } else {
+        // No RTM, complete auction normally
+        await completeAuction(winningTeam, auctionState.currentBid, false);
       }
     } else {
       broadcast({ type: 'team_out', state: auctionState });
@@ -420,10 +486,64 @@ app.post('/api/auction/reset', (req, res) => {
     currentBidder: null,
     teamsOut: [],
     auctionActive: false,
+    rtmPhase: false,
+    rtmEligibleTeam: null,
+    pendingWinner: null,
+    pendingPrice: null,
     teams: JSON.parse(JSON.stringify(TEAMS))
   };
   broadcast({ type: 'reset', state: auctionState });
   res.json({ success: true });
+});
+
+// Use RTM
+app.post('/api/auction/rtm', async (req, res) => {
+  try {
+    const { teamId, useRTM } = req.body;
+
+    if (!auctionState.rtmPhase) {
+      return res.status(400).json({ error: 'No RTM opportunity available' });
+    }
+
+    if (teamId !== auctionState.rtmEligibleTeam) {
+      return res.status(403).json({ error: 'Not eligible for RTM' });
+    }
+
+    const franchiseTeam = auctionState.teams.find(t => t.id === teamId);
+    
+    if (useRTM) {
+      // Franchise team uses RTM and gets the player
+      await completeAuction(franchiseTeam, auctionState.pendingPrice, true);
+    } else {
+      // Franchise team declines RTM, pending winner gets the player
+      await completeAuction(auctionState.pendingWinner, auctionState.pendingPrice, false);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin: Manually complete auction
+app.post('/api/admin/complete-auction', async (req, res) => {
+  try {
+    const { teamId } = req.body;
+
+    if (!auctionState.auctionActive) {
+      return res.status(400).json({ error: 'No active auction' });
+    }
+
+    const team = auctionState.teams.find(t => t.id === teamId);
+    if (!team) {
+      return res.status(404).json({ error: 'Team not found' });
+    }
+
+    await completeAuction(team, auctionState.currentBid, false);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Initialize and start server

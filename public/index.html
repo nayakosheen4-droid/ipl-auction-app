@@ -22,6 +22,7 @@
             <div class="info-box">
                 <h3>Default Passwords:</h3>
                 <p>All teams: [teamcode]2024<br>(e.g., mi2024, csk2024, rcb2024)</p>
+                <p style="margin-top: 10px;"><strong>Admin:</strong> admin2024</p>
             </div>
         </div>
     </div>
@@ -72,6 +73,7 @@
                         <div class="player-header">
                             <h2 id="currentPlayerName"></h2>
                             <span id="currentPlayerPosition" class="position-badge"></span>
+                            <span id="franchiseBadge" class="franchise-badge"></span>
                         </div>
                         <div class="current-bid">
                             <span class="bid-label">Current Bid</span>
@@ -87,6 +89,29 @@
                                 <button class="bid-btn" data-increment="2">+2 Cr</button>
                             </div>
                             <button id="markOutBtn" class="btn btn-out">Mark Out</button>
+                        </div>
+                    </div>
+
+                    <!-- RTM Phase -->
+                    <div id="rtmPhase" class="rtm-phase hidden">
+                        <div class="rtm-card">
+                            <h2>🎯 Right to Match Available!</h2>
+                            <p id="rtmMessage"></p>
+                            <div class="rtm-buttons">
+                                <button id="useRTMBtn" class="btn btn-rtm">Use RTM Card</button>
+                                <button id="declineRTMBtn" class="btn btn-decline">Decline RTM</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Controls -->
+                    <div id="adminControls" class="admin-controls hidden">
+                        <h3>🔧 Admin Controls</h3>
+                        <div class="admin-buttons">
+                            <select id="adminTeamSelect" class="admin-select">
+                                <option value="">Select Team to Award</option>
+                            </select>
+                            <button id="adminCompleteBtn" class="btn btn-admin">Mark Player Sold</button>
                         </div>
                     </div>
 
