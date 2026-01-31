@@ -25,7 +25,6 @@ const activeAuction = document.getElementById('activeAuction');
 const viewTeamBtn = document.getElementById('viewTeamBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const myTeamModal = document.getElementById('myTeamModal');
-const teamsBudget = document.getElementById('teamsBudget');
 const toast = document.getElementById('toast');
 
 // Initialize
@@ -43,7 +42,6 @@ async function init() {
         showAuctionScreen();
         connectWebSocket();
         await loadAvailablePlayers();
-        await loadTeamsBudget();
         
         if (isAdmin) {
             populateAdminTeamSelect();
@@ -140,7 +138,6 @@ async function handleLogin(e) {
             showAuctionScreen();
             connectWebSocket();
             await loadAvailablePlayers();
-            await loadTeamsBudget();
             
             if (isAdmin) {
                 populateAdminTeamSelect();
@@ -273,7 +270,6 @@ function handleWebSocketMessage(data) {
         case 'reset':
             updateAuctionState(data.state);
             loadAvailablePlayers();
-            loadTeamsBudget();
             break;
     }
 }
@@ -590,18 +586,7 @@ async function validateMarkOut() {
     }
 }
 
-// Load teams budget
-async function loadTeamsBudget() {
-    try {
-        const response = await fetch(`${API_BASE}/api/teams`);
-        const teams = await response.json();
-        updateTeamsBudget(teams);
-    } catch (err) {
-        console.error('Failed to load teams budget:', err);
-    }
-}
-
-// Update teams budget display
+// Update teams budget display (called after auction completes)
 function updateTeamsBudget(teams) {
     // Update local teams array with latest budget data
     teams.forEach(updatedTeam => {
@@ -611,22 +596,10 @@ function updateTeamsBudget(teams) {
         }
     });
     
-    teamsBudget.innerHTML = '';
-    
-    teams.forEach(team => {
-        const div = document.createElement('div');
-        div.className = 'budget-item';
-        if (team.budget < 20) {
-            div.classList.add('low-budget');
-        }
-        
-        div.innerHTML = `
-            <h3 style="color: ${team.color};">${team.name}</h3>
-            <div class="budget-amount">₹${team.budget} Cr</div>
-        `;
-        
-        teamsBudget.appendChild(div);
-    });
+    // If left panel is showing "All Teams" view, refresh it
+    if (leftPanelView === 'teams') {
+        displayAllTeams();
+    }
     
     // Update admin team viewer dropdown if admin is logged in
     if (isAdmin) {

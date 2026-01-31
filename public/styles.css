@@ -163,14 +163,14 @@ header {
 
 .main-content {
     display: grid;
-    grid-template-columns: 300px 1fr 300px;
+    grid-template-columns: 350px 1fr;
     gap: 20px;
     padding: 20px;
     height: calc(100vh - 100px);
 }
 
 /* Panels */
-.left-panel, .center-panel, .right-panel {
+.left-panel, .center-panel {
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -785,12 +785,12 @@ header {
 /* Responsive */
 @media (max-width: 1200px) {
     .main-content {
-        grid-template-columns: 250px 1fr 250px;
-        gap: 10px;
-        padding: 10px;
+        grid-template-columns: 300px 1fr;
+        gap: 15px;
+        padding: 15px;
     }
     
-    .left-panel, .right-panel {
+    .left-panel {
         font-size: 0.9rem;
     }
 }
@@ -860,12 +860,6 @@ header {
     .center-panel {
         order: 2;
         min-height: 500px;
-    }
-
-    /* Right Panel */
-    .right-panel {
-        order: 3;
-        max-height: 300px;
     }
 
     /* Panel Headers */
