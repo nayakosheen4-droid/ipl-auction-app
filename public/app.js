@@ -31,6 +31,23 @@ const toast = document.getElementById('toast');
 async function init() {
     await loadTeams();
     setupEventListeners();
+    
+    // Check for saved session
+    const savedTeam = localStorage.getItem('currentTeam');
+    const savedIsAdmin = localStorage.getItem('isAdmin');
+    
+    if (savedTeam) {
+        currentTeam = JSON.parse(savedTeam);
+        isAdmin = savedIsAdmin === 'true';
+        showAuctionScreen();
+        connectWebSocket();
+        await loadAvailablePlayers();
+        await loadTeamsBudget();
+        
+        if (isAdmin) {
+            populateAdminTeamSelect();
+        }
+    }
 }
 
 // Load teams for dropdown
@@ -108,6 +125,11 @@ async function handleLogin(e) {
         if (data.success) {
             currentTeam = data.team;
             isAdmin = data.isAdmin || false;
+            
+            // Save session to localStorage
+            localStorage.setItem('currentTeam', JSON.stringify(currentTeam));
+            localStorage.setItem('isAdmin', isAdmin);
+            
             console.log('✅ Login successful! currentTeam:', currentTeam);
             console.log('  Team ID:', currentTeam.id, 'Type:', typeof currentTeam.id);
             showAuctionScreen();
@@ -131,6 +153,11 @@ function handleLogout() {
     if (ws) {
         ws.close();
     }
+    
+    // Clear session
+    localStorage.removeItem('currentTeam');
+    localStorage.removeItem('isAdmin');
+    
     currentTeam = null;
     isAdmin = false;
     loginScreen.classList.remove('hidden');
@@ -656,9 +683,15 @@ function populateAdminTeamSelect() {
 
 async function adminCompleteAuction() {
     const teamId = parseInt(document.getElementById('adminTeamSelect').value);
+    const customPrice = parseFloat(document.getElementById('adminPriceInput').value) || 0.5;
     
     if (!teamId) {
         showToast('Please select a team', 'error');
+        return;
+    }
+    
+    if (customPrice < 0.5) {
+        showToast('Price must be at least ₹0.5 Cr', 'error');
         return;
     }
     
@@ -666,14 +699,15 @@ async function adminCompleteAuction() {
         const response = await fetch(`${API_BASE}/api/admin/complete-auction`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ teamId })
+            body: JSON.stringify({ teamId, customPrice })
         });
         
         const data = await response.json();
         
         if (data.success) {
-            showToast('Player marked as sold!', 'success');
+            showToast(`Player sold for ₹${customPrice} Cr!`, 'success');
             document.getElementById('adminTeamSelect').value = '';
+            document.getElementById('adminPriceInput').value = '0.5';
         } else {
             showToast(data.error || 'Failed to complete auction', 'error');
         }

@@ -627,7 +627,7 @@ app.post('/api/auction/rtm', async (req, res) => {
 app.post('/api/admin/complete-auction', async (req, res) => {
   try {
     console.log('📋 Admin complete auction request:', req.body);
-    const { teamId } = req.body;
+    const { teamId, customPrice } = req.body;
 
     if (!auctionState.auctionActive) {
       console.log('❌ No active auction');
@@ -640,8 +640,14 @@ app.post('/api/admin/complete-auction', async (req, res) => {
       return res.status(404).json({ error: 'Team not found' });
     }
 
-    console.log(`✅ Admin awarding ${auctionState.currentPlayer.name} to ${team.name}`);
-    await completeAuction(team, auctionState.currentBid, false);
+    const finalPrice = customPrice || auctionState.currentBid;
+    
+    if (finalPrice > team.budget) {
+      return res.status(400).json({ error: `Team only has ₹${team.budget} Cr budget` });
+    }
+
+    console.log(`✅ Admin awarding ${auctionState.currentPlayer.name} to ${team.name} at ₹${finalPrice} Cr`);
+    await completeAuction(team, finalPrice, false);
     res.json({ success: true });
   } catch (err) {
     console.error('❌ Admin complete auction error:', err);
