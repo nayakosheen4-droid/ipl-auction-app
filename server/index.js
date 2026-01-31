@@ -120,7 +120,8 @@ async function getAvailablePlayers() {
   const soldPlayerIds = new Set();
   soldSheet.eachRow((row, rowNumber) => {
     if (rowNumber > 1) { // Skip header
-      soldPlayerIds.add(row.getCell(1).value);
+      const playerId = row.getCell(1).value;
+      soldPlayerIds.add(playerId);
     }
   });
 
@@ -140,6 +141,7 @@ async function getAvailablePlayers() {
     }
   });
 
+  console.log(`Loaded ${players.length} available players (${soldPlayerIds.size} sold)`);
   return players;
 }
 
@@ -185,6 +187,7 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
   });
 
   await workbook.xlsx.writeFile(DATA_PATH);
+  console.log(`Player ${player.name} saved to Excel for team ${teamName} at ₹${finalPrice} Cr`);
 }
 
 // Load team state from Excel (budgets and RTM usage)
