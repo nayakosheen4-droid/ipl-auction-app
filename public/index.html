@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Auction Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen">
+        <div class="login-container">
+            <h1>🏏 IPL Auction Game</h1>
+            <p class="subtitle">Select your team and enter password</p>
+            <form id="loginForm">
+                <select id="teamSelect" required>
+                    <option value="">Select Team</option>
+                </select>
+                <input type="password" id="passwordInput" placeholder="Team Password" required>
+                <button type="submit">Join Auction</button>
+            </form>
+            <div class="info-box">
+                <h3>Default Passwords:</h3>
+                <p>All teams: [teamcode]2024<br>(e.g., mi2024, csk2024, rcb2024)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Auction Screen -->
+    <div id="auctionScreen" class="screen hidden">
+        <header>
+            <div class="header-left">
+                <h1>🏏 IPL Auction</h1>
+                <div id="teamInfo" class="team-info"></div>
+            </div>
+            <div class="header-right">
+                <button id="viewTeamBtn" class="btn btn-secondary">View My Team</button>
+                <button id="logoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel: Player Selection -->
+            <div class="left-panel">
+                <div class="panel-header">
+                    <h2>Available Players</h2>
+                    <div class="filter-group">
+                        <select id="positionFilter">
+                            <option value="">All Positions</option>
+                            <option value="Batsman">Batsman</option>
+                            <option value="Bowler">Bowler</option>
+                            <option value="All-rounder">All-rounder</option>
+                            <option value="Wicket-keeper">Wicket-keeper</option>
+                        </select>
+                        <input type="text" id="searchPlayer" placeholder="Search player...">
+                    </div>
+                </div>
+                <div id="playersList" class="players-list"></div>
+            </div>
+
+            <!-- Center Panel: Current Auction -->
+            <div class="center-panel">
+                <div id="noAuction" class="no-auction">
+                    <div class="placeholder">
+                        <h2>No Active Auction</h2>
+                        <p>Select a player from the left panel to start bidding</p>
+                    </div>
+                </div>
+
+                <div id="activeAuction" class="active-auction hidden">
+                    <div class="player-card">
+                        <div class="player-header">
+                            <h2 id="currentPlayerName"></h2>
+                            <span id="currentPlayerPosition" class="position-badge"></span>
+                        </div>
+                        <div class="current-bid">
+                            <span class="bid-label">Current Bid</span>
+                            <span id="currentBidAmount" class="bid-amount">₹0.0 Cr</span>
+                            <span id="currentBidder" class="bidder-name"></span>
+                        </div>
+                        <div class="bid-controls">
+                            <h3>Place Your Bid</h3>
+                            <div class="bid-buttons">
+                                <button class="bid-btn" data-increment="0.5">+0.5 Cr</button>
+                                <button class="bid-btn" data-increment="1">+1 Cr</button>
+                                <button class="bid-btn" data-increment="1.5">+1.5 Cr</button>
+                                <button class="bid-btn" data-increment="2">+2 Cr</button>
+                            </div>
+                            <button id="markOutBtn" class="btn btn-out">Mark Out</button>
+                        </div>
+                    </div>
+
+                    <div class="teams-status">
+                        <h3>Teams Status</h3>
+                        <div id="teamsStatusList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Teams Budget -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <h2>Teams Budget</h2>
+                </div>
+                <div id="teamsBudget" class="teams-budget"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Team Modal -->
+    <div id="myTeamModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Team</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="myTeamBudget" class="team-budget-info"></div>
+                <div id="myTeamPlayers" class="my-team-players"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
