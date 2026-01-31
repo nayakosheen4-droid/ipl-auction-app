@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Constants
 const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
-const ADMIN_PASSWORD = 'admin2024';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2024';
 const TEAMS = [
   { id: 1, name: 'Mumbai Indians', password: 'mi2024', budget: 100, color: '#004BA0', rtmUsed: false },
   { id: 2, name: 'Chennai Super Kings', password: 'csk2024', budget: 100, color: '#FDB913', rtmUsed: false },
