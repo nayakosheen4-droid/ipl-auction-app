@@ -147,6 +147,7 @@ async function getAvailablePlayers() {
 
 // Get sold players for a team
 async function getTeamPlayers(teamId) {
+  console.log(`📥 Fetching players for team ID: ${teamId}`);
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(DATA_PATH);
   
@@ -156,6 +157,7 @@ async function getTeamPlayers(teamId) {
   soldSheet.eachRow((row, rowNumber) => {
     if (rowNumber > 1) { // Skip header
       const rowTeamId = row.getCell(4).value;
+      console.log(`  Row ${rowNumber}: TeamID=${rowTeamId}, Player=${row.getCell(2).value}, Match=${rowTeamId === teamId}`);
       if (rowTeamId === teamId) {
         players.push({
           playerId: row.getCell(1).value,
@@ -167,6 +169,7 @@ async function getTeamPlayers(teamId) {
     }
   });
 
+  console.log(`✅ Found ${players.length} players for team ${teamId}`);
   return players;
 }
 

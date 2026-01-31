@@ -515,14 +515,18 @@ function updateTeamsBudget(teams) {
 async function showMyTeam(teamIdOverride = null) {
     try {
         const teamId = teamIdOverride || currentTeam.id;
+        console.log('📋 Fetching team players for team ID:', teamId);
         const response = await fetch(`${API_BASE}/api/team/${teamId}/players`);
         const data = await response.json();
+        console.log('✅ Received data:', data);
         
         // Find team info
         let teamInfo = currentTeam;
         if (teamIdOverride) {
             teamInfo = allTeams.find(t => t.id === teamIdOverride) || currentTeam;
         }
+        
+        console.log('Team info:', teamInfo);
         
         const budgetInfo = document.getElementById('myTeamBudget');
         budgetInfo.innerHTML = `
@@ -537,10 +541,13 @@ async function showMyTeam(teamIdOverride = null) {
         const playersDiv = document.getElementById('myTeamPlayers');
         
         if (data.players.length === 0) {
+            console.log('⚠️ No players found');
             playersDiv.innerHTML = '<div class="empty-team">No players yet. Start bidding!</div>';
         } else {
+            console.log(`✅ Displaying ${data.players.length} players`);
             playersDiv.innerHTML = '';
             data.players.forEach(player => {
+                console.log('  Adding player:', player.playerName);
                 const div = document.createElement('div');
                 div.className = 'my-player-card';
                 div.innerHTML = `
