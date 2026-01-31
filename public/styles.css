@@ -795,3 +795,330 @@ header {
     }
 }
 
+@media (max-width: 768px) {
+    /* Login Screen Mobile */
+    .login-container h1 {
+        font-size: 2rem;
+    }
+
+    #loginForm {
+        padding: 30px 20px;
+    }
+
+    .info-box {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    /* Header Mobile */
+    header {
+        padding: 15px 10px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header-left h1 {
+        font-size: 1.5rem;
+    }
+
+    .team-info {
+        font-size: 0.9rem;
+    }
+
+    .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    .admin-team-selector {
+        width: 100%;
+        min-width: unset;
+        margin-bottom: 10px;
+    }
+
+    /* Main Content - Stack Vertically */
+    .main-content {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px;
+        height: auto;
+    }
+
+    /* Left Panel */
+    .left-panel {
+        order: 1;
+        max-height: 400px;
+    }
+
+    /* Center Panel */
+    .center-panel {
+        order: 2;
+        min-height: 500px;
+    }
+
+    /* Right Panel */
+    .right-panel {
+        order: 3;
+        max-height: 300px;
+    }
+
+    /* Panel Headers */
+    .panel-header {
+        padding: 15px;
+    }
+
+    .panel-header h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Toggle Buttons */
+    .toggle-btn {
+        font-size: 0.85rem;
+        padding: 10px 8px;
+    }
+
+    /* Filter Group */
+    .filter-group select,
+    .filter-group input {
+        font-size: 0.85rem;
+    }
+
+    /* Player Items */
+    .player-item {
+        padding: 12px;
+    }
+
+    .player-item h3 {
+        font-size: 0.95rem;
+    }
+
+    .player-item .position,
+    .player-item .base-price {
+        font-size: 0.85rem;
+    }
+
+    /* Team Cards */
+    .team-card {
+        padding: 12px;
+    }
+
+    .team-card h3 {
+        font-size: 0.95rem;
+    }
+
+    /* Budget Items */
+    .budget-item {
+        padding: 12px;
+    }
+
+    .budget-item h3 {
+        font-size: 0.95rem;
+    }
+
+    .budget-amount {
+        font-size: 1.1rem;
+    }
+
+    /* Active Auction - Mobile */
+    .active-auction {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .player-card {
+        padding: 20px;
+    }
+
+    .player-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .position-badge {
+        display: block;
+        margin: 10px auto;
+        width: fit-content;
+    }
+
+    .franchise-badge {
+        display: block;
+        margin: 5px auto 0;
+        width: fit-content;
+    }
+
+    .bid-amount {
+        font-size: 2rem;
+    }
+
+    .bid-controls {
+        padding: 15px;
+    }
+
+    .bid-controls h3 {
+        font-size: 1.1rem;
+    }
+
+    .bid-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .bid-btn {
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    /* RTM Phase Mobile */
+    .rtm-card {
+        padding: 20px;
+    }
+
+    .rtm-card h2 {
+        font-size: 1.4rem;
+    }
+
+    .rtm-card p {
+        font-size: 1rem;
+    }
+
+    .rtm-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-rtm,
+    .btn-decline {
+        width: 100%;
+        padding: 12px 20px;
+    }
+
+    /* Admin Controls Mobile */
+    .admin-controls {
+        padding: 15px;
+    }
+
+    .admin-controls h3 {
+        font-size: 1rem;
+    }
+
+    .admin-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .admin-select {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .admin-price-input {
+        width: 100%;
+    }
+
+    .btn-admin {
+        width: 100%;
+    }
+
+    /* Teams Status Mobile */
+    .teams-status {
+        padding: 15px;
+    }
+
+    .teams-status h3 {
+        font-size: 1rem;
+    }
+
+    .team-status-item {
+        font-size: 0.85rem;
+        padding: 8px;
+    }
+
+    /* Modal Mobile */
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .modal-header {
+        padding: 15px;
+    }
+
+    .modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .team-budget-info {
+        padding: 15px;
+    }
+
+    .team-budget-info .budget {
+        font-size: 1.5rem;
+    }
+
+    .my-player-card {
+        padding: 12px;
+    }
+
+    .my-player-card h4 {
+        font-size: 0.95rem;
+    }
+
+    .my-player-card .details {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    /* Toast Mobile */
+    .toast {
+        bottom: 15px;
+        right: 15px;
+        left: 15px;
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 480px) {
+    .login-container h1 {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 0.95rem;
+    }
+
+    #loginForm {
+        padding: 25px 15px;
+    }
+
+    .header-left h1 {
+        font-size: 1.3rem;
+    }
+
+    .player-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .bid-amount {
+        font-size: 1.8rem;
+    }
+
+    .bid-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .bid-btn {
+        padding: 15px;
+    }
+}
+
