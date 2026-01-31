@@ -61,7 +61,7 @@ async function loadTeams() {
 function setupEventListeners() {
     loginForm.addEventListener('submit', handleLogin);
     logoutBtn.addEventListener('click', handleLogout);
-    viewTeamBtn.addEventListener('click', showMyTeam);
+    viewTeamBtn.addEventListener('click', () => showMyTeam());
     positionFilter.addEventListener('change', filterPlayers);
     searchPlayer.addEventListener('input', filterPlayers);
     
