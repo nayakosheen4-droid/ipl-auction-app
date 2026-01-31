@@ -107,6 +107,8 @@ async function handleLogin(e) {
         if (data.success) {
             currentTeam = data.team;
             isAdmin = data.isAdmin || false;
+            console.log('✅ Login successful! currentTeam:', currentTeam);
+            console.log('  Team ID:', currentTeam.id, 'Type:', typeof currentTeam.id);
             showAuctionScreen();
             connectWebSocket();
             await loadAvailablePlayers();
@@ -514,9 +516,13 @@ function updateTeamsBudget(teams) {
 // Show my team
 async function showMyTeam(teamIdOverride = null) {
     try {
+        console.log('🔍 showMyTeam called with override:', teamIdOverride);
+        console.log('  currentTeam:', currentTeam);
         const teamId = teamIdOverride || currentTeam.id;
-        console.log('📋 Fetching team players for team ID:', teamId);
-        const response = await fetch(`${API_BASE}/api/team/${teamId}/players`);
+        console.log('📋 Fetching team players for team ID:', teamId, 'Type:', typeof teamId);
+        const url = `${API_BASE}/api/team/${teamId}/players`;
+        console.log('  URL:', url);
+        const response = await fetch(url);
         const data = await response.json();
         console.log('✅ Received data:', data);
         
