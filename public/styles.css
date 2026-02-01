@@ -383,6 +383,49 @@ header {
     opacity: 0.9;
 }
 
+/* Auction Timer */
+.auction-timer {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 25px;
+    border-radius: 12px;
+    margin: 20px 0;
+    text-align: center;
+    border: 3px solid rgba(255, 255, 255, 0.4);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.timer-label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    opacity: 0.95;
+}
+
+.timer-display {
+    font-size: 4rem;
+    font-weight: bold;
+    line-height: 1;
+    margin: 10px 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.timer-subtitle {
+    font-size: 0.95rem;
+    opacity: 0.9;
+    margin-top: 10px;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+    50% {
+        transform: scale(1.02);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+}
+
 .bid-controls {
     background: rgba(255,255,255,0.1);
     padding: 25px;
@@ -1141,6 +1184,24 @@ header {
 
     .bid-amount {
         font-size: 2rem;
+    }
+
+    /* Timer Mobile */
+    .auction-timer {
+        padding: 20px;
+        margin: 15px 0;
+    }
+
+    .timer-label {
+        font-size: 1rem;
+    }
+
+    .timer-display {
+        font-size: 3rem;
+    }
+
+    .timer-subtitle {
+        font-size: 0.85rem;
     }
 
     .bid-controls {

@@ -57,8 +57,13 @@ let auctionState = {
   rtmEligibleTeam: null,
   pendingWinner: null,
   pendingPrice: null,
+  timerActive: false,
+  timeRemaining: 0,
   teams: JSON.parse(JSON.stringify(TEAMS)) // Deep copy
 };
+
+// Timer management
+let auctionTimer = null;
 
 // WebSocket clients
 let clients = new Map(); // teamId -> [WebSocket connections]
@@ -306,10 +311,116 @@ function broadcast(data) {
   });
 }
 
+// Timer functions
+function startAuctionTimer() {
+  // Clear any existing timer
+  stopAuctionTimer();
+  
+  auctionState.timerActive = true;
+  auctionState.timeRemaining = 30;
+  
+  console.log('⏱️  Starting 30-second countdown timer');
+  
+  // Broadcast initial timer state
+  broadcast({
+    type: 'timer_start',
+    state: auctionState
+  });
+  
+  // Start countdown
+  auctionTimer = setInterval(async () => {
+    auctionState.timeRemaining--;
+    
+    // Broadcast timer update
+    broadcast({
+      type: 'timer_tick',
+      state: auctionState
+    });
+    
+    console.log(`⏱️  Timer: ${auctionState.timeRemaining} seconds remaining`);
+    
+    // When timer reaches 0, complete the auction
+    if (auctionState.timeRemaining <= 0) {
+      stopAuctionTimer();
+      
+      console.log('⏱️  Timer expired! Processing auction completion...');
+      
+      // Complete auction with current highest bidder
+      if (auctionState.currentBidder) {
+        const winningTeam = auctionState.teams.find(t => t.id === auctionState.currentBidder);
+        const franchiseTeam = auctionState.teams.find(t => t.id === auctionState.currentPlayer.franchiseId);
+        
+        // Check if RTM is applicable
+        // RTM is applicable if:
+        // 1. Player has a franchise assignment
+        // 2. Franchise team hasn't used RTM yet
+        // 3. Franchise team is not the winning bidder
+        // 4. Franchise team has enough budget
+        if (franchiseTeam && 
+            !franchiseTeam.rtmUsed && 
+            franchiseTeam.id !== winningTeam.id &&
+            franchiseTeam.budget >= auctionState.currentBid) {
+          
+          console.log(`🎯 RTM opportunity available for ${franchiseTeam.name}`);
+          
+          // Enter RTM phase
+          auctionState.rtmPhase = true;
+          auctionState.rtmEligibleTeam = franchiseTeam.id;
+          auctionState.pendingWinner = winningTeam;
+          auctionState.pendingPrice = auctionState.currentBid;
+          auctionState.auctionActive = false;
+          
+          broadcast({ 
+            type: 'rtm_opportunity',
+            state: auctionState,
+            franchiseTeam: franchiseTeam.name,
+            winningTeam: winningTeam.name,
+            player: auctionState.currentPlayer.name,
+            price: auctionState.currentBid
+          });
+        } else {
+          // No RTM, complete auction normally
+          if (winningTeam) {
+            await completeAuction(winningTeam, auctionState.currentBid, false);
+          }
+        }
+      }
+    }
+  }, 1000); // Tick every second
+}
+
+function stopAuctionTimer() {
+  if (auctionTimer) {
+    clearInterval(auctionTimer);
+    auctionTimer = null;
+  }
+  auctionState.timerActive = false;
+  auctionState.timeRemaining = 0;
+}
+
+function checkAndStartTimer() {
+  // Only start timer if auction is active and not in RTM phase
+  if (!auctionState.auctionActive || auctionState.rtmPhase || auctionState.timerActive) {
+    return;
+  }
+  
+  // Count teams that are still in (not out)
+  const activeTeams = auctionState.teams.filter(t => !auctionState.teamsOut.includes(t.id));
+  
+  // If only one team remains and there's a bid, start the timer
+  if (activeTeams.length === 1 && auctionState.currentBidder) {
+    console.log(`⏱️  Only ${activeTeams[0].name} remains! Starting timer...`);
+    startAuctionTimer();
+  }
+}
+
 // Complete auction helper
 async function completeAuction(winningTeam, finalPrice, isRTM) {
   try {
     console.log(`🔄 Completing auction: ${auctionState.currentPlayer.name} to ${winningTeam.name} for ₹${finalPrice} Cr`);
+    
+    // Stop any active timer
+    stopAuctionTimer();
     
     winningTeam.budget -= finalPrice;
     if (isRTM) {
@@ -343,6 +454,8 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       rtmEligibleTeam: null,
       pendingWinner: null,
       pendingPrice: null,
+      timerActive: false,
+      timeRemaining: 0,
       teams: auctionState.teams
     };
     
@@ -400,6 +513,7 @@ wss.on('connection', (ws) => {
       } else if (data.type === 'admin_reset_auction') {
         // Admin reset current auction
         if (auctionState.auctionActive) {
+          stopAuctionTimer();
           auctionState.teamsOut = [];
           auctionState.currentBidder = null;
           auctionState.currentBid = 0.5;
@@ -420,15 +534,8 @@ wss.on('connection', (ws) => {
               state: auctionState
             });
             
-            // Check if only one team remains
-            const activeTeams = auctionState.teams.filter(t => !auctionState.teamsOut.includes(t.id));
-            if (activeTeams.length === 1 && auctionState.currentBidder) {
-              // Auto-complete auction with single remaining bidder
-              const winningTeam = auctionState.teams.find(t => t.id === auctionState.currentBidder);
-              if (winningTeam) {
-                await completeAuction(winningTeam, auctionState.currentBid, false);
-              }
-            }
+            // Check if only one team remains and start timer
+            checkAndStartTimer();
           }
         }
       }
@@ -645,46 +752,10 @@ app.post('/api/auction/out', async (req, res) => {
       auctionState.teamsOut.push(teamId);
     }
 
-    // Check if all but one team is out
-    const activeTeams = auctionState.teams.length - auctionState.teamsOut.length;
+    broadcast({ type: 'team_out', state: auctionState });
     
-    if (activeTeams <= 1) {
-      // Check if RTM is applicable
-      const winningTeam = auctionState.teams.find(t => t.id === auctionState.currentBidder);
-      const franchiseTeam = auctionState.teams.find(t => t.id === auctionState.currentPlayer.franchiseId);
-      
-      // RTM is applicable if:
-      // 1. Player has a franchise assignment
-      // 2. Franchise team hasn't used RTM yet
-      // 3. Franchise team is not the winning bidder
-      // 4. Franchise team has enough budget
-      if (franchiseTeam && 
-          !franchiseTeam.rtmUsed && 
-          franchiseTeam.id !== winningTeam.id &&
-          franchiseTeam.budget >= auctionState.currentBid) {
-        
-        // Enter RTM phase
-        auctionState.rtmPhase = true;
-        auctionState.rtmEligibleTeam = franchiseTeam.id;
-        auctionState.pendingWinner = winningTeam;
-        auctionState.pendingPrice = auctionState.currentBid;
-        auctionState.auctionActive = false;
-        
-        broadcast({ 
-          type: 'rtm_opportunity',
-          state: auctionState,
-          franchiseTeam: franchiseTeam.name,
-          winningTeam: winningTeam.name,
-          player: auctionState.currentPlayer.name,
-          price: auctionState.currentBid
-        });
-      } else {
-        // No RTM, complete auction normally
-        await completeAuction(winningTeam, auctionState.currentBid, false);
-      }
-    } else {
-      broadcast({ type: 'team_out', state: auctionState });
-    }
+    // Check if only one team remains and start timer
+    checkAndStartTimer();
 
     res.json({ success: true });
   } catch (err) {

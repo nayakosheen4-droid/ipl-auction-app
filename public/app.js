@@ -292,6 +292,13 @@ function handleWebSocketMessage(data) {
             // Load previous chat messages
             data.messages.forEach(msg => displayChatMessage(msg));
             break;
+        case 'timer_start':
+            updateAuctionState(data.state);
+            showToast('⏱️ Only one team remaining! Countdown started!', 'info');
+            break;
+        case 'timer_tick':
+            updateTimerDisplay(data.state);
+            break;
     }
 }
 
@@ -301,6 +308,16 @@ function updateAuctionState(state) {
         noAuction.classList.add('hidden');
         activeAuction.classList.remove('hidden');
         document.getElementById('rtmPhase').classList.add('hidden');
+        
+        // Show/hide timer
+        const timerElement = document.getElementById('auctionTimer');
+        const timerDisplay = document.getElementById('timerDisplay');
+        if (state.timerActive) {
+            timerElement.classList.remove('hidden');
+            timerDisplay.textContent = state.timeRemaining;
+        } else {
+            timerElement.classList.add('hidden');
+        }
         
         document.getElementById('currentPlayerName').textContent = state.currentPlayer.name;
         document.getElementById('currentPlayerPosition').textContent = state.currentPlayer.position;
@@ -960,6 +977,24 @@ async function displayAllTeams() {
         });
     } catch (err) {
         teamsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc3545;">Failed to load teams</div>';
+    }
+}
+
+// Timer Functions
+function updateTimerDisplay(state) {
+    const timerDisplay = document.getElementById('timerDisplay');
+    if (timerDisplay && state.timerActive) {
+        timerDisplay.textContent = state.timeRemaining;
+        
+        // Add visual warning when time is running low
+        const timerElement = document.getElementById('auctionTimer');
+        if (state.timeRemaining <= 10) {
+            timerElement.style.borderColor = 'rgba(255, 59, 48, 0.8)';
+            timerElement.style.background = 'rgba(255, 59, 48, 0.15)';
+        } else {
+            timerElement.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+            timerElement.style.background = 'rgba(255, 255, 255, 0.2)';
+        }
     }
 }
 
