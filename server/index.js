@@ -397,6 +397,40 @@ wss.on('connection', (ws) => {
         
         // Broadcast chat message to all connected clients
         broadcast(chatMessage);
+      } else if (data.type === 'admin_reset_auction') {
+        // Admin reset current auction
+        if (auctionState.auctionActive) {
+          auctionState.teamsOut = [];
+          auctionState.currentBidder = null;
+          auctionState.currentBid = 0.5;
+          
+          broadcast({
+            type: 'state',
+            state: auctionState
+          });
+        }
+      } else if (data.type === 'admin_mark_team_out') {
+        // Admin mark team out
+        if (auctionState.auctionActive && data.teamId) {
+          if (!auctionState.teamsOut.includes(data.teamId)) {
+            auctionState.teamsOut.push(data.teamId);
+            
+            broadcast({
+              type: 'team_out',
+              state: auctionState
+            });
+            
+            // Check if only one team remains
+            const activeTeams = auctionState.teams.filter(t => !auctionState.teamsOut.includes(t.id));
+            if (activeTeams.length === 1 && auctionState.currentBidder) {
+              // Auto-complete auction with single remaining bidder
+              const winningTeam = auctionState.teams.find(t => t.id === auctionState.currentBidder);
+              if (winningTeam) {
+                await completeAuction(winningTeam, auctionState.currentBid, false);
+              }
+            }
+          }
+        }
       }
     } catch (err) {
       console.error('WebSocket message error:', err);

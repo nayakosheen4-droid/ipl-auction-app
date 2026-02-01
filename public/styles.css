@@ -510,6 +510,57 @@ header {
     margin-bottom: 15px;
 }
 
+.admin-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0e6c0;
+}
+
+.admin-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.admin-label {
+    display: block;
+    font-weight: bold;
+    color: #856404;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.admin-team-out-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-team-out-btn {
+    padding: 8px 12px;
+    border: 2px solid #dc3545;
+    background: white;
+    color: #dc3545;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.admin-team-out-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.admin-team-out-btn.marked-out {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .admin-buttons {
     display: flex;
     gap: 10px;
@@ -543,6 +594,18 @@ header {
 
 .btn-admin:hover {
     background: #e0a800;
+}
+
+.btn-reset-auction {
+    width: 100%;
+    background: #dc3545;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.btn-reset-auction:hover {
+    background: #c82333;
 }
 
 .admin-team-selector {
@@ -1131,6 +1194,25 @@ header {
         font-size: 1rem;
     }
 
+    .admin-section {
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+    }
+
+    .admin-label {
+        font-size: 0.85rem;
+        margin-bottom: 8px;
+    }
+
+    .admin-team-out-buttons {
+        gap: 6px;
+    }
+
+    .admin-team-out-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
     .admin-buttons {
         flex-direction: column;
         gap: 8px;
@@ -1145,7 +1227,8 @@ header {
         width: 100%;
     }
 
-    .btn-admin {
+    .btn-admin,
+    .btn-reset-auction {
         width: 100%;
     }
 

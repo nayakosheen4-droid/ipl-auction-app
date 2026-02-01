@@ -354,6 +354,7 @@ function updateAuctionState(state) {
         const adminControls = document.getElementById('adminControls');
         if (isAdmin) {
             adminControls.classList.remove('hidden');
+            renderAdminTeamOutButtons(state);
         } else {
             adminControls.classList.add('hidden');
         }
@@ -843,7 +844,58 @@ async function adminCompleteAuction() {
     }
 }
 
+// Admin reset auction
+function adminResetAuction() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        showToast('Not connected to server', 'error');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to reset the current auction? This will clear all bids and teams out status.')) {
+        ws.send(JSON.stringify({
+            type: 'admin_reset_auction'
+        }));
+        showToast('Auction reset!', 'success');
+    }
+}
+
+// Admin mark team out
+function adminMarkTeamOut(teamId) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        showToast('Not connected to server', 'error');
+        return;
+    }
+    
+    ws.send(JSON.stringify({
+        type: 'admin_mark_team_out',
+        teamId: teamId
+    }));
+}
+
+// Render admin team out buttons
+function renderAdminTeamOutButtons(state) {
+    const container = document.getElementById('adminTeamOutButtons');
+    container.innerHTML = '';
+    
+    state.teams.forEach(team => {
+        const isOut = state.teamsOut.includes(team.id);
+        const btn = document.createElement('button');
+        btn.className = `admin-team-out-btn ${isOut ? 'marked-out' : ''}`;
+        btn.textContent = team.name;
+        btn.disabled = isOut;
+        btn.onclick = () => {
+            if (!isOut) {
+                adminMarkTeamOut(team.id);
+            }
+        };
+        container.appendChild(btn);
+    });
+}
+
 document.getElementById('adminCompleteBtn').addEventListener('click', adminCompleteAuction);
+
+// Admin reset auction
+document.getElementById('adminResetBtn').addEventListener('click', adminResetAuction);
 
 // Admin team viewer
 document.getElementById('adminTeamViewer').addEventListener('change', (e) => {
