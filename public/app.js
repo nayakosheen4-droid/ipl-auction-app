@@ -26,11 +26,17 @@ const viewTeamBtn = document.getElementById('viewTeamBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const myTeamModal = document.getElementById('myTeamModal');
 const toast = document.getElementById('toast');
+const chatMessages = document.getElementById('chatMessages');
+const chatInput = document.getElementById('chatInput');
+const sendChatBtn = document.getElementById('sendChatBtn');
 
 // Initialize
 async function init() {
     await loadTeams();
     setupEventListeners();
+    
+    // Initialize chat with empty state
+    chatMessages.innerHTML = '<div class="chat-empty">💬 Chat will appear here<br>Start the conversation!</div>';
     
     // Check for saved session
     const savedTeam = localStorage.getItem('currentTeam');
@@ -85,6 +91,14 @@ function setupEventListeners() {
     // Left panel toggle
     document.getElementById('togglePlayers').addEventListener('click', () => switchLeftPanel('players'));
     document.getElementById('toggleTeams').addEventListener('click', () => switchLeftPanel('teams'));
+    
+    // Chat functionality
+    sendChatBtn.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
     
     document.querySelector('.close-modal').addEventListener('click', () => {
         myTeamModal.classList.add('hidden');
@@ -270,6 +284,9 @@ function handleWebSocketMessage(data) {
         case 'reset':
             updateAuctionState(data.state);
             loadAvailablePlayers();
+            break;
+        case 'chat':
+            displayChatMessage(data);
             break;
     }
 }
@@ -888,6 +905,56 @@ async function displayAllTeams() {
     } catch (err) {
         teamsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc3545;">Failed to load teams</div>';
     }
+}
+
+// Chat Functions
+function sendChatMessage() {
+    const message = chatInput.value.trim();
+    if (!message || !ws || ws.readyState !== WebSocket.OPEN) {
+        return;
+    }
+    
+    ws.send(JSON.stringify({
+        type: 'chat',
+        message: message,
+        teamId: currentTeam.id,
+        teamName: isAdmin ? 'Admin' : currentTeam.name,
+        timestamp: new Date().toISOString()
+    }));
+    
+    chatInput.value = '';
+}
+
+function displayChatMessage(data) {
+    const messageDiv = document.createElement('div');
+    const isOwnMessage = data.teamId === currentTeam.id;
+    messageDiv.className = `chat-message ${isOwnMessage ? 'own-message' : 'other-message'}`;
+    
+    const time = new Date(data.timestamp).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    
+    messageDiv.innerHTML = `
+        <div class="chat-message-header">${data.teamName}</div>
+        <div class="chat-message-text">${escapeHtml(data.message)}</div>
+        <div class="chat-message-time">${time}</div>
+    `;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Remove empty state if it exists
+    const emptyState = chatMessages.querySelector('.chat-empty');
+    if (emptyState) {
+        emptyState.remove();
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // Initialize app

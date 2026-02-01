@@ -350,6 +350,17 @@ wss.on('connection', (ws) => {
           type: 'state',
           state: auctionState
         }));
+      } else if (data.type === 'chat') {
+        // Broadcast chat message to all connected clients
+        const chatMessage = {
+          type: 'chat',
+          message: data.message,
+          teamId: data.teamId,
+          teamName: data.teamName,
+          timestamp: data.timestamp
+        };
+        
+        broadcast(chatMessage);
       }
     } catch (err) {
       console.error('WebSocket message error:', err);
