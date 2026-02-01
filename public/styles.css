@@ -683,6 +683,18 @@ header {
     background: #c82333;
 }
 
+.btn-download-excel {
+    width: 100%;
+    background: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+}
+
+.btn-download-excel:hover {
+    background: #218838;
+}
+
 .admin-team-selector {
     padding: 10px 15px;
     border: 2px solid #667eea;
@@ -1339,7 +1351,8 @@ header {
     }
 
     .btn-admin,
-    .btn-reset-auction {
+    .btn-reset-auction,
+    .btn-download-excel {
         width: 100%;
     }
 

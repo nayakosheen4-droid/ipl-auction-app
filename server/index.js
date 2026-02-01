@@ -984,6 +984,38 @@ app.post('/api/admin/complete-auction', async (req, res) => {
   }
 });
 
+// Admin: Download Excel file
+app.get('/api/admin/download-excel', (req, res) => {
+  try {
+    console.log('📥 Admin downloading Excel file');
+    
+    if (!fs.existsSync(DATA_PATH)) {
+      console.log('❌ Excel file not found');
+      return res.status(404).json({ error: 'Excel file not found' });
+    }
+    
+    // Set headers for file download
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=auction_data.xlsx');
+    
+    // Stream the file to response
+    const fileStream = fs.createReadStream(DATA_PATH);
+    fileStream.pipe(res);
+    
+    fileStream.on('end', () => {
+      console.log('✅ Excel file downloaded successfully');
+    });
+    
+    fileStream.on('error', (err) => {
+      console.error('❌ Error streaming Excel file:', err);
+      res.status(500).json({ error: 'Failed to download Excel file' });
+    });
+  } catch (err) {
+    console.error('❌ Error downloading Excel file:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Initialize and start server
 initializeExcel().then(async () => {
   await loadTeamStateFromExcel();

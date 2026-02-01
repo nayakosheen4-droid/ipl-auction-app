@@ -882,6 +882,24 @@ function adminResetAuction() {
     }
 }
 
+// Admin download Excel file
+function adminDownloadExcel() {
+    if (!isAdmin) {
+        showToast('Admin access required', 'error');
+        return;
+    }
+    
+    // Create a link and trigger download
+    const link = document.createElement('a');
+    link.href = `${API_BASE}/api/admin/download-excel`;
+    link.download = 'auction_data.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showToast('Downloading Excel file...', 'success');
+}
+
 // Admin mark team out
 function adminMarkTeamOut(teamId) {
     if (!ws || ws.readyState !== WebSocket.OPEN) {
@@ -919,6 +937,9 @@ document.getElementById('adminCompleteBtn').addEventListener('click', adminCompl
 
 // Admin reset auction
 document.getElementById('adminResetBtn').addEventListener('click', adminResetAuction);
+
+// Admin download Excel
+document.getElementById('adminDownloadBtn').addEventListener('click', adminDownloadExcel);
 
 // Admin team viewer
 document.getElementById('adminTeamViewer').addEventListener('change', (e) => {
