@@ -216,10 +216,19 @@ async function getTeamPlayers(teamId) {
 // Save sold player
 async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = false) {
   try {
+    console.log(`💾 Saving player to Excel: ${player.name} → ${teamName} for ₹${finalPrice} Cr`);
+    console.log(`📂 Excel file path: ${DATA_PATH}`);
+    console.log(`📁 Data directory exists: ${fs.existsSync(path.join(__dirname, '../data'))}`);
+    console.log(`📄 Excel file exists: ${fs.existsSync(DATA_PATH)}`);
+    
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     
     const soldSheet = workbook.getWorksheet('Sold Players');
+    
+    if (!soldSheet) {
+      throw new Error('"Sold Players" sheet not found in Excel file');
+    }
     
     // Add the row with explicit column values
     const newRow = soldSheet.addRow([
@@ -232,11 +241,15 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
       rtmUsed ? 'Yes' : 'No'
     ]);
     
+    console.log(`  Added row: ${JSON.stringify(newRow.values)}`);
+    
     // Commit the row
     newRow.commit();
     
     // Write to file
+    console.log(`  Writing to file: ${DATA_PATH}`);
     await workbook.xlsx.writeFile(DATA_PATH);
+    console.log(`  File written successfully`);
     
     // Verify the save worked
     const verifyWorkbook = new ExcelJS.Workbook();
@@ -248,8 +261,10 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
     });
     
     console.log(`✅ Player ${player.name} saved to Excel for team ${teamName} at ₹${finalPrice} Cr (Total sold: ${rowCount})`);
+    console.log(`⚠️  NOTE: Without a Railway volume, this data will be lost on redeploy!`);
   } catch (err) {
     console.error(`❌ Error saving player ${player.name}:`, err.message);
+    console.error(`   Stack:`, err.stack);
     throw err;
   }
 }
@@ -258,14 +273,31 @@ async function saveSoldPlayer(player, teamId, teamName, finalPrice, rtmUsed = fa
 async function loadTeamStateFromExcel() {
   try {
     console.log('📖 Loading team state from Excel...');
+    console.log(`📂 Excel file path: ${DATA_PATH}`);
+    console.log(`📁 Data directory exists: ${fs.existsSync(path.join(__dirname, '../data'))}`);
+    console.log(`📄 Excel file exists: ${fs.existsSync(DATA_PATH)}`);
+    
+    if (!fs.existsSync(DATA_PATH)) {
+      console.log('⚠️  Excel file not found - this is expected on first run or after redeploy without volume');
+      console.log('⚠️  To persist data across redeploys, set up a Railway volume at /app/data');
+      console.log('⚠️  See RAILWAY_VOLUME_SETUP.md for instructions');
+      return;
+    }
+    
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     
     const soldSheet = workbook.getWorksheet('Sold Players');
     
+    if (!soldSheet) {
+      console.log('⚠️  "Sold Players" sheet not found in Excel file');
+      return;
+    }
+    
     // Calculate spending and RTM usage for each team
     const teamSpending = {};
     const teamRTMUsed = {};
+    let playerCount = 0;
     
     soldSheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) { // Skip header
@@ -273,7 +305,8 @@ async function loadTeamStateFromExcel() {
         const finalPrice = row.getCell(6).value;
         const rtmUsed = row.getCell(7).value === 'Yes';
         
-        console.log(`  Processing: Team ${teamId}, Price ${finalPrice}, RTM ${rtmUsed}`);
+        playerCount++;
+        console.log(`  Row ${rowNumber}: Team ${teamId}, Price ${finalPrice}, RTM ${rtmUsed}`);
         
         if (!teamSpending[teamId]) {
           teamSpending[teamId] = 0;
@@ -286,6 +319,7 @@ async function loadTeamStateFromExcel() {
       }
     });
     
+    console.log(`📊 Total players loaded from Excel: ${playerCount}`);
     console.log('💰 Team spending:', teamSpending);
     
     // Update team budgets and RTM status
@@ -293,12 +327,13 @@ async function loadTeamStateFromExcel() {
       const spent = teamSpending[team.id] || 0;
       team.budget = 100 - spent; // Initial budget is 100
       team.rtmUsed = teamRTMUsed[team.id] || false;
-      console.log(`  Team ${team.id} (${team.name}): Spent ₹${spent} Cr, Budget ₹${team.budget} Cr`);
+      console.log(`  ${team.name}: Spent ₹${spent} Cr, Remaining Budget ₹${team.budget} Cr, RTM Used: ${team.rtmUsed}`);
     });
     
-    console.log('✅ Team state loaded from Excel');
+    console.log('✅ Team state successfully loaded from Excel');
   } catch (err) {
-    console.error('Error loading team state:', err);
+    console.error('❌ Error loading team state from Excel:', err.message);
+    console.error('   Stack:', err.stack);
   }
 }
 
@@ -359,10 +394,14 @@ function startAuctionTimer() {
         // 2. Franchise team hasn't used RTM yet
         // 3. Franchise team is not the winning bidder
         // 4. Franchise team has enough budget
+        // 5. Franchise team is not marked out
+        const franchiseIsOut = auctionState.teamsOut.includes(franchiseTeam?.id);
+        
         if (franchiseTeam && 
             !franchiseTeam.rtmUsed && 
             franchiseTeam.id !== winningTeam.id &&
-            franchiseTeam.budget >= auctionState.currentBid) {
+            franchiseTeam.budget >= auctionState.currentBid &&
+            !franchiseIsOut) {
           
           console.log(`🎯 RTM opportunity available for ${franchiseTeam.name}`);
           
