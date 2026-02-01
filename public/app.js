@@ -288,6 +288,10 @@ function handleWebSocketMessage(data) {
         case 'chat':
             displayChatMessage(data);
             break;
+        case 'chat_history':
+            // Load previous chat messages
+            data.messages.forEach(msg => displayChatMessage(msg));
+            break;
     }
 }
 

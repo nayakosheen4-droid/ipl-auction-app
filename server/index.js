@@ -16,10 +16,18 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public'), {
   setHeaders: (res, filePath) => {
+    // Set proper content types
     if (filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript');
     } else if (filePath.endsWith('.css')) {
       res.setHeader('Content-Type', 'text/css');
+    }
+    
+    // Disable caching for dynamic files to ensure users get latest version
+    if (filePath.endsWith('.js') || filePath.endsWith('.css') || filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     }
   }
 }));
@@ -54,6 +62,22 @@ let auctionState = {
 
 // WebSocket clients
 let clients = new Map(); // teamId -> [WebSocket connections]
+
+// Chat history (store last 30 minutes)
+let chatHistory = [];
+const CHAT_RETENTION_TIME = 30 * 60 * 1000; // 30 minutes in milliseconds
+
+// Clean old chat messages
+function cleanOldChatMessages() {
+  const now = Date.now();
+  chatHistory = chatHistory.filter(msg => {
+    const msgTime = new Date(msg.timestamp).getTime();
+    return (now - msgTime) < CHAT_RETENTION_TIME;
+  });
+}
+
+// Clean chat messages every 5 minutes
+setInterval(cleanOldChatMessages, 5 * 60 * 1000);
 
 // Initialize Excel file if doesn't exist
 async function initializeExcel() {
@@ -350,8 +374,17 @@ wss.on('connection', (ws) => {
           type: 'state',
           state: auctionState
         }));
+        
+        // Send chat history
+        cleanOldChatMessages(); // Clean before sending
+        if (chatHistory.length > 0) {
+          ws.send(JSON.stringify({
+            type: 'chat_history',
+            messages: chatHistory
+          }));
+        }
       } else if (data.type === 'chat') {
-        // Broadcast chat message to all connected clients
+        // Store chat message in history
         const chatMessage = {
           type: 'chat',
           message: data.message,
@@ -360,6 +393,9 @@ wss.on('connection', (ws) => {
           timestamp: data.timestamp
         };
         
+        chatHistory.push(chatMessage);
+        
+        // Broadcast chat message to all connected clients
         broadcast(chatMessage);
       }
     } catch (err) {
