@@ -299,6 +299,12 @@ function handleWebSocketMessage(data) {
         case 'timer_tick':
             updateTimerDisplay(data.state);
             break;
+        case 'rtm_timer_start':
+            updateRTMTimerDisplay(data.state);
+            break;
+        case 'rtm_timer_tick':
+            updateRTMTimerDisplay(data.state);
+            break;
     }
 }
 
@@ -994,6 +1000,23 @@ function updateTimerDisplay(state) {
         } else {
             timerElement.style.borderColor = 'rgba(255, 255, 255, 0.4)';
             timerElement.style.background = 'rgba(255, 255, 255, 0.2)';
+        }
+    }
+}
+
+function updateRTMTimerDisplay(state) {
+    const rtmTimerDisplay = document.getElementById('rtmTimerDisplay');
+    if (rtmTimerDisplay && state.rtmTimerActive) {
+        rtmTimerDisplay.textContent = state.rtmTimeRemaining;
+        
+        // Add visual warning when time is running low
+        const rtmTimer = document.getElementById('rtmTimer');
+        if (state.rtmTimeRemaining <= 10) {
+            rtmTimer.style.borderColor = 'rgba(255, 59, 48, 0.8)';
+            rtmTimer.style.background = 'rgba(255, 59, 48, 0.2)';
+        } else {
+            rtmTimer.style.borderColor = 'rgba(255, 255, 255, 0.4)';
+            rtmTimer.style.background = 'rgba(255, 255, 255, 0.2)';
         }
     }
 }

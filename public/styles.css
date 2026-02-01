@@ -509,6 +509,38 @@ header {
     opacity: 0.95;
 }
 
+/* RTM Timer */
+.rtm-timer {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.rtm-timer-label {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    opacity: 0.95;
+}
+
+.rtm-timer-display {
+    font-size: 3rem;
+    font-weight: bold;
+    line-height: 1;
+    margin: 8px 0;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.rtm-timer-subtitle {
+    font-size: 0.85rem;
+    opacity: 0.85;
+    margin-top: 8px;
+}
+
 .rtm-buttons {
     display: flex;
     gap: 15px;
@@ -1233,6 +1265,24 @@ header {
 
     .rtm-card p {
         font-size: 1rem;
+    }
+
+    /* RTM Timer Mobile */
+    .rtm-timer {
+        padding: 15px;
+        margin: 15px 0;
+    }
+
+    .rtm-timer-label {
+        font-size: 0.9rem;
+    }
+
+    .rtm-timer-display {
+        font-size: 2.5rem;
+    }
+
+    .rtm-timer-subtitle {
+        font-size: 0.8rem;
     }
 
     .rtm-buttons {

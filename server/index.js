@@ -59,11 +59,14 @@ let auctionState = {
   pendingPrice: null,
   timerActive: false,
   timeRemaining: 0,
+  rtmTimerActive: false,
+  rtmTimeRemaining: 0,
   teams: JSON.parse(JSON.stringify(TEAMS)) // Deep copy
 };
 
 // Timer management
 let auctionTimer = null;
+let rtmTimer = null;
 
 // WebSocket clients
 let clients = new Map(); // teamId -> [WebSocket connections]
@@ -378,6 +381,9 @@ function startAuctionTimer() {
             player: auctionState.currentPlayer.name,
             price: auctionState.currentBid
           });
+          
+          // Start RTM timer
+          startRTMTimer();
         } else {
           // No RTM, complete auction normally
           if (winningTeam) {
@@ -414,13 +420,70 @@ function checkAndStartTimer() {
   }
 }
 
+// RTM Timer functions
+function startRTMTimer() {
+  // Clear any existing RTM timer
+  stopRTMTimer();
+  
+  auctionState.rtmTimerActive = true;
+  auctionState.rtmTimeRemaining = 30;
+  
+  console.log('⏱️  Starting 30-second RTM countdown timer');
+  
+  // Broadcast initial RTM timer state
+  broadcast({
+    type: 'rtm_timer_start',
+    state: auctionState
+  });
+  
+  // Start countdown
+  rtmTimer = setInterval(async () => {
+    auctionState.rtmTimeRemaining--;
+    
+    // Broadcast RTM timer update
+    broadcast({
+      type: 'rtm_timer_tick',
+      state: auctionState
+    });
+    
+    console.log(`⏱️  RTM Timer: ${auctionState.rtmTimeRemaining} seconds remaining`);
+    
+    // When timer reaches 0, auto-decline RTM
+    if (auctionState.rtmTimeRemaining <= 0) {
+      stopRTMTimer();
+      
+      console.log('⏱️  RTM Timer expired! Auto-declining...');
+      
+      // Auto-decline RTM
+      if (auctionState.pendingWinner) {
+        await completeAuction(auctionState.pendingWinner, auctionState.pendingPrice, false);
+        
+        broadcast({
+          type: 'rtm_declined',
+          message: 'RTM opportunity expired - player sold to highest bidder'
+        });
+      }
+    }
+  }, 1000); // Tick every second
+}
+
+function stopRTMTimer() {
+  if (rtmTimer) {
+    clearInterval(rtmTimer);
+    rtmTimer = null;
+  }
+  auctionState.rtmTimerActive = false;
+  auctionState.rtmTimeRemaining = 0;
+}
+
 // Complete auction helper
 async function completeAuction(winningTeam, finalPrice, isRTM) {
   try {
     console.log(`🔄 Completing auction: ${auctionState.currentPlayer.name} to ${winningTeam.name} for ₹${finalPrice} Cr`);
     
-    // Stop any active timer
+    // Stop any active timers
     stopAuctionTimer();
+    stopRTMTimer();
     
     winningTeam.budget -= finalPrice;
     if (isRTM) {
@@ -456,6 +519,8 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       pendingPrice: null,
       timerActive: false,
       timeRemaining: 0,
+      rtmTimerActive: false,
+      rtmTimeRemaining: 0,
       teams: auctionState.teams
     };
     
@@ -828,6 +893,9 @@ app.post('/api/auction/rtm', async (req, res) => {
     if (teamId !== auctionState.rtmEligibleTeam) {
       return res.status(403).json({ error: 'Not eligible for RTM' });
     }
+
+    // Stop RTM timer
+    stopRTMTimer();
 
     const franchiseTeam = auctionState.teams.find(t => t.id === teamId);
     
