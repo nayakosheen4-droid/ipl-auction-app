@@ -67,10 +67,14 @@
                     <div class="placeholder">
                         <h2>No Active Auction</h2>
                         <p>Select a player from the left panel to start bidding</p>
+                        <div id="turnNotification" class="turn-notification hidden"></div>
+                        <button id="initializeAuctionBtn" class="btn btn-initialize hidden">🎲 Initialize Auction Order</button>
                     </div>
                 </div>
 
                 <div id="activeAuction" class="active-auction hidden">
+                    <div id="activeTurnNotification" class="turn-notification hidden"></div>
+                    
                     <div class="player-card">
                         <div class="player-header">
                             <h2 id="currentPlayerName"></h2>

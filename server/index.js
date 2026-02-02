@@ -61,12 +61,151 @@ let auctionState = {
   timeRemaining: 0,
   rtmTimerActive: false,
   rtmTimeRemaining: 0,
+  nominationOrder: [], // Array of team IDs in random order
+  currentTurnIndex: 0, // Index in nominationOrder
+  currentTurnTeam: null, // Team ID whose turn it is
   teams: JSON.parse(JSON.stringify(TEAMS)) // Deep copy
 };
 
 // Timer management
 let auctionTimer = null;
 let rtmTimer = null;
+
+// Helper function to shuffle array (Fisher-Yates)
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+// Initialize nomination order
+function initializeNominationOrder() {
+  const teamIds = TEAMS.map(t => t.id);
+  auctionState.nominationOrder = shuffleArray(teamIds);
+  auctionState.currentTurnIndex = 0;
+  auctionState.currentTurnTeam = auctionState.nominationOrder[0];
+  
+  console.log('🎲 Nomination order set:', auctionState.nominationOrder.map(id => {
+    const team = TEAMS.find(t => t.id === id);
+    return team ? team.name : id;
+  }).join(' → '));
+  
+  return auctionState.nominationOrder;
+}
+
+// Check if team can nominate
+async function canTeamNominate(teamId) {
+  const team = auctionState.teams.find(t => t.id === teamId);
+  
+  if (!team) {
+    return { canNominate: false, reason: 'Team not found', allowedPositions: [] };
+  }
+  
+  // Check budget - need at least 0.5 Cr
+  if (team.budget < 0.5) {
+    return { canNominate: false, reason: 'Insufficient budget', allowedPositions: [] };
+  }
+  
+  // Get team's current players
+  const players = await getTeamPlayers(teamId);
+  const totalPlayers = players.length;
+  
+  // Count by position
+  const positionCounts = {
+    'Wicket-keeper': 0,
+    'Batsman': 0,
+    'Bowler': 0,
+    'All-rounder': 0
+  };
+  
+  players.forEach(p => {
+    if (positionCounts.hasOwnProperty(p.position)) {
+      positionCounts[p.position]++;
+    }
+  });
+  
+  // Squad rules
+  const MIN_WK = 1, MIN_BOWLER = 3, MIN_BATSMAN = 3, MIN_ALLROUNDER = 2;
+  const MIN_PLAYERS = 16, MAX_PLAYERS = 18;
+  
+  // Calculate remaining slots
+  const remainingSlots = MAX_PLAYERS - totalPlayers;
+  
+  // If no slots left
+  if (remainingSlots <= 0) {
+    return { canNominate: false, reason: 'Squad full (18 players)', allowedPositions: [] };
+  }
+  
+  // Calculate missing positions
+  const missingWK = Math.max(0, MIN_WK - positionCounts['Wicket-keeper']);
+  const missingBowler = Math.max(0, MIN_BOWLER - positionCounts['Bowler']);
+  const missingBatsman = Math.max(0, MIN_BATSMAN - positionCounts['Batsman']);
+  const missingAllrounder = Math.max(0, MIN_ALLROUNDER - positionCounts['All-rounder']);
+  
+  const totalMissing = missingWK + missingBowler + missingBatsman + missingAllrounder;
+  
+  // If slots remaining equals or less than missing positions, restrict nominations
+  if (remainingSlots <= totalMissing) {
+    const allowedPositions = [];
+    if (missingWK > 0) allowedPositions.push('Wicket-keeper');
+    if (missingBowler > 0) allowedPositions.push('Bowler');
+    if (missingBatsman > 0) allowedPositions.push('Batsman');
+    if (missingAllrounder > 0) allowedPositions.push('All-rounder');
+    
+    if (allowedPositions.length === 0) {
+      return { canNominate: true, reason: 'Can nominate any position', allowedPositions: [] };
+    }
+    
+    return { 
+      canNominate: true, 
+      reason: `Must nominate: ${allowedPositions.join(' or ')}`,
+      allowedPositions: allowedPositions,
+      restricted: true
+    };
+  }
+  
+  return { canNominate: true, reason: 'Can nominate any position', allowedPositions: [], restricted: false };
+}
+
+// Move to next team's turn
+async function advanceToNextTurn() {
+  if (auctionState.nominationOrder.length === 0) {
+    console.log('⚠️  No nomination order set');
+    return;
+  }
+  
+  const maxAttempts = auctionState.nominationOrder.length;
+  let attempts = 0;
+  
+  while (attempts < maxAttempts) {
+    // Move to next team
+    auctionState.currentTurnIndex = (auctionState.currentTurnIndex + 1) % auctionState.nominationOrder.length;
+    auctionState.currentTurnTeam = auctionState.nominationOrder[auctionState.currentTurnIndex];
+    
+    const team = auctionState.teams.find(t => t.id === auctionState.currentTurnTeam);
+    const teamName = team ? team.name : 'Unknown';
+    
+    // Check if team can nominate
+    const canNominate = await canTeamNominate(auctionState.currentTurnTeam);
+    
+    if (canNominate.canNominate) {
+      console.log(`✅ Turn advanced to: ${teamName}`);
+      broadcast({
+        type: 'turn_change',
+        state: auctionState
+      });
+      return;
+    } else {
+      console.log(`⏭️  Skipping ${teamName}: ${canNominate.reason}`);
+      attempts++;
+    }
+  }
+  
+  console.log('⚠️  All teams unable to nominate - auction may be complete');
+}
 
 // WebSocket clients
 let clients = new Map(); // teamId -> [WebSocket connections]
@@ -560,10 +699,16 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       timeRemaining: 0,
       rtmTimerActive: false,
       rtmTimeRemaining: 0,
+      nominationOrder: auctionState.nominationOrder,
+      currentTurnIndex: auctionState.currentTurnIndex,
+      currentTurnTeam: auctionState.currentTurnTeam,
       teams: auctionState.teams
     };
     
     console.log(`✅ Auction completed successfully`);
+    
+    // Advance to next team's turn
+    await advanceToNextTurn();
   } catch (err) {
     console.error(`❌ Error completing auction:`, err);
     throw err;
@@ -781,9 +926,49 @@ app.get('/api/team/:teamId/players', async (req, res) => {
 });
 
 // Nominate player
+// Initialize auction with nomination order
+app.post('/api/auction/initialize', (req, res) => {
+  try {
+    if (auctionState.auctionActive) {
+      return res.status(400).json({ error: 'Auction already in progress' });
+    }
+    
+    initializeNominationOrder();
+    
+    broadcast({ 
+      type: 'nomination_order_set', 
+      state: auctionState,
+      message: 'Nomination order has been set!'
+    });
+    
+    res.json({ 
+      success: true, 
+      nominationOrder: auctionState.nominationOrder,
+      currentTurnTeam: auctionState.currentTurnTeam
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Nominate player for auction
 app.post('/api/auction/nominate', async (req, res) => {
   try {
     const { playerId, teamId } = req.body;
+    
+    // Check if nomination order is set
+    if (auctionState.nominationOrder.length === 0) {
+      return res.status(400).json({ error: 'Auction not initialized. Please initialize first.' });
+    }
+    
+    // Check if it's this team's turn (admins can bypass)
+    if (teamId !== 0 && teamId !== auctionState.currentTurnTeam) {
+      const currentTeam = auctionState.teams.find(t => t.id === auctionState.currentTurnTeam);
+      return res.status(403).json({ 
+        error: `Not your turn! It's ${currentTeam ? currentTeam.name : 'another team'}'s turn to nominate.` 
+      });
+    }
+    
     const players = await getAvailablePlayers();
     const player = players.find(p => p.id === playerId);
 
@@ -794,6 +979,24 @@ app.post('/api/auction/nominate', async (req, res) => {
     if (auctionState.auctionActive) {
       return res.status(400).json({ error: 'Auction already in progress' });
     }
+    
+    // Check if team can nominate and if position is allowed
+    if (teamId !== 0) { // Skip check for admin
+      const nominationCheck = await canTeamNominate(teamId);
+      
+      if (!nominationCheck.canNominate) {
+        return res.status(400).json({ error: nominationCheck.reason });
+      }
+      
+      // If restricted, check if nominated player position is allowed
+      if (nominationCheck.restricted && nominationCheck.allowedPositions.length > 0) {
+        if (!nominationCheck.allowedPositions.includes(player.position)) {
+          return res.status(400).json({ 
+            error: `You must nominate a ${nominationCheck.allowedPositions.join(' or ')} to meet minimum requirements!` 
+          });
+        }
+      }
+    }
 
     auctionState = {
       currentPlayer: player,
@@ -801,6 +1004,17 @@ app.post('/api/auction/nominate', async (req, res) => {
       currentBidder: teamId,
       teamsOut: [],
       auctionActive: true,
+      rtmPhase: false,
+      rtmEligibleTeam: null,
+      pendingWinner: null,
+      pendingPrice: null,
+      timerActive: false,
+      timeRemaining: 0,
+      rtmTimerActive: false,
+      rtmTimeRemaining: 0,
+      nominationOrder: auctionState.nominationOrder,
+      currentTurnIndex: auctionState.currentTurnIndex,
+      currentTurnTeam: auctionState.currentTurnTeam,
       teams: auctionState.teams
     };
 

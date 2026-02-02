@@ -51,6 +51,9 @@ async function init() {
         
         if (isAdmin) {
             populateAdminTeamSelect();
+            // Show initialize button for admin
+            const initBtn = document.getElementById('initializeAuctionBtn');
+            if (initBtn) initBtn.classList.remove('hidden');
         }
     }
 }
@@ -305,6 +308,14 @@ function handleWebSocketMessage(data) {
         case 'rtm_timer_tick':
             updateRTMTimerDisplay(data.state);
             break;
+        case 'nomination_order_set':
+            showToast(data.message, 'success');
+            updateTurnNotification(data.state);
+            break;
+        case 'turn_change':
+            updateTurnNotification(data.state);
+            showToast(`Next turn: ${getTeamName(data.state.currentTurnTeam)}`, 'info');
+            break;
     }
 }
 
@@ -389,6 +400,9 @@ function updateAuctionState(state) {
         activeAuction.classList.add('hidden');
         document.getElementById('rtmPhase').classList.add('hidden');
     }
+    
+    // Update turn notification
+    updateTurnNotification(state);
 }
 
 // Update teams status in auction
@@ -1091,6 +1105,101 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
+// Turn-based nomination functions
+function getTeamName(teamId) {
+    const team = allTeams.find(t => t.id === teamId);
+    return team ? team.name : 'Unknown Team';
+}
+
+function updateTurnNotification(state) {
+    const turnNotif = document.getElementById('turnNotification');
+    const activeTurnNotif = document.getElementById('activeTurnNotification');
+    
+    if (!state.nominationOrder || state.nominationOrder.length === 0) {
+        if (turnNotif) turnNotif.classList.add('hidden');
+        if (activeTurnNotif) activeTurnNotif.classList.add('hidden');
+        
+        // Show initialize button for admin
+        if (isAdmin) {
+            const initBtn = document.getElementById('initializeAuctionBtn');
+            if (initBtn) initBtn.classList.remove('hidden');
+        }
+        return;
+    }
+    
+    // Hide initialize button once order is set
+    const initBtn = document.getElementById('initializeAuctionBtn');
+    if (initBtn) initBtn.classList.add('hidden');
+    
+    const currentTurnTeamName = getTeamName(state.currentTurnTeam);
+    const isYourTurn = state.currentTurnTeam === currentTeam.id || isAdmin;
+    
+    const message = isYourTurn 
+        ? `🎯 Your turn to nominate!` 
+        : `⏳ Waiting for ${currentTurnTeamName} to nominate`;
+    
+    const className = isYourTurn ? 'your-turn' : 'not-your-turn';
+    
+    if (turnNotif && !state.auctionActive) {
+        turnNotif.innerHTML = message;
+        turnNotif.className = `turn-notification ${className}`;
+        turnNotif.classList.remove('hidden');
+    }
+    
+    if (activeTurnNotif && state.auctionActive) {
+        activeTurnNotif.classList.add('hidden');
+    } else if (activeTurnNotif && !state.auctionActive) {
+        activeTurnNotif.innerHTML = message;
+        activeTurnNotif.className = `turn-notification ${className}`;
+        activeTurnNotif.classList.remove('hidden');
+    }
+    
+    // Update player nomination UI based on turn
+    updatePlayerNominationUI(isYourTurn);
+}
+
+function updatePlayerNominationUI(canNominate) {
+    const playerItems = document.querySelectorAll('.player-item');
+    playerItems.forEach(item => {
+        if (!canNominate && !isAdmin) {
+            item.style.opacity = '0.5';
+            item.style.cursor = 'not-allowed';
+            item.style.pointerEvents = 'none';
+        } else {
+            item.style.opacity = '1';
+            item.style.cursor = 'pointer';
+            item.style.pointerEvents = 'auto';
+        }
+    });
+}
+
+async function initializeAuction() {
+    try {
+        const response = await fetch(`${API_BASE}/api/auction/initialize`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Auction order set! Teams can now nominate in turns.', 'success');
+        } else {
+            showToast(data.error || 'Failed to initialize auction', 'error');
+        }
+    } catch (err) {
+        showToast('Failed to initialize auction', 'error');
+    }
+}
+
+// Add initialize button event listener
+document.addEventListener('DOMContentLoaded', () => {
+    const initBtn = document.getElementById('initializeAuctionBtn');
+    if (initBtn) {
+        initBtn.addEventListener('click', initializeAuction);
+    }
+});
 
 // Initialize app
 init();

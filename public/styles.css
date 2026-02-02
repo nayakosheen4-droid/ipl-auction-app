@@ -321,6 +321,55 @@ header {
     margin-bottom: 10px;
 }
 
+/* Turn Notification */
+.turn-notification {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    animation: slideDown 0.3s ease-out;
+}
+
+.turn-notification.your-turn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.turn-notification.not-your-turn {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-initialize {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    margin-top: 20px;
+}
+
+.btn-initialize:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
 /* Center Panel - Active Auction */
 .active-auction {
     padding: 30px;
