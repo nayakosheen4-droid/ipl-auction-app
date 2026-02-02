@@ -726,10 +726,25 @@ header {
     color: white;
     font-weight: bold;
     padding: 12px;
+    margin-bottom: 10px;
 }
 
 .btn-reset-auction:hover {
     background: #c82333;
+}
+
+.btn-full-reset {
+    width: 100%;
+    background: #6c1a1a;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border: 2px solid #dc3545;
+}
+
+.btn-full-reset:hover {
+    background: #8b0000;
+    border-color: #ff0000;
 }
 
 .btn-download-excel {
@@ -1401,6 +1416,7 @@ header {
 
     .btn-admin,
     .btn-reset-auction,
+    .btn-full-reset,
     .btn-download-excel {
         width: 100%;
     }

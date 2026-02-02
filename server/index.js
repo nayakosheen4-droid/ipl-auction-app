@@ -170,6 +170,76 @@ async function canTeamNominate(teamId) {
   return { canNominate: true, reason: 'Can nominate any position', allowedPositions: [], restricted: false };
 }
 
+// Full reset function - clears all data and resets to initial state
+async function performFullReset() {
+  try {
+    console.log('🔄 Performing full auction reset...');
+    
+    // Stop any active timers
+    stopAuctionTimer();
+    stopRTMTimer();
+    
+    // Clear sold players from Excel
+    if (fs.existsSync(DATA_PATH)) {
+      console.log('📄 Clearing sold players from Excel...');
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.readFile(DATA_PATH);
+      
+      const soldSheet = workbook.getWorksheet('Sold Players');
+      if (soldSheet) {
+        // Get all row numbers except header
+        const rowsToDelete = [];
+        soldSheet.eachRow((row, rowNumber) => {
+          if (rowNumber > 1) { // Skip header
+            rowsToDelete.push(rowNumber);
+          }
+        });
+        
+        // Delete rows in reverse order to avoid index shifting
+        for (let i = rowsToDelete.length - 1; i >= 0; i--) {
+          soldSheet.spliceRows(rowsToDelete[i], 1);
+        }
+        
+        await workbook.xlsx.writeFile(DATA_PATH);
+        console.log(`✅ Cleared ${rowsToDelete.length} sold players from Excel`);
+      }
+    }
+    
+    // Reset all team data to initial state
+    auctionState.teams = JSON.parse(JSON.stringify(TEAMS));
+    
+    // Reset auction state completely
+    auctionState = {
+      currentPlayer: null,
+      currentBid: 0,
+      currentBidder: null,
+      teamsOut: [],
+      auctionActive: false,
+      rtmPhase: false,
+      rtmEligibleTeam: null,
+      pendingWinner: null,
+      pendingPrice: null,
+      timerActive: false,
+      timeRemaining: 0,
+      rtmTimerActive: false,
+      rtmTimeRemaining: 0,
+      nominationOrder: [],
+      currentTurnIndex: 0,
+      currentTurnTeam: null,
+      teams: JSON.parse(JSON.stringify(TEAMS))
+    };
+    
+    console.log('✅ Full auction reset completed successfully');
+    console.log('   - All sold players cleared');
+    console.log('   - All team budgets reset to ₹100 Cr');
+    console.log('   - All RTM statuses reset');
+    console.log('   - Nomination order cleared');
+  } catch (err) {
+    console.error('❌ Error during full reset:', err);
+    throw err;
+  }
+}
+
 // Move to next team's turn
 async function advanceToNextTurn() {
   if (auctionState.nominationOrder.length === 0) {
@@ -760,7 +830,7 @@ wss.on('connection', (ws) => {
         // Broadcast chat message to all connected clients
         broadcast(chatMessage);
       } else if (data.type === 'admin_reset_auction') {
-        // Admin reset current auction
+        // Admin reset current auction only (not full reset)
         if (auctionState.auctionActive) {
           stopAuctionTimer();
           auctionState.teamsOut = [];
@@ -772,6 +842,13 @@ wss.on('connection', (ws) => {
             state: auctionState
           });
         }
+      } else if (data.type === 'admin_full_reset') {
+        // Admin full reset - clear everything
+        await performFullReset();
+        broadcast({
+          type: 'full_reset',
+          message: 'Full auction reset completed!'
+        });
       } else if (data.type === 'admin_mark_team_out') {
         // Admin mark team out
         if (auctionState.auctionActive && data.teamId) {

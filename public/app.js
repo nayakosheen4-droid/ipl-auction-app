@@ -316,6 +316,13 @@ function handleWebSocketMessage(data) {
             updateTurnNotification(data.state);
             showToast(`Next turn: ${getTeamName(data.state.currentTurnTeam)}`, 'info');
             break;
+        case 'full_reset':
+            showToast(data.message, 'success');
+            // Reload the page to refresh all data
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+            break;
     }
 }
 
@@ -896,6 +903,28 @@ function adminResetAuction() {
     }
 }
 
+// Admin full reset
+function adminFullReset() {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        showToast('Not connected to server', 'error');
+        return;
+    }
+    
+    const confirmMessage = 'WARNING: This will DELETE ALL SOLD PLAYERS and reset ALL TEAM BUDGETS to ₹100 Cr!\n\n' +
+                          'This action cannot be undone!\n\n' +
+                          'Are you absolutely sure you want to do a FULL RESET?';
+    
+    if (confirm(confirmMessage)) {
+        // Double confirmation for destructive action
+        if (confirm('FINAL CONFIRMATION: Delete all auction data and start fresh?')) {
+            ws.send(JSON.stringify({
+                type: 'admin_full_reset'
+            }));
+            showToast('Full reset in progress...', 'info');
+        }
+    }
+}
+
 // Admin download Excel file
 function adminDownloadExcel() {
     if (!isAdmin) {
@@ -951,6 +980,9 @@ document.getElementById('adminCompleteBtn').addEventListener('click', adminCompl
 
 // Admin reset auction
 document.getElementById('adminResetBtn').addEventListener('click', adminResetAuction);
+
+// Admin full reset
+document.getElementById('adminFullResetBtn').addEventListener('click', adminFullReset);
 
 // Admin download Excel
 document.getElementById('adminDownloadBtn').addEventListener('click', adminDownloadExcel);
