@@ -369,6 +369,9 @@ function handleWebSocketMessage(data) {
                 window.location.reload();
             }, 1500);
             break;
+        case 'error':
+            showToast(data.message || 'An error occurred', 'error');
+            break;
     }
 }
 

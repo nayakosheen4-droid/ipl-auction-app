@@ -1088,6 +1088,16 @@ wss.on('connection', (ws) => {
       } else if (data.type === 'admin_mark_team_out') {
         // Admin mark team out
         if (auctionState.auctionActive && data.teamId) {
+          // Prevent marking out the team with the current highest bid
+          if (data.teamId === auctionState.currentBidder) {
+            // Send error back to admin
+            ws.send(JSON.stringify({
+              type: 'error',
+              message: 'Cannot mark out the team with the current highest bid!'
+            }));
+            return;
+          }
+          
           if (!auctionState.teamsOut.includes(data.teamId)) {
             auctionState.teamsOut.push(data.teamId);
             
