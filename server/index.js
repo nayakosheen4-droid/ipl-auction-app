@@ -634,7 +634,13 @@ async function getTeamPlayers(teamId) {
       if (rowNumber > 1) { // Skip header
         const rowTeamId = row.getCell(4).value;
         
-        if (rowTeamId === teamId) {
+        // Convert both to numbers for comparison (handle type mismatches)
+        const rowTeamIdNum = typeof rowTeamId === 'number' ? rowTeamId : parseInt(rowTeamId);
+        const teamIdNum = typeof teamId === 'number' ? teamId : parseInt(teamId);
+        
+        console.log(`  Row ${rowNumber}: Comparing rowTeamId=${rowTeamIdNum} (type:${typeof rowTeamId}) with teamId=${teamIdNum} (type:${typeof teamId}), match=${rowTeamIdNum === teamIdNum}`);
+        
+        if (rowTeamIdNum === teamIdNum) {
           const playerId = row.getCell(1).value;
           const playerName = row.getCell(2).value;
           const position = row.getCell(3).value;
@@ -649,7 +655,7 @@ async function getTeamPlayers(teamId) {
             overseas: isOverseas
           });
           
-          console.log(`  ✓ Row ${rowNumber}: ${playerName} (TeamID=${rowTeamId}, Overseas=${isOverseas})`);
+          console.log(`  ✅ MATCHED Row ${rowNumber}: ${playerName} (TeamID=${rowTeamIdNum}, Overseas=${isOverseas}, Price=${finalPrice})`);
         }
       }
     });
@@ -1239,6 +1245,63 @@ app.get('/api/players/available', async (req, res) => {
     const players = await getAvailablePlayers();
     res.json(players);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get all sold players
+app.get('/api/players/sold', async (req, res) => {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    const playersSheet = workbook.getWorksheet('Players');
+    
+    if (!soldSheet || !playersSheet) {
+      return res.status(500).json({ error: 'Required sheets not found' });
+    }
+    
+    // Build overseas map
+    const overseasMap = new Map();
+    playersSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        const playerId = row.getCell(1).value;
+        const isOverseas = row.getCell(6).value === true || row.getCell(6).value === 'true';
+        overseasMap.set(playerId, isOverseas);
+      }
+    });
+    
+    // Get all sold players
+    const soldPlayers = [];
+    soldSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) {
+        const playerId = row.getCell(1).value;
+        const playerName = row.getCell(2).value;
+        const position = row.getCell(3).value;
+        const teamId = row.getCell(4).value;
+        const teamName = row.getCell(5).value;
+        const finalPrice = row.getCell(6).value;
+        const rtmUsed = row.getCell(7).value === 'Yes';
+        const isOverseas = overseasMap.get(playerId) || false;
+        
+        soldPlayers.push({
+          playerId,
+          playerName,
+          position,
+          teamId,
+          teamName,
+          finalPrice,
+          rtmUsed,
+          overseas: isOverseas
+        });
+      }
+    });
+    
+    console.log(`📊 Fetched ${soldPlayers.length} sold players`);
+    res.json(soldPlayers);
+  } catch (err) {
+    console.error('❌ Error fetching sold players:', err);
     res.status(500).json({ error: err.message });
   }
 });

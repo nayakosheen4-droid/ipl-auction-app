@@ -135,7 +135,8 @@ function setupEventListeners() {
     searchPlayer.addEventListener('input', filterPlayers);
     
     // Left panel toggle
-    document.getElementById('togglePlayers').addEventListener('click', () => switchLeftPanel('players'));
+    document.getElementById('toggleUnsoldPlayers').addEventListener('click', () => switchLeftPanel('unsold'));
+    document.getElementById('toggleSoldPlayers').addEventListener('click', () => switchLeftPanel('sold'));
     document.getElementById('toggleTeams').addEventListener('click', () => switchLeftPanel('teams'));
     
     // Chat functionality
@@ -1182,26 +1183,89 @@ document.getElementById('adminTeamViewer').addEventListener('change', (e) => {
 function switchLeftPanel(view) {
     leftPanelView = view;
     
-    const togglePlayers = document.getElementById('togglePlayers');
+    const toggleUnsold = document.getElementById('toggleUnsoldPlayers');
+    const toggleSold = document.getElementById('toggleSoldPlayers');
     const toggleTeams = document.getElementById('toggleTeams');
-    const playersList = document.getElementById('playersList');
+    const unsoldPlayersList = document.getElementById('playersList');
+    const soldPlayersList = document.getElementById('soldPlayersList');
     const teamsList = document.getElementById('teamsList');
     const playerFilters = document.getElementById('playerFilters');
     
-    if (view === 'players') {
-        togglePlayers.classList.add('active');
-        toggleTeams.classList.remove('active');
-        playersList.classList.remove('hidden');
-        teamsList.classList.add('hidden');
+    // Remove active from all
+    toggleUnsold.classList.remove('active');
+    toggleSold.classList.remove('active');
+    toggleTeams.classList.remove('active');
+    
+    // Hide all
+    unsoldPlayersList.classList.add('hidden');
+    soldPlayersList.classList.add('hidden');
+    teamsList.classList.add('hidden');
+    
+    if (view === 'unsold') {
+        toggleUnsold.classList.add('active');
+        unsoldPlayersList.classList.remove('hidden');
         playerFilters.classList.remove('hidden');
         filterPlayers();
-    } else {
+    } else if (view === 'sold') {
+        toggleSold.classList.add('active');
+        soldPlayersList.classList.remove('hidden');
+        playerFilters.classList.remove('hidden');
+        displaySoldPlayers();
+    } else { // teams
         toggleTeams.classList.add('active');
-        togglePlayers.classList.remove('active');
-        playersList.classList.add('hidden');
         teamsList.classList.remove('hidden');
         playerFilters.classList.add('hidden');
         displayAllTeams();
+    }
+}
+
+// Display sold players in left panel
+async function displaySoldPlayers() {
+    const soldPlayersList = document.getElementById('soldPlayersList');
+    soldPlayersList.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">Loading sold players...</div>';
+    
+    try {
+        console.log('📊 Fetching sold players from:', `${API_BASE}/api/players/sold`);
+        const response = await fetch(`${API_BASE}/api/players/sold`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const soldPlayers = await response.json();
+        console.log('✅ Sold players loaded:', soldPlayers.length, 'players');
+        
+        if (!Array.isArray(soldPlayers) || soldPlayers.length === 0) {
+            soldPlayersList.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">No players sold yet</div>';
+            return;
+        }
+        
+        soldPlayersList.innerHTML = '';
+        
+        soldPlayers.forEach(player => {
+            const team = allTeams.find(t => t.id === player.teamId);
+            const teamColor = team ? team.color : '#666';
+            
+            const div = document.createElement('div');
+            div.className = 'player-card';
+            div.innerHTML = `
+                <h3>${player.playerName} ${player.overseas ? '🌍' : ''}</h3>
+                <div class="details">
+                    <span>${player.position}</span>
+                    <span style="color: ${teamColor}; font-weight: bold;">${player.teamName}</span>
+                </div>
+                <div class="price">
+                    ₹${player.finalPrice} Cr ${player.rtmUsed ? '🎯 RTM' : ''}
+                </div>
+            `;
+            soldPlayersList.appendChild(div);
+        });
+    } catch (err) {
+        console.error('❌ Failed to load sold players:', err);
+        soldPlayersList.innerHTML = `<div style="padding: 20px; text-align: center; color: #dc3545;">
+            Failed to load sold players<br>
+            <small style="color: #999;">${err.message}</small>
+        </div>`;
     }
 }
 
