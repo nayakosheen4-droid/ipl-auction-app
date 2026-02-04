@@ -496,6 +496,14 @@ function updateAuctionState(state) {
         noAuction.classList.remove('hidden');
         activeAuction.classList.add('hidden');
         document.getElementById('rtmPhase').classList.add('hidden');
+        
+        // Show/hide admin controls in no-auction view
+        const adminControlsNoAuction = document.getElementById('adminControlsNoAuction');
+        if (adminControlsNoAuction && isAdmin) {
+            adminControlsNoAuction.classList.remove('hidden');
+        } else if (adminControlsNoAuction) {
+            adminControlsNoAuction.classList.add('hidden');
+        }
     }
     
     // Update turn notification
@@ -1136,6 +1144,16 @@ document.getElementById('adminFullResetBtn').addEventListener('click', adminFull
 
 // Admin download Excel
 document.getElementById('adminDownloadBtn').addEventListener('click', adminDownloadExcel);
+
+// Admin controls in no-auction view (duplicate buttons)
+const adminFullResetBtnNoAuction = document.getElementById('adminFullResetBtnNoAuction');
+const adminDownloadBtnNoAuction = document.getElementById('adminDownloadBtnNoAuction');
+if (adminFullResetBtnNoAuction) {
+    adminFullResetBtnNoAuction.addEventListener('click', adminFullReset);
+}
+if (adminDownloadBtnNoAuction) {
+    adminDownloadBtnNoAuction.addEventListener('click', adminDownloadExcel);
+}
 
 // Admin team viewer
 document.getElementById('adminTeamViewer').addEventListener('change', (e) => {

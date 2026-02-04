@@ -67,8 +67,8 @@
             <div class="center-panel">
                 <div id="noAuction" class="no-auction">
                     <div class="placeholder">
-                        <h2>No Active Auction</h2>
-                        <p>Select a player from the left panel to start bidding</p>
+                        <h2>No Active Nomination</h2>
+                        <p>Wait for current team to nominate</p>
                         <div id="nominationInfo" class="nomination-info hidden">
                             <div class="nomination-card">
                                 <div class="nomination-label">Current Turn</div>
@@ -82,6 +82,21 @@
                         </div>
                         <div id="turnNotification" class="turn-notification hidden"></div>
                         <button id="initializeAuctionBtn" class="btn btn-initialize hidden">Initialize Auction Order</button>
+                        
+                        <!-- Admin Controls Always Visible -->
+                        <div id="adminControlsNoAuction" class="admin-controls hidden" style="margin-top: 30px;">
+                            <h3>🔧 Admin Controls</h3>
+                            
+                            <!-- Reset Auction Section -->
+                            <div class="admin-section">
+                                <button id="adminFullResetBtnNoAuction" class="btn btn-full-reset">Full Reset (Clear All Data)</button>
+                            </div>
+                            
+                            <!-- Download Excel Section -->
+                            <div class="admin-section">
+                                <button id="adminDownloadBtnNoAuction" class="btn btn-download-excel">Download Excel File</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
