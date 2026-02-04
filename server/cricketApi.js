@@ -65,18 +65,21 @@ async function getCurrentMatches() {
  * Get matches from RapidAPI Cricbuzz
  */
 async function getRapidAPIMatches() {
-  // Try multiple possible endpoints
+  // Common Cricbuzz API endpoint patterns
   const possibleEndpoints = [
+    '/cricket-matches',
     '/matches',
-    '/cricket-matches', 
-    '/live-matches',
     '/schedule',
-    '/cricket-schedule'
+    '/live-scores',
+    '/series',
+    '/cricket-series',
+    '/recent-matches',
+    '/current-matches'
   ];
   
   for (const endpoint of possibleEndpoints) {
     try {
-      console.log(`🔍 Trying endpoint: ${endpoint}`);
+      console.log(`🔍 Trying endpoint: ${RAPIDAPI_BASE}${endpoint}`);
       const response = await axios.get(`${RAPIDAPI_BASE}${endpoint}`, {
         headers: {
           'x-rapidapi-key': RAPIDAPI_KEY,
@@ -86,33 +89,32 @@ async function getRapidAPIMatches() {
       });
       
       console.log(`✅ Success with endpoint: ${endpoint}`);
-      console.log('📊 Raw response structure:', JSON.stringify(response.data).substring(0, 500));
-      console.log('📊 Response keys:', Object.keys(response.data));
+      console.log('📊 Response keys:', response.data ? Object.keys(response.data).join(', ') : 'null');
+      console.log('📊 Sample:', JSON.stringify(response.data).substring(0, 300));
       
       // Transform RapidAPI response to common format
       const transformed = transformRapidAPIMatches(response.data);
       console.log(`📋 Transformed to ${transformed.length} matches`);
       
-      return {
-        data: transformed
-      };
+      if (transformed.length > 0) {
+        return { data: transformed };
+      }
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log(`   ❌ Endpoint ${endpoint} not found, trying next...`);
-        continue;
+      const status = error.response?.status;
+      const message = error.response?.data?.message || error.message;
+      
+      if (status === 404 || message.includes('does not exist')) {
+        console.log(`   ❌ ${endpoint}: Not found`);
       } else {
-        console.error(`   ❌ Error with ${endpoint}:`, error.message);
-        if (error.response) {
-          console.error('      Status:', error.response.status);
-          console.error('      Data:', JSON.stringify(error.response.data));
-        }
+        console.error(`   ❌ ${endpoint}: ${message}`);
       }
     }
   }
   
   // If all endpoints fail, return empty
-  console.error('❌ All endpoints failed. This API might not have a matches list endpoint.');
-  console.log('💡 You can still test specific matches using the Test Match feature!');
+  console.error('❌ No working matches endpoint found.');
+  console.log('💡 TIP: Find match IDs from Cricbuzz.com and use Test Match feature!');
+  console.log('💡 Or share the available endpoints from RapidAPI playground.');
   return { data: [] };
 }
 
