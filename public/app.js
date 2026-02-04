@@ -395,13 +395,6 @@ function updateAuctionState(state) {
             franchiseBadge.classList.remove('hidden');
         } else {
             franchiseBadge.classList.add('hidden');
-        }
-        
-        // Show franchise badge
-        const franchiseBadge = document.getElementById('franchiseBadge');
-        if (state.currentPlayer.franchiseId) {
-            const franchiseTeam = allTeams.find(t => t.id === state.currentPlayer.franchiseId);
-            franchiseBadge.textContent = franchiseTeam ? `${franchiseTeam.name} Player` : '';
             franchiseBadge.style.display = 'inline-block';
         } else {
             franchiseBadge.style.display = 'none';
