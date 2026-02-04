@@ -603,41 +603,64 @@ async function getAvailablePlayers() {
 // Get sold players for a team
 async function getTeamPlayers(teamId) {
   console.log(`📥 Fetching players for team ID: ${teamId}`);
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(DATA_PATH);
   
-  const soldSheet = workbook.getWorksheet('Sold Players');
-  const players = [];
-
-  soldSheet.eachRow((row, rowNumber) => {
-    if (rowNumber > 1) { // Skip header
-      const rowTeamId = row.getCell(4).value;
-      console.log(`  Row ${rowNumber}: TeamID=${rowTeamId}, Player=${row.getCell(2).value}, Match=${rowTeamId === teamId}`);
-      if (rowTeamId === teamId) {
-        // Get player details from Players sheet to check overseas status
-        const playersSheet = workbook.getWorksheet('Players');
-        let isOverseas = false;
-        const playerId = row.getCell(1).value;
-        
-        playersSheet.eachRow((playerRow, playerRowNumber) => {
-          if (playerRowNumber > 1 && playerRow.getCell(1).value === playerId) {
-            isOverseas = playerRow.getCell(6).value === true || playerRow.getCell(6).value === 'true';
-          }
-        });
-        
-        players.push({
-          playerId: playerId,
-          playerName: row.getCell(2).value,
-          position: row.getCell(3).value,
-          finalPrice: row.getCell(6).value,
-          overseas: isOverseas
-        });
-      }
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    const playersSheet = workbook.getWorksheet('Players');
+    
+    if (!soldSheet || !playersSheet) {
+      console.error('❌ Required sheets not found in Excel');
+      return [];
     }
-  });
+    
+    // Build a map of player IDs to overseas status ONCE (avoid nested loops)
+    const overseasMap = new Map();
+    playersSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) { // Skip header
+        const playerId = row.getCell(1).value;
+        const isOverseas = row.getCell(6).value === true || row.getCell(6).value === 'true';
+        overseasMap.set(playerId, isOverseas);
+      }
+    });
+    
+    console.log(`  Built overseas map with ${overseasMap.size} players`);
+    
+    // Now process sold players for this team
+    const players = [];
+    soldSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) { // Skip header
+        const rowTeamId = row.getCell(4).value;
+        
+        if (rowTeamId === teamId) {
+          const playerId = row.getCell(1).value;
+          const playerName = row.getCell(2).value;
+          const position = row.getCell(3).value;
+          const finalPrice = row.getCell(6).value;
+          const isOverseas = overseasMap.get(playerId) || false;
+          
+          players.push({
+            playerId,
+            playerName,
+            position,
+            finalPrice,
+            overseas: isOverseas
+          });
+          
+          console.log(`  ✓ Row ${rowNumber}: ${playerName} (TeamID=${rowTeamId}, Overseas=${isOverseas})`);
+        }
+      }
+    });
 
-  console.log(`✅ Found ${players.length} players for team ${teamId}`);
-  return players;
+    console.log(`✅ Found ${players.length} players for team ${teamId}`);
+    return players;
+    
+  } catch (err) {
+    console.error(`❌ Error fetching players for team ${teamId}:`, err.message);
+    return [];
+  }
 }
 
 // Save sold player
