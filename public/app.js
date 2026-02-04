@@ -296,17 +296,21 @@ function handleWebSocketMessage(data) {
     switch (data.type) {
         case 'state':
             updateAuctionState(data.state);
+            updateNominationInfo(data.state); // Update nomination display
             break;
         case 'auction_start':
             updateAuctionState(data.state);
+            updateNominationInfo(data.state); // Update nomination display
             showToast(`Auction started for ${data.state.currentPlayer.name}`, 'info');
             loadAvailablePlayers();
             break;
         case 'bid_update':
             updateAuctionState(data.state);
+            updateNominationInfo(data.state); // Update nomination display
             break;
         case 'team_out':
             updateAuctionState(data.state);
+            updateNominationInfo(data.state); // Update nomination display
             break;
         case 'rtm_opportunity':
             showRTMPhase(data);
@@ -319,6 +323,7 @@ function handleWebSocketMessage(data) {
             );
             updateTeamsBudget(data.teams);
             loadAvailablePlayers();
+            updateNominationInfo(data.state || auctionState); // Update nomination display
             setTimeout(() => {
                 noAuction.classList.remove('hidden');
                 activeAuction.classList.add('hidden');
@@ -572,6 +577,12 @@ function displayPlayers(players) {
 // Nominate player
 async function nominatePlayer(player) {
     try {
+        // Block admin from nominating (admin is for control only)
+        if (isAdmin) {
+            showToast('Admin cannot nominate players. Only teams on their turn can nominate.', 'error');
+            return;
+        }
+        
         const response = await fetch(`${API_BASE}/api/auction/nominate`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1262,11 +1273,20 @@ function updateTurnNotification(state) {
     if (initBtn) initBtn.classList.add('hidden');
     
     const currentTurnTeamName = getTeamName(state.currentTurnTeam);
-    const isYourTurn = state.currentTurnTeam === currentTeam.id || isAdmin;
+    const isYourTurn = state.currentTurnTeam === currentTeam.id && !isAdmin; // Admin never has turn
+    
+    // Admin should NEVER see "your turn" notification - always hide for admin
+    if (isAdmin) {
+        if (turnNotif) turnNotif.classList.add('hidden');
+        if (activeTurnNotif) activeTurnNotif.classList.add('hidden');
+        // Admin can't nominate - only teams on their turn
+        updatePlayerNominationUI(false);
+        return;
+    }
     
     const message = isYourTurn 
-        ? `🎯 Your turn to nominate!` 
-        : `⏳ Waiting for ${currentTurnTeamName} to nominate`;
+        ? `Your turn to nominate!` 
+        : `Waiting for ${currentTurnTeamName} to nominate`;
     
     const className = isYourTurn ? 'your-turn' : 'not-your-turn';
     
@@ -1291,7 +1311,8 @@ function updateTurnNotification(state) {
 function updatePlayerNominationUI(canNominate) {
     const playerItems = document.querySelectorAll('.player-item');
     playerItems.forEach(item => {
-        if (!canNominate && !isAdmin) {
+        // Only allow nomination if it's your turn (never for admin in non-admin mode)
+        if (!canNominate) {
             item.style.opacity = '0.5';
             item.style.cursor = 'not-allowed';
             item.style.pointerEvents = 'none';

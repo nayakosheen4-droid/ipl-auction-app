@@ -1232,8 +1232,15 @@ app.post('/api/auction/nominate', async (req, res) => {
       return res.status(400).json({ error: 'Auction not initialized. Please initialize first.' });
     }
     
-    // Check if it's this team's turn (admins can bypass)
-    if (teamId !== 0 && teamId !== auctionState.currentTurnTeam) {
+    // Admin (teamId === 0) cannot nominate - block completely
+    if (teamId === 0) {
+      return res.status(403).json({ 
+        error: 'Admin cannot nominate players. Admin is for control and observation only.' 
+      });
+    }
+    
+    // Check if it's this team's turn
+    if (teamId !== auctionState.currentTurnTeam) {
       const currentTeam = auctionState.teams.find(t => t.id === auctionState.currentTurnTeam);
       return res.status(403).json({ 
         error: `Not your turn! It's ${currentTeam ? currentTeam.name : 'another team'}'s turn to nominate.` 
