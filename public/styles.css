@@ -303,6 +303,39 @@ header {
     margin-bottom: 8px;
 }
 
+/* Online Indicator */
+.online-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.online-indicator.online {
+    background: #28a745;
+    border-color: rgba(40, 167, 69, 0.3);
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
+}
+
+.online-indicator.offline {
+    background: #6c757d;
+    border-color: rgba(108, 117, 125, 0.3);
+    opacity: 0.5;
+}
+
+@keyframes pulse-dot {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.15);
+        opacity: 0.8;
+    }
+}
+
 .team-card-info {
     display: flex;
     justify-content: space-between;

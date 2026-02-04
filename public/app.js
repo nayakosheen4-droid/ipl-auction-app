@@ -10,6 +10,7 @@ let ws = null;
 let availablePlayers = [];
 let allTeams = [];
 let leftPanelView = 'players'; // 'players' or 'teams'
+let onlineTeams = []; // Track which teams are currently online
 
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
@@ -95,11 +96,12 @@ async function loadTeams() {
         teamSelect.appendChild(adminOption);
         
         allTeams.forEach(team => {
+            const isOnline = onlineTeams.includes(team.id);
             const option = document.createElement('option');
             option.value = team.id;
-            option.textContent = team.name;
+            option.textContent = isOnline ? `${team.name} 🟢` : team.name;
             teamSelect.appendChild(option);
-            console.log(`  ✓ Added team: ${team.name} (ID: ${team.id}${team.shorthand ? `, ${team.shorthand}` : ''})`);
+            console.log(`  ✓ Added team: ${team.name} (ID: ${team.id}${team.shorthand ? `, ${team.shorthand}` : ''}) ${isOnline ? '🟢 Online' : ''}`);
         });
         
         console.log('✅ Team dropdown populated with', allTeams.length, 'teams + Admin');
@@ -338,6 +340,18 @@ function handleWebSocketMessage(data) {
         case 'reset':
             updateAuctionState(data.state);
             loadAvailablePlayers();
+            break;
+        case 'online_teams':
+            onlineTeams = data.onlineTeams || [];
+            console.log('🟢 Online teams updated:', onlineTeams);
+            // Refresh team display if currently viewing teams
+            if (leftPanelView === 'teams') {
+                displayAllTeams();
+            }
+            // Update login screen team list if visible
+            if (!loginScreen.classList.contains('hidden')) {
+                loadTeams();
+            }
             break;
         case 'chat':
             displayChatMessage(data);
@@ -1214,11 +1228,15 @@ async function displayAllTeams() {
         teamsList.innerHTML = '';
         
         teamsData.forEach(team => {
+            const isOnline = onlineTeams.includes(team.id);
             const div = document.createElement('div');
             div.className = 'team-card';
             div.style.borderLeftColor = team.color;
             div.innerHTML = `
-                <h3 style="color: ${team.color};">${team.name}</h3>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <h3 style="color: ${team.color}; margin: 0;">${team.name}</h3>
+                    <span class="online-indicator ${isOnline ? 'online' : 'offline'}" title="${isOnline ? 'Online' : 'Offline'}"></span>
+                </div>
                 <div class="team-card-info">
                     <span class="team-card-players">Players: ${team.playerCount}</span>
                     <span class="team-card-budget">₹${team.budget} Cr</span>

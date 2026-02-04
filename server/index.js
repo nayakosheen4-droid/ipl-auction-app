@@ -799,6 +799,21 @@ function broadcast(data) {
   });
 }
 
+// Get list of online team IDs
+function getOnlineTeams() {
+  return Array.from(clients.keys());
+}
+
+// Broadcast online teams to all clients
+function broadcastOnlineTeams() {
+  const onlineTeamIds = getOnlineTeams();
+  broadcast({
+    type: 'online_teams',
+    onlineTeams: onlineTeamIds
+  });
+  console.log(`📡 Broadcasting online teams: [${onlineTeamIds.map(id => getTeamName(id)).join(', ')}]`);
+}
+
 // Initialize auto-stats service with broadcast capability
 autoStatsService.setBroadcast(broadcast);
 
@@ -1060,6 +1075,8 @@ wss.on('connection', (ws) => {
         clients.get(teamId).push(ws);
         ws.teamId = teamId;
         
+        console.log(`🟢 Team ${teamId} connected (${getTeamName(teamId)})`);
+        
         // Send current state
         ws.send(JSON.stringify({
           type: 'state',
@@ -1074,6 +1091,9 @@ wss.on('connection', (ws) => {
             messages: chatHistory
           }));
         }
+        
+        // Broadcast online teams update to all clients
+        broadcastOnlineTeams();
       } else if (data.type === 'chat') {
         // Store chat message in history
         const chatMessage = {
@@ -1167,7 +1187,11 @@ wss.on('connection', (ws) => {
       }
       if (teamClients.length === 0) {
         clients.delete(ws.teamId);
+        console.log(`🔴 Team ${ws.teamId} disconnected (${getTeamName(ws.teamId)})`);
       }
+      
+      // Broadcast online teams update to all clients
+      broadcastOnlineTeams();
     }
   });
 });
