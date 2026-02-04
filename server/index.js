@@ -352,9 +352,52 @@ async function initializeExcel() {
       { header: 'Final Price', key: 'finalPrice', width: 15 },
       { header: 'RTM Used', key: 'rtmUsed', width: 10 }
     ];
+    
+    // Gameweeks Sheet
+    const gameweeksSheet = workbook.addWorksheet('Gameweeks');
+    gameweeksSheet.columns = [
+      { header: 'Gameweek', key: 'gameweek', width: 12 },
+      { header: 'Status', key: 'status', width: 15 },
+      { header: 'Start Date', key: 'startDate', width: 20 },
+      { header: 'End Date', key: 'endDate', width: 20 }
+    ];
+    
+    // Matches Sheet
+    const matchesSheet = workbook.addWorksheet('Matches');
+    matchesSheet.columns = [
+      { header: 'Match ID', key: 'matchId', width: 12 },
+      { header: 'Gameweek', key: 'gameweek', width: 12 },
+      { header: 'Team 1', key: 'team1', width: 25 },
+      { header: 'Team 2', key: 'team2', width: 25 },
+      { header: 'Winner', key: 'winner', width: 25 },
+      { header: 'Match Date', key: 'matchDate', width: 20 },
+      { header: 'Status', key: 'status', width: 15 }
+    ];
+    
+    // Player Performance Sheet
+    const perfSheet = workbook.addWorksheet('Player Performance');
+    perfSheet.columns = [
+      { header: 'Match ID', key: 'matchId', width: 12 },
+      { header: 'Gameweek', key: 'gameweek', width: 12 },
+      { header: 'Player ID', key: 'playerId', width: 10 },
+      { header: 'Player Name', key: 'playerName', width: 30 },
+      { header: 'Position', key: 'position', width: 20 },
+      { header: 'Runs', key: 'runs', width: 10 },
+      { header: 'Balls Faced', key: 'ballsFaced', width: 12 },
+      { header: 'Fours', key: 'fours', width: 10 },
+      { header: 'Sixes', key: 'sixes', width: 10 },
+      { header: 'Wickets', key: 'wickets', width: 10 },
+      { header: 'Overs Bowled', key: 'oversBowled', width: 12 },
+      { header: 'Runs Conceded', key: 'runsConceded', width: 15 },
+      { header: 'Maidens', key: 'maidens', width: 10 },
+      { header: 'Catches', key: 'catches', width: 10 },
+      { header: 'Stumpings', key: 'stumpings', width: 12 },
+      { header: 'Run Outs', key: 'runOuts', width: 12 },
+      { header: 'Fantasy Points', key: 'fantasyPoints', width: 15 }
+    ];
 
     await workbook.xlsx.writeFile(DATA_PATH);
-    console.log('Excel file initialized with sample data');
+    console.log('Excel file initialized with sample data and fantasy league sheets');
   }
 }
 
@@ -1303,6 +1346,256 @@ app.get('/api/admin/download-excel', (req, res) => {
     });
   } catch (err) {
     console.error('❌ Error downloading Excel file:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ========================================
+// FANTASY LEAGUE API ENDPOINTS
+// ========================================
+
+const { calculateFantasyPoints, SCORING_RULES } = require('./fantasy');
+
+// Get current gameweek
+app.get('/api/fantasy/gameweek/current', async (req, res) => {
+  try {
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    const gwSheet = workbook.getWorksheet('Gameweeks');
+    
+    let currentGW = null;
+    gwSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(2).value === 'Active') {
+        currentGW = {
+          gameweek: row.getCell(1).value,
+          status: row.getCell(2).value,
+          startDate: row.getCell(3).value,
+          endDate: row.getCell(4).value
+        };
+      }
+    });
+    
+    res.json(currentGW || { gameweek: 0, status: 'Not Started' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Create/Update gameweek
+app.post('/api/fantasy/gameweek', async (req, res) => {
+  try {
+    const { gameweek, status, startDate, endDate } = req.body;
+    
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    const gwSheet = workbook.getWorksheet('Gameweeks');
+    
+    // Check if gameweek exists
+    let existingRow = null;
+    gwSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(1).value === gameweek) {
+        existingRow = num;
+      }
+    });
+    
+    if (existingRow) {
+      // Update existing
+      const row = gwSheet.getRow(existingRow);
+      row.getCell(2).value = status;
+      row.getCell(3).value = startDate;
+      row.getCell(4).value = endDate;
+      row.commit();
+    } else {
+      // Add new
+      gwSheet.addRow({ gameweek, status, startDate, endDate });
+    }
+    
+    await workbook.xlsx.writeFile(DATA_PATH);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Submit player performance for a match
+app.post('/api/fantasy/performance', async (req, res) => {
+  try {
+    const { matchId, gameweek, playerId, playerName, position, stats } = req.body;
+    
+    // Calculate fantasy points
+    const fantasyPoints = calculateFantasyPoints(stats, position);
+    
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    const perfSheet = workbook.getWorksheet('Player Performance');
+    
+    // Check if performance already exists
+    let existingRow = null;
+    perfSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(1).value === matchId && row.getCell(3).value === playerId) {
+        existingRow = num;
+      }
+    });
+    
+    const perfData = [
+      matchId,
+      gameweek,
+      playerId,
+      playerName,
+      position,
+      stats.runs || 0,
+      stats.ballsFaced || 0,
+      stats.fours || 0,
+      stats.sixes || 0,
+      stats.wickets || 0,
+      stats.oversBowled || 0,
+      stats.runsConceded || 0,
+      stats.maidens || 0,
+      stats.catches || 0,
+      stats.stumpings || 0,
+      stats.runOuts || 0,
+      fantasyPoints
+    ];
+    
+    if (existingRow) {
+      // Update existing
+      const row = perfSheet.getRow(existingRow);
+      perfData.forEach((value, index) => {
+        row.getCell(index + 1).value = value;
+      });
+      row.commit();
+    } else {
+      // Add new
+      perfSheet.addRow(perfData);
+    }
+    
+    await workbook.xlsx.writeFile(DATA_PATH);
+    
+    broadcast({
+      type: 'performance_updated',
+      gameweek,
+      playerId,
+      playerName,
+      fantasyPoints
+    });
+    
+    res.json({ success: true, fantasyPoints });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get leaderboard for a gameweek
+app.get('/api/fantasy/leaderboard/:gameweek', async (req, res) => {
+  try {
+    const gameweek = parseInt(req.params.gameweek);
+    
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const perfSheet = workbook.getWorksheet('Player Performance');
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    
+    // Get all sold players with team info
+    const teamPlayers = {};
+    soldSheet.eachRow((row, num) => {
+      if (num > 1) {
+        const playerId = row.getCell(1).value;
+        const teamId = row.getCell(4).value;
+        const teamName = row.getCell(5).value;
+        
+        if (!teamPlayers[teamId]) {
+          teamPlayers[teamId] = {
+            teamId,
+            teamName,
+            players: [],
+            totalPoints: 0
+          };
+        }
+        
+        teamPlayers[teamId].players.push({
+          playerId,
+          playerName: row.getCell(2).value,
+          position: row.getCell(3).value,
+          points: 0
+        });
+      }
+    });
+    
+    // Get performance data for this gameweek
+    perfSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(2).value === gameweek) {
+        const playerId = row.getCell(3).value;
+        const fantasyPoints = row.getCell(17).value || 0;
+        
+        // Find which team this player belongs to
+        Object.keys(teamPlayers).forEach(teamId => {
+          const player = teamPlayers[teamId].players.find(p => p.playerId === playerId);
+          if (player) {
+            player.points = fantasyPoints;
+            player.runs = row.getCell(6).value || 0;
+            player.wickets = row.getCell(10).value || 0;
+            player.catches = row.getCell(14).value || 0;
+            teamPlayers[teamId].totalPoints += fantasyPoints;
+          }
+        });
+      }
+    });
+    
+    // Convert to array and sort by points
+    const leaderboard = Object.values(teamPlayers).sort((a, b) => b.totalPoints - a.totalPoints);
+    
+    res.json({ gameweek, leaderboard });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get team performance for a specific gameweek
+app.get('/api/fantasy/team/:teamId/gameweek/:gameweek', async (req, res) => {
+  try {
+    const teamId = parseInt(req.params.teamId);
+    const gameweek = parseInt(req.params.gameweek);
+    
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(DATA_PATH);
+    
+    const perfSheet = workbook.getWorksheet('Player Performance');
+    const soldSheet = workbook.getWorksheet('Sold Players');
+    
+    // Get team's players
+    const teamPlayerIds = [];
+    soldSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(4).value === teamId) {
+        teamPlayerIds.push(row.getCell(1).value);
+      }
+    });
+    
+    // Get performance for team's players in this gameweek
+    const playerPerformances = [];
+    let totalPoints = 0;
+    
+    perfSheet.eachRow((row, num) => {
+      if (num > 1 && row.getCell(2).value === gameweek) {
+        const playerId = row.getCell(3).value;
+        if (teamPlayerIds.includes(playerId)) {
+          const perf = {
+            playerId,
+            playerName: row.getCell(4).value,
+            position: row.getCell(5).value,
+            runs: row.getCell(6).value || 0,
+            wickets: row.getCell(10).value || 0,
+            catches: row.getCell(14).value || 0,
+            fantasyPoints: row.getCell(17).value || 0
+          };
+          playerPerformances.push(perf);
+          totalPoints += perf.fantasyPoints;
+        }
+      }
+    });
+    
+    res.json({ teamId, gameweek, players: playerPerformances, totalPoints });
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });

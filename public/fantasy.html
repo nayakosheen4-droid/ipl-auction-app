@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Fantasy League</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fantasy-styles.css">
+</head>
+<body>
+    <div id="fantasyScreen" class="screen">
+        <header>
+            <div class="header-left">
+                <h1>🏆 IPL Fantasy League</h1>
+                <div id="gameweekInfo" class="gameweek-info">Gameweek: -</div>
+            </div>
+            <div class="header-right">
+                <button id="backToAuctionBtn" class="btn btn-secondary">← Back to Auction</button>
+                <button id="fantasyLogoutBtn" class="btn btn-danger">Logout</button>
+            </div>
+        </header>
+
+        <div class="fantasy-nav">
+            <button class="fantasy-nav-btn active" data-view="leaderboard">🏆 Leaderboard</button>
+            <button class="fantasy-nav-btn" data-view="myteam">👥 My Team</button>
+            <button class="fantasy-nav-btn admin-only hidden" data-view="admin">⚙️ Admin</button>
+        </div>
+
+        <div class="fantasy-content">
+            <!-- Leaderboard View -->
+            <div id="leaderboardView" class="fantasy-view">
+                <div class="view-header">
+                    <h2>Gameweek Leaderboard</h2>
+                    <select id="gameweekSelector" class="gw-selector">
+                        <option value="1">Gameweek 1</option>
+                    </select>
+                </div>
+                
+                <div id="leaderboardContent" class="leaderboard-content">
+                    <div class="loading-state">Loading leaderboard...</div>
+                </div>
+            </div>
+
+            <!-- My Team View -->
+            <div id="myteamView" class="fantasy-view hidden">
+                <div class="view-header">
+                    <h2>My Team Performance</h2>
+                    <select id="myteamGameweekSelector" class="gw-selector">
+                        <option value="1">Gameweek 1</option>
+                    </select>
+                </div>
+                
+                <div id="myteamContent" class="myteam-content">
+                    <div class="team-total-points">
+                        <span class="points-label">Total Points:</span>
+                        <span id="myteamTotalPoints" class="points-value">0</span>
+                    </div>
+                    <div id="myteamPlayers" class="myteam-players"></div>
+                </div>
+            </div>
+
+            <!-- Admin View -->
+            <div id="adminView" class="fantasy-view hidden">
+                <div class="view-header">
+                    <h2>Admin: Enter Match Results</h2>
+                </div>
+                
+                <div class="admin-fantasy-content">
+                    <!-- Gameweek Management -->
+                    <div class="admin-card">
+                        <h3>Gameweek Management</h3>
+                        <div class="form-group">
+                            <label>Gameweek Number:</label>
+                            <input type="number" id="gwNumber" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Status:</label>
+                            <select id="gwStatus">
+                                <option value="Upcoming">Upcoming</option>
+                                <option value="Active">Active</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                        <button id="setGameweekBtn" class="btn btn-admin">Set Gameweek</button>
+                    </div>
+
+                    <!-- Player Stats Entry -->
+                    <div class="admin-card">
+                        <h3>Enter Player Stats</h3>
+                        <div class="form-group">
+                            <label>Match ID:</label>
+                            <input type="text" id="matchId" placeholder="e.g., MI_vs_CSK_GW1">
+                        </div>
+                        <div class="form-group">
+                            <label>Gameweek:</label>
+                            <input type="number" id="statGameweek" min="1" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Player:</label>
+                            <select id="statPlayerSelect">
+                                <option value="">Select Player</option>
+                            </select>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="form-group">
+                                <label>Runs:</label>
+                                <input type="number" id="statRuns" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Balls Faced:</label>
+                                <input type="number" id="statBalls" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Fours:</label>
+                                <input type="number" id="statFours" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Sixes:</label>
+                                <input type="number" id="statSixes" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Wickets:</label>
+                                <input type="number" id="statWickets" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Overs:</label>
+                                <input type="number" id="statOvers" min="0" step="0.1" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Runs Conceded:</label>
+                                <input type="number" id="statRunsConceded" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Maidens:</label>
+                                <input type="number" id="statMaidens" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Catches:</label>
+                                <input type="number" id="statCatches" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Stumpings:</label>
+                                <input type="number" id="statStumpings" min="0" value="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Run Outs:</label>
+                                <input type="number" id="statRunOuts" min="0" value="0">
+                            </div>
+                        </div>
+                        
+                        <div id="pointsPreview" class="points-preview hidden">
+                            <strong>Calculated Points:</strong> <span id="previewPoints">0</span>
+                        </div>
+                        
+                        <div class="button-group">
+                            <button id="calculatePointsBtn" class="btn btn-secondary">Calculate Points</button>
+                            <button id="submitStatsBtn" class="btn btn-admin">Submit Stats</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    
+    <script src="fantasy.js"></script>
+</body>
+</html>

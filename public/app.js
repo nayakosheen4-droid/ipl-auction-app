@@ -87,6 +87,15 @@ async function loadTeams() {
 function setupEventListeners() {
     loginForm.addEventListener('submit', handleLogin);
     logoutBtn.addEventListener('click', handleLogout);
+    
+    // Fantasy league navigation
+    const fantasyBtn = document.getElementById('fantasyLeagueBtn');
+    if (fantasyBtn) {
+        fantasyBtn.addEventListener('click', () => {
+            window.location.href = '/fantasy.html';
+        });
+    }
+    
     viewTeamBtn.addEventListener('click', () => showMyTeam());
     positionFilter.addEventListener('change', filterPlayers);
     searchPlayer.addEventListener('input', filterPlayers);

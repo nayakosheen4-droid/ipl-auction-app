@@ -152,6 +152,15 @@ header {
     background: #5568d3;
 }
 
+.btn-fantasy {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.btn-fantasy:hover {
+    background: linear-gradient(135deg, #e082ea 0%, #e4465b 100%);
+}
+
 .btn-danger {
     background: #dc3545;
     color: white;
