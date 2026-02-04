@@ -1320,6 +1320,7 @@ app.get('/api/teams', (req, res) => {
   res.json(auctionState.teams.map(t => ({
     id: t.id,
     name: t.name,
+    shorthand: t.shorthand,
     budget: t.budget,
     color: t.color
   })));
@@ -1333,6 +1334,7 @@ app.get('/api/teams/detailed', async (req, res) => {
       return {
         id: team.id,
         name: team.name,
+        shorthand: team.shorthand,
         budget: team.budget,
         color: team.color,
         playerCount: players.length,
