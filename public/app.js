@@ -1137,8 +1137,19 @@ async function displayAllTeams() {
     teamsList.innerHTML = '<div style="padding: 10px; text-align: center; color: #999;">Loading teams...</div>';
     
     try {
+        console.log('📋 Fetching teams from:', `${API_BASE}/api/teams/detailed`);
         const response = await fetch(`${API_BASE}/api/teams/detailed`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
         const teamsData = await response.json();
+        console.log('✅ Teams loaded:', teamsData.length, 'teams');
+        
+        if (!Array.isArray(teamsData) || teamsData.length === 0) {
+            throw new Error('No teams data received');
+        }
         
         teamsList.innerHTML = '';
         
@@ -1157,7 +1168,11 @@ async function displayAllTeams() {
             teamsList.appendChild(div);
         });
     } catch (err) {
-        teamsList.innerHTML = '<div style="padding: 20px; text-align: center; color: #dc3545;">Failed to load teams</div>';
+        console.error('❌ Failed to load teams:', err);
+        teamsList.innerHTML = `<div style="padding: 20px; text-align: center; color: #dc3545;">
+            Failed to load teams<br>
+            <small style="color: #999;">${err.message}</small>
+        </div>`;
     }
 }
 

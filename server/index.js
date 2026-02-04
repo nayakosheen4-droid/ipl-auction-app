@@ -1405,6 +1405,13 @@ app.post('/api/auction/out', async (req, res) => {
     if (!auctionState.auctionActive) {
       return res.status(400).json({ error: 'No active auction' });
     }
+    
+    // Prevent marking out the team with the current highest bid
+    if (teamId === auctionState.currentBidder) {
+      return res.status(400).json({ 
+        error: 'Cannot mark out the team with the current highest bid!' 
+      });
+    }
 
     if (!auctionState.teamsOut.includes(teamId)) {
       auctionState.teamsOut.push(teamId);
