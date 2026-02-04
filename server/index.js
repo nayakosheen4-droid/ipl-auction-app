@@ -1684,6 +1684,58 @@ app.post('/api/autostats/clear-cache', (req, res) => {
   }
 });
 
+// Test: Fetch specific match by ID (for testing any match)
+app.post('/api/autostats/test-match', async (req, res) => {
+  try {
+    const { matchId } = req.body;
+    
+    if (!matchId) {
+      return res.status(400).json({ error: 'matchId required' });
+    }
+    
+    console.log(`🧪 TEST MODE: Fetching match ${matchId}`);
+    
+    // Don't wait for completion, respond immediately
+    res.json({ 
+      success: true, 
+      message: `Testing match ${matchId} in background`,
+      matchId 
+    });
+    
+    // Process in background
+    autoStatsService.testSpecificMatch(matchId);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get recent matches list (for finding match IDs)
+app.get('/api/autostats/matches', async (req, res) => {
+  try {
+    const cricketApi = require('./cricketApi');
+    const matchesData = await cricketApi.getCurrentMatches();
+    
+    // Return all matches with their IDs for testing
+    const matches = matchesData.data || [];
+    const matchList = matches.map(m => ({
+      id: m.id,
+      name: m.name,
+      series: m.series || m.seriesName,
+      status: m.status,
+      matchType: m.matchType,
+      matchEnded: m.matchEnded
+    }));
+    
+    res.json({ 
+      success: true, 
+      count: matchList.length,
+      matches: matchList 
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Initialize and start server
 initializeExcel().then(async () => {
   await loadTeamStateFromExcel();

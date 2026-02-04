@@ -339,10 +339,38 @@ function clearProcessedCache() {
   console.log('🗑️  Cleared processed matches cache');
 }
 
+/**
+ * Test specific match by ID (for testing any match, not just IPL)
+ */
+async function testSpecificMatch(matchId) {
+  console.log(`\n🧪 TEST MODE: Processing match ${matchId}`);
+  
+  try {
+    // Create a mock match object
+    const testMatch = {
+      id: matchId,
+      name: `Test Match ${matchId}`,
+      matchEnded: true, // Pretend it's completed for testing
+      status: 'Testing'
+    };
+    
+    // Remove from processed cache so we can reprocess
+    processedMatches.delete(matchId);
+    
+    // Process the match
+    await processMatch(testMatch);
+    
+    console.log(`✅ Test processing complete for match ${matchId}`);
+  } catch (err) {
+    console.error(`❌ Error testing match ${matchId}:`, err.message);
+  }
+}
+
 module.exports = {
   startAutoStatsService,
   setBroadcast,
   setCurrentGameweek,
   triggerImmediateFetch,
-  clearProcessedCache
+  clearProcessedCache,
+  testSpecificMatch
 };

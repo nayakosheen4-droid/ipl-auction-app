@@ -85,6 +85,10 @@ function setupEventListeners() {
         document.getElementById('fetchNowBtn').addEventListener('click', fetchStatsNow);
         document.getElementById('toggleAutoStatsBtn').addEventListener('click', toggleAutoStats);
         
+        // Testing tools
+        document.getElementById('listMatchesBtn').addEventListener('click', listAvailableMatches);
+        document.getElementById('testMatchBtn').addEventListener('click', testSpecificMatch);
+        
         // Load auto-stats status
         loadAutoStatsStatus();
     }
@@ -599,6 +603,88 @@ async function toggleAutoStats() {
         }
     } catch (err) {
         showToast('Failed to toggle auto-stats', 'error');
+    }
+}
+
+// List available matches
+async function listAvailableMatches() {
+    try {
+        const btn = document.getElementById('listMatchesBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Loading...';
+        
+        const response = await fetch(`${API_BASE}/api/autostats/matches`);
+        const data = await response.json();
+        
+        if (data.success && data.matches) {
+            console.log(`\n📋 Found ${data.count} matches:`);
+            console.log('=============================================');
+            
+            data.matches.forEach((match, index) => {
+                console.log(`\n${index + 1}. Match ID: ${match.id}`);
+                console.log(`   Name: ${match.name}`);
+                console.log(`   Series: ${match.series}`);
+                console.log(`   Status: ${match.status}`);
+                console.log(`   Type: ${match.matchType}`);
+                console.log(`   Completed: ${match.matchEnded ? 'Yes' : 'No'}`);
+            });
+            
+            console.log('\n=============================================');
+            console.log('💡 Copy a Match ID and paste in "Test Specific Match ID" field');
+            
+            showToast(`Found ${data.count} matches! Check browser console (F12)`, 'success');
+        } else {
+            showToast('No matches found', 'info');
+        }
+        
+        btn.disabled = false;
+        btn.textContent = '📋 List Available Matches';
+    } catch (err) {
+        showToast('Failed to list matches', 'error');
+        const btn = document.getElementById('listMatchesBtn');
+        btn.disabled = false;
+        btn.textContent = '📋 List Available Matches';
+    }
+}
+
+// Test specific match
+async function testSpecificMatch() {
+    try {
+        const matchId = document.getElementById('testMatchId').value.trim();
+        
+        if (!matchId) {
+            showToast('Please enter a Match ID', 'error');
+            return;
+        }
+        
+        const btn = document.getElementById('testMatchBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Processing...';
+        
+        const response = await fetch(`${API_BASE}/api/autostats/test-match`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ matchId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(`Testing match ${matchId}! Check console for progress`, 'success');
+            console.log(`🧪 Testing match ${matchId} - processing in background...`);
+        } else {
+            showToast('Failed to test match', 'error');
+        }
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = '🧪 Test This Match';
+        }, 3000);
+    } catch (err) {
+        showToast('Failed to test match', 'error');
+        const btn = document.getElementById('testMatchBtn');
+        btn.disabled = false;
+        btn.textContent = '🧪 Test This Match';
     }
 }
 
