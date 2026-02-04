@@ -65,21 +65,18 @@ async function getCurrentMatches() {
  * Get matches from RapidAPI Cricbuzz
  */
 async function getRapidAPIMatches() {
-  // Common Cricbuzz API endpoint patterns
-  const possibleEndpoints = [
-    '/cricket-matches',
-    '/matches',
-    '/schedule',
-    '/live-scores',
-    '/series',
-    '/cricket-series',
-    '/recent-matches',
-    '/current-matches'
+  // Correct endpoints based on API documentation
+  const endpoints = [
+    '/matches/live',      // Live matches
+    '/matches/recent',    // Recent matches (best for completed matches)
+    '/matches/upcoming'   // Upcoming matches
   ];
   
-  for (const endpoint of possibleEndpoints) {
+  let allMatches = [];
+  
+  for (const endpoint of endpoints) {
     try {
-      console.log(`🔍 Trying endpoint: ${RAPIDAPI_BASE}${endpoint}`);
+      console.log(`🔍 Fetching from: ${RAPIDAPI_BASE}${endpoint}`);
       const response = await axios.get(`${RAPIDAPI_BASE}${endpoint}`, {
         headers: {
           'x-rapidapi-key': RAPIDAPI_KEY,
@@ -88,34 +85,23 @@ async function getRapidAPIMatches() {
         timeout: 10000
       });
       
-      console.log(`✅ Success with endpoint: ${endpoint}`);
-      console.log('📊 Response keys:', response.data ? Object.keys(response.data).join(', ') : 'null');
-      console.log('📊 Sample:', JSON.stringify(response.data).substring(0, 300));
+      console.log(`✅ Success with ${endpoint}`);
+      console.log('📊 Response structure:', JSON.stringify(response.data).substring(0, 400));
       
-      // Transform RapidAPI response to common format
+      // Transform and add to allMatches
       const transformed = transformRapidAPIMatches(response.data);
-      console.log(`📋 Transformed to ${transformed.length} matches`);
+      console.log(`   Found ${transformed.length} matches from ${endpoint}`);
+      allMatches = allMatches.concat(transformed);
       
-      if (transformed.length > 0) {
-        return { data: transformed };
-      }
     } catch (error) {
       const status = error.response?.status;
       const message = error.response?.data?.message || error.message;
-      
-      if (status === 404 || message.includes('does not exist')) {
-        console.log(`   ❌ ${endpoint}: Not found`);
-      } else {
-        console.error(`   ❌ ${endpoint}: ${message}`);
-      }
+      console.error(`   ❌ ${endpoint}: ${message} (Status: ${status})`);
     }
   }
   
-  // If all endpoints fail, return empty
-  console.error('❌ No working matches endpoint found.');
-  console.log('💡 TIP: Find match IDs from Cricbuzz.com and use Test Match feature!');
-  console.log('💡 Or share the available endpoints from RapidAPI playground.');
-  return { data: [] };
+  console.log(`📋 Total matches found: ${allMatches.length}`);
+  return { data: allMatches };
 }
 
 /**
@@ -250,30 +236,41 @@ async function getMatchScorecard(matchId) {
  * Get scorecard from RapidAPI Cricbuzz
  */
 async function getRapidAPIScorecard(matchId) {
-  try {
-    const response = await axios.get(`${RAPIDAPI_BASE}/cricket-match-info`, {
-      params: { matchid: matchId },
-      headers: {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': RAPIDAPI_HOST
-      },
-      timeout: 10000
-    });
-    
-    console.log(`✅ RapidAPI scorecard received for match ${matchId}`);
-    
-    // Transform to common format
-    return {
-      data: transformRapidAPIScorecard(response.data)
-    };
-  } catch (error) {
-    console.error('❌ RapidAPI scorecard error:', error.message);
-    if (error.response) {
-      console.error('   Status:', error.response.status);
-      console.error('   Data:', JSON.stringify(error.response.data).substring(0, 200));
+  // Try both possible scorecard endpoints
+  const endpoints = [
+    { path: '/matches/scoreboard', param: 'matchid' },
+    { path: '/matches/info', param: 'matchid' }
+  ];
+  
+  for (const endpoint of endpoints) {
+    try {
+      console.log(`🔍 Fetching scorecard from: ${RAPIDAPI_BASE}${endpoint.path}?${endpoint.param}=${matchId}`);
+      const response = await axios.get(`${RAPIDAPI_BASE}${endpoint.path}`, {
+        params: { [endpoint.param]: matchId },
+        headers: {
+          'x-rapidapi-key': RAPIDAPI_KEY,
+          'x-rapidapi-host': RAPIDAPI_HOST
+        },
+        timeout: 10000
+      });
+      
+      console.log(`✅ Scorecard received for match ${matchId} from ${endpoint.path}`);
+      console.log('📊 Response structure:', JSON.stringify(response.data).substring(0, 400));
+      
+      // Transform to common format
+      return {
+        data: transformRapidAPIScorecard(response.data)
+      };
+    } catch (error) {
+      console.error(`   ❌ ${endpoint.path}: ${error.message}`);
+      if (error.response) {
+        console.error('      Status:', error.response.status);
+      }
     }
-    return null;
   }
+  
+  console.error(`❌ Could not fetch scorecard for match ${matchId} from any endpoint`);
+  return null;
 }
 
 /**
