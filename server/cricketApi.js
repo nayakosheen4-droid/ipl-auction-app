@@ -6,7 +6,7 @@ const API_PROVIDER = process.env.CRICKET_API_PROVIDER || 'rapidapi'; // 'rapidap
 
 // RapidAPI Cricbuzz (RECOMMENDED - More reliable, free tier available)
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || '';
-const RAPIDAPI_HOST = 'cricbuzz-cricket.p.rapidapi.com';
+const RAPIDAPI_HOST = 'free-cricbuzz-cricket-api.p.rapidapi.com';
 const RAPIDAPI_BASE = `https://${RAPIDAPI_HOST}`;
 
 // CricketData.org (Alternative)
@@ -66,13 +66,16 @@ async function getCurrentMatches() {
  */
 async function getRapidAPIMatches() {
   try {
-    const response = await axios.get(`${RAPIDAPI_BASE}/matches/v1/recent`, {
+    // Try the recent matches endpoint
+    const response = await axios.get(`${RAPIDAPI_BASE}/cricket-recent-matches`, {
       headers: {
-        'X-RapidAPI-Key': RAPIDAPI_KEY,
-        'X-RapidAPI-Host': RAPIDAPI_HOST
+        'x-rapidapi-key': RAPIDAPI_KEY,
+        'x-rapidapi-host': RAPIDAPI_HOST
       },
       timeout: 10000
     });
+    
+    console.log('✅ RapidAPI response received');
     
     // Transform RapidAPI response to common format
     return {
@@ -80,6 +83,10 @@ async function getRapidAPIMatches() {
     };
   } catch (error) {
     console.error('❌ RapidAPI error:', error.message);
+    if (error.response) {
+      console.error('   Status:', error.response.status);
+      console.error('   Data:', JSON.stringify(error.response.data));
+    }
     throw error;
   }
 }
@@ -168,13 +175,16 @@ async function getMatchScorecard(matchId) {
  */
 async function getRapidAPIScorecard(matchId) {
   try {
-    const response = await axios.get(`${RAPIDAPI_BASE}/mcenter/v1/${matchId}`, {
+    const response = await axios.get(`${RAPIDAPI_BASE}/cricket-match-info`, {
+      params: { matchid: matchId },
       headers: {
-        'X-RapidAPI-Key': RAPIDAPI_KEY,
-        'X-RapidAPI-Host': RAPIDAPI_HOST
+        'x-rapidapi-key': RAPIDAPI_KEY,
+        'x-rapidapi-host': RAPIDAPI_HOST
       },
       timeout: 10000
     });
+    
+    console.log(`✅ RapidAPI scorecard received for match ${matchId}`);
     
     // Transform to common format
     return {
@@ -182,6 +192,10 @@ async function getRapidAPIScorecard(matchId) {
     };
   } catch (error) {
     console.error('❌ RapidAPI scorecard error:', error.message);
+    if (error.response) {
+      console.error('   Status:', error.response.status);
+      console.error('   Data:', JSON.stringify(error.response.data).substring(0, 200));
+    }
     return null;
   }
 }
