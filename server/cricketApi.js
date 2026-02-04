@@ -76,10 +76,15 @@ async function getRapidAPIMatches() {
     });
     
     console.log('✅ RapidAPI response received');
+    console.log('📊 Raw response structure:', JSON.stringify(response.data).substring(0, 500));
+    console.log('📊 Response keys:', Object.keys(response.data));
     
     // Transform RapidAPI response to common format
+    const transformed = transformRapidAPIMatches(response.data);
+    console.log(`📋 Transformed to ${transformed.length} matches`);
+    
     return {
-      data: transformRapidAPIMatches(response.data)
+      data: transformed
     };
   } catch (error) {
     console.error('❌ RapidAPI error:', error.message);
@@ -114,36 +119,85 @@ async function getCricketDataMatches() {
 function transformRapidAPIMatches(rapidData) {
   const matches = [];
   
-  if (!rapidData || !rapidData.typeMatches) {
-    return matches;
+  console.log('🔍 Analyzing response structure...');
+  
+  // Check if response has data directly in an array
+  if (Array.isArray(rapidData)) {
+    console.log('📦 Response is array format');
+    rapidData.forEach(match => {
+      if (match) {
+        matches.push({
+          id: match.id || match.matchId || match.match_id,
+          name: match.name || match.title || `${match.team1} vs ${match.team2}`,
+          matchType: match.matchType || match.format || match.match_type,
+          status: match.status || match.state,
+          series: match.series || match.tournament || match.competition,
+          seriesName: match.series || match.tournament || match.competition,
+          matchEnded: match.matchEnded || match.completed || match.state === 'Complete',
+          team1: match.team1 || match.teamA,
+          team2: match.team2 || match.teamB,
+          venue: match.venue || match.ground
+        });
+      }
+    });
+  }
+  // Check for typeMatches structure (original Cricbuzz format)
+  else if (rapidData && rapidData.typeMatches) {
+    console.log('📦 Response has typeMatches structure');
+    rapidData.typeMatches.forEach(typeMatch => {
+      if (typeMatch.seriesMatches) {
+        typeMatch.seriesMatches.forEach(seriesMatch => {
+          if (seriesMatch.seriesAdWrapper && seriesMatch.seriesAdWrapper.matches) {
+            seriesMatch.seriesAdWrapper.matches.forEach(matchInfo => {
+              const match = matchInfo.matchInfo;
+              if (match) {
+                matches.push({
+                  id: match.matchId?.toString(),
+                  name: `${match.team1?.teamName} vs ${match.team2?.teamName}`,
+                  matchType: match.matchFormat,
+                  status: match.status,
+                  series: seriesMatch.seriesAdWrapper.seriesName,
+                  seriesName: seriesMatch.seriesAdWrapper.seriesName,
+                  matchEnded: match.state === 'Complete',
+                  team1: match.team1?.teamName,
+                  team2: match.team2?.teamName,
+                  venue: match.venueInfo?.ground
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+  // Check for matches array directly
+  else if (rapidData && rapidData.matches) {
+    console.log('📦 Response has matches array');
+    rapidData.matches.forEach(match => {
+      if (match) {
+        matches.push({
+          id: match.id || match.matchId,
+          name: match.name || match.title,
+          matchType: match.matchType || match.format,
+          status: match.status,
+          series: match.series || match.tournament,
+          seriesName: match.series || match.tournament,
+          matchEnded: match.matchEnded || match.completed,
+          team1: match.team1,
+          team2: match.team2,
+          venue: match.venue
+        });
+      }
+    });
+  }
+  // Log if structure is unrecognized
+  else {
+    console.log('⚠️  Unrecognized response structure');
+    console.log('   Available keys:', rapidData ? Object.keys(rapidData).join(', ') : 'null');
+    console.log('   Sample data:', JSON.stringify(rapidData).substring(0, 300));
   }
   
-  rapidData.typeMatches.forEach(typeMatch => {
-    if (typeMatch.seriesMatches) {
-      typeMatch.seriesMatches.forEach(seriesMatch => {
-        if (seriesMatch.seriesAdWrapper && seriesMatch.seriesAdWrapper.matches) {
-          seriesMatch.seriesAdWrapper.matches.forEach(matchInfo => {
-            const match = matchInfo.matchInfo;
-            if (match) {
-              matches.push({
-                id: match.matchId?.toString(),
-                name: `${match.team1?.teamName} vs ${match.team2?.teamName}`,
-                matchType: match.matchFormat,
-                status: match.status,
-                series: seriesMatch.seriesAdWrapper.seriesName,
-                seriesName: seriesMatch.seriesAdWrapper.seriesName,
-                matchEnded: match.state === 'Complete',
-                team1: match.team1?.teamName,
-                team2: match.team2?.teamName,
-                venue: match.venueInfo?.ground
-              });
-            }
-          });
-        }
-      });
-    }
-  });
-  
+  console.log(`✅ Transformed ${matches.length} matches`);
   return matches;
 }
 
