@@ -312,6 +312,11 @@ function handleWebSocketMessage(data) {
             updateAuctionState(data.state);
             updateNominationInfo(data.state); // Update nomination display
             break;
+        case 'team_unmarked':
+            updateAuctionState(data.state);
+            updateNominationInfo(data.state); // Update nomination display
+            showToast('Team marked back IN', 'info');
+            break;
         case 'rtm_opportunity':
             showRTMPhase(data);
             break;
@@ -1061,8 +1066,23 @@ function adminMarkTeamOut(teamId) {
         return;
     }
     
+    console.log('🔴 Admin marking team OUT:', teamId);
     ws.send(JSON.stringify({
         type: 'admin_mark_team_out',
+        teamId: teamId
+    }));
+}
+
+// Admin unmark team (mark back in)
+function adminUnmarkTeamOut(teamId) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+        showToast('Not connected to server', 'error');
+        return;
+    }
+    
+    console.log('🟢 Admin marking team back IN:', teamId);
+    ws.send(JSON.stringify({
+        type: 'admin_unmark_team_out',
         teamId: teamId
     }));
 }
@@ -1074,15 +1094,34 @@ function renderAdminTeamOutButtons(state) {
     
     state.teams.forEach(team => {
         const isOut = state.teamsOut.includes(team.id);
+        const isCurrentBidder = state.currentBidder === team.id;
+        
         const btn = document.createElement('button');
         btn.className = `admin-team-out-btn ${isOut ? 'marked-out' : ''}`;
-        btn.textContent = team.name;
-        btn.disabled = isOut;
+        
+        // Show current bidder badge
+        if (isCurrentBidder && !isOut) {
+            btn.textContent = `${team.name} 👑 (Current Bid)`;
+            btn.title = 'Cannot mark out - has current highest bid';
+        } else {
+            btn.textContent = isOut ? `${team.name} (OUT)` : team.name;
+        }
+        
+        // Toggle functionality
         btn.onclick = () => {
-            if (!isOut) {
-                adminMarkTeamOut(team.id);
+            if (isOut) {
+                // Unmark (mark back in)
+                adminUnmarkTeamOut(team.id);
+            } else {
+                // Mark out (only if not current bidder)
+                if (isCurrentBidder) {
+                    showToast('Cannot mark out the team with the current highest bid!', 'error');
+                } else {
+                    adminMarkTeamOut(team.id);
+                }
             }
         };
+        
         container.appendChild(btn);
     });
 }

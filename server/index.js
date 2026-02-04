@@ -1087,9 +1087,10 @@ wss.on('connection', (ws) => {
         });
       } else if (data.type === 'admin_mark_team_out') {
         // Admin mark team out
-        if (auctionState.auctionActive && data.teamId) {
+        if (auctionState.auctionActive && data.teamId !== undefined) {
           // Prevent marking out the team with the current highest bid
           if (data.teamId === auctionState.currentBidder) {
+            console.log(`❌ Admin tried to mark out current bidder (Team ${data.teamId})`);
             // Send error back to admin
             ws.send(JSON.stringify({
               type: 'error',
@@ -1100,6 +1101,7 @@ wss.on('connection', (ws) => {
           
           if (!auctionState.teamsOut.includes(data.teamId)) {
             auctionState.teamsOut.push(data.teamId);
+            console.log(`✅ Admin marked Team ${data.teamId} as OUT`);
             
             broadcast({
               type: 'team_out',
@@ -1108,6 +1110,23 @@ wss.on('connection', (ws) => {
             
             // Check if only one team remains and start timer
             checkAndStartTimer();
+          }
+        }
+      } else if (data.type === 'admin_unmark_team_out') {
+        // Admin unmark team (mark back in)
+        if (auctionState.auctionActive && data.teamId !== undefined) {
+          const index = auctionState.teamsOut.indexOf(data.teamId);
+          if (index > -1) {
+            auctionState.teamsOut.splice(index, 1);
+            console.log(`✅ Admin unmarked Team ${data.teamId} - back IN auction`);
+            
+            // Stop timer if it was running (since we now have more teams)
+            stopAuctionTimer();
+            
+            broadcast({
+              type: 'team_unmarked',
+              state: auctionState
+            });
           }
         }
       }

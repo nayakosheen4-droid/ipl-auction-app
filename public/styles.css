@@ -739,14 +739,24 @@ header {
 .admin-team-out-btn:hover {
     background: #dc3545;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 .admin-team-out-btn.marked-out {
     background: #6c757d;
     border-color: #6c757d;
     color: white;
-    opacity: 0.6;
-    cursor: not-allowed;
+    opacity: 0.8;
+    cursor: pointer; /* Changed: Allow clicking to toggle back */
+}
+
+.admin-team-out-btn.marked-out:hover {
+    opacity: 1;
+    background: #28a745; /* Green on hover to indicate "mark back in" */
+    border-color: #28a745;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
 .admin-buttons {
