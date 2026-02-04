@@ -86,12 +86,23 @@
                         <!-- Testing Tools -->
                         <div class="test-tools" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid rgba(255,255,255,0.2);">
                             <h4 style="color: white; margin-bottom: 10px;">🧪 Testing Tools</h4>
+                            
+                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                                <p style="color: white; font-size: 0.9rem; margin: 0;">
+                                    💡 <strong>Tip:</strong> Free Cricbuzz API may not have a match list endpoint.<br>
+                                    Find match IDs from <a href="https://www.cricbuzz.com" target="_blank" style="color: #ffd700;">Cricbuzz.com</a> URLs!
+                                </p>
+                            </div>
+                            
                             <div class="button-group" style="margin-bottom: 10px;">
-                                <button id="listMatchesBtn" class="btn btn-secondary">📋 List Available Matches</button>
+                                <button id="listMatchesBtn" class="btn btn-secondary">📋 Try List Matches</button>
                             </div>
                             <div class="form-group">
                                 <label style="color: white;">Test Specific Match ID:</label>
-                                <input type="text" id="testMatchId" placeholder="e.g., 102040" style="width: 100%;">
+                                <input type="text" id="testMatchId" placeholder="e.g., 102040 or 95353" style="width: 100%;">
+                                <small style="color: rgba(255,255,255,0.7); display: block; margin-top: 5px;">
+                                    Match IDs can be found in Cricbuzz URLs: cricbuzz.com/live-cricket-scores/<strong>95353</strong>/...
+                                </small>
                             </div>
                             <button id="testMatchBtn" class="btn btn-admin">🧪 Test This Match</button>
                         </div>

@@ -65,35 +65,55 @@ async function getCurrentMatches() {
  * Get matches from RapidAPI Cricbuzz
  */
 async function getRapidAPIMatches() {
-  try {
-    // Try the recent matches endpoint
-    const response = await axios.get(`${RAPIDAPI_BASE}/cricket-recent-matches`, {
-      headers: {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': RAPIDAPI_HOST
-      },
-      timeout: 10000
-    });
-    
-    console.log('✅ RapidAPI response received');
-    console.log('📊 Raw response structure:', JSON.stringify(response.data).substring(0, 500));
-    console.log('📊 Response keys:', Object.keys(response.data));
-    
-    // Transform RapidAPI response to common format
-    const transformed = transformRapidAPIMatches(response.data);
-    console.log(`📋 Transformed to ${transformed.length} matches`);
-    
-    return {
-      data: transformed
-    };
-  } catch (error) {
-    console.error('❌ RapidAPI error:', error.message);
-    if (error.response) {
-      console.error('   Status:', error.response.status);
-      console.error('   Data:', JSON.stringify(error.response.data));
+  // Try multiple possible endpoints
+  const possibleEndpoints = [
+    '/matches',
+    '/cricket-matches', 
+    '/live-matches',
+    '/schedule',
+    '/cricket-schedule'
+  ];
+  
+  for (const endpoint of possibleEndpoints) {
+    try {
+      console.log(`🔍 Trying endpoint: ${endpoint}`);
+      const response = await axios.get(`${RAPIDAPI_BASE}${endpoint}`, {
+        headers: {
+          'x-rapidapi-key': RAPIDAPI_KEY,
+          'x-rapidapi-host': RAPIDAPI_HOST
+        },
+        timeout: 10000
+      });
+      
+      console.log(`✅ Success with endpoint: ${endpoint}`);
+      console.log('📊 Raw response structure:', JSON.stringify(response.data).substring(0, 500));
+      console.log('📊 Response keys:', Object.keys(response.data));
+      
+      // Transform RapidAPI response to common format
+      const transformed = transformRapidAPIMatches(response.data);
+      console.log(`📋 Transformed to ${transformed.length} matches`);
+      
+      return {
+        data: transformed
+      };
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log(`   ❌ Endpoint ${endpoint} not found, trying next...`);
+        continue;
+      } else {
+        console.error(`   ❌ Error with ${endpoint}:`, error.message);
+        if (error.response) {
+          console.error('      Status:', error.response.status);
+          console.error('      Data:', JSON.stringify(error.response.data));
+        }
+      }
     }
-    throw error;
   }
+  
+  // If all endpoints fail, return empty
+  console.error('❌ All endpoints failed. This API might not have a matches list endpoint.');
+  console.log('💡 You can still test specific matches using the Test Match feature!');
+  return { data: [] };
 }
 
 /**
