@@ -609,7 +609,7 @@ async function getTeamPlayers(teamId) {
     await workbook.xlsx.readFile(DATA_PATH);
     
     const soldSheet = workbook.getWorksheet('Sold Players');
-    const playersSheet = workbook.getWorksheet('Players');
+    const playersSheet = workbook.getWorksheet('Available Players');
     
     if (!soldSheet || !playersSheet) {
       console.error('❌ Required sheets not found in Excel');
@@ -1272,7 +1272,7 @@ app.get('/api/players/sold', async (req, res) => {
     await workbook.xlsx.readFile(DATA_PATH);
     
     const soldSheet = workbook.getWorksheet('Sold Players');
-    const playersSheet = workbook.getWorksheet('Players');
+    const playersSheet = workbook.getWorksheet('Available Players');
     
     if (!soldSheet || !playersSheet) {
       return res.status(500).json({ error: 'Required sheets not found' });
