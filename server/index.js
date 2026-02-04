@@ -630,15 +630,29 @@ async function getTeamPlayers(teamId) {
     
     // Now process sold players for this team
     const players = [];
+    let totalRows = 0;
     soldSheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) { // Skip header
+        totalRows++;
+        
+        // Debug: Log ALL cell values for this row
+        console.log(`  📋 Row ${rowNumber} raw values:`, {
+          cell1: row.getCell(1).value,
+          cell2: row.getCell(2).value,
+          cell3: row.getCell(3).value,
+          cell4: row.getCell(4).value,
+          cell5: row.getCell(5).value,
+          cell6: row.getCell(6).value,
+          cell7: row.getCell(7).value
+        });
+        
         const rowTeamId = row.getCell(4).value;
         
         // Convert both to numbers for comparison (handle type mismatches)
         const rowTeamIdNum = typeof rowTeamId === 'number' ? rowTeamId : parseInt(rowTeamId);
         const teamIdNum = typeof teamId === 'number' ? teamId : parseInt(teamId);
         
-        console.log(`  Row ${rowNumber}: Comparing rowTeamId=${rowTeamIdNum} (type:${typeof rowTeamId}) with teamId=${teamIdNum} (type:${typeof teamId}), match=${rowTeamIdNum === teamIdNum}`);
+        console.log(`  🔍 Comparing rowTeamId=${rowTeamIdNum} (type:${typeof rowTeamId}) with teamId=${teamIdNum} (type:${typeof teamId}), match=${rowTeamIdNum === teamIdNum}`);
         
         if (rowTeamIdNum === teamIdNum) {
           const playerId = row.getCell(1).value;
@@ -659,6 +673,8 @@ async function getTeamPlayers(teamId) {
         }
       }
     });
+    
+    console.log(`📊 Processed ${totalRows} total rows in Sold Players sheet, found ${players.length} players for team ${teamId}`);
 
     console.log(`✅ Found ${players.length} players for team ${teamId}`);
     return players;
@@ -1274,8 +1290,24 @@ app.get('/api/players/sold', async (req, res) => {
     
     // Get all sold players
     const soldPlayers = [];
+    let rowCount = 0;
     soldSheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) {
+        rowCount++;
+        
+        // Debug: Log first few rows
+        if (rowCount <= 5) {
+          console.log(`  📋 Sold Players Row ${rowNumber}:`, {
+            cell1: row.getCell(1).value,
+            cell2: row.getCell(2).value,
+            cell3: row.getCell(3).value,
+            cell4: row.getCell(4).value,
+            cell5: row.getCell(5).value,
+            cell6: row.getCell(6).value,
+            cell7: row.getCell(7).value
+          });
+        }
+        
         const playerId = row.getCell(1).value;
         const playerName = row.getCell(2).value;
         const position = row.getCell(3).value;
@@ -1285,16 +1317,21 @@ app.get('/api/players/sold', async (req, res) => {
         const rtmUsed = row.getCell(7).value === 'Yes';
         const isOverseas = overseasMap.get(playerId) || false;
         
-        soldPlayers.push({
-          playerId,
-          playerName,
-          position,
-          teamId,
-          teamName,
-          finalPrice,
-          rtmUsed,
-          overseas: isOverseas
-        });
+        // Only add if we have valid data
+        if (playerName && teamName && finalPrice) {
+          soldPlayers.push({
+            playerId,
+            playerName,
+            position,
+            teamId,
+            teamName,
+            finalPrice,
+            rtmUsed,
+            overseas: isOverseas
+          });
+        } else {
+          console.warn(`  ⚠️  Row ${rowNumber} missing data: playerName=${playerName}, teamName=${teamName}, price=${finalPrice}`);
+        }
       }
     });
     
