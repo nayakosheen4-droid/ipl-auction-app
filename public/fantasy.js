@@ -80,7 +80,17 @@ function setupEventListeners() {
         document.getElementById('setGameweekBtn').addEventListener('click', setGameweek);
         document.getElementById('calculatePointsBtn').addEventListener('click', calculatePreview);
         document.getElementById('submitStatsBtn').addEventListener('click', submitPlayerStats);
+        
+        // Auto-stats controls
+        document.getElementById('fetchNowBtn').addEventListener('click', fetchStatsNow);
+        document.getElementById('toggleAutoStatsBtn').addEventListener('click', toggleAutoStats);
+        
+        // Load auto-stats status
+        loadAutoStatsStatus();
     }
+    
+    // Setup WebSocket for live updates
+    setupWebSocket();
 }
 
 // Show specific view
@@ -489,6 +499,205 @@ function showToast(message, type = 'info') {
     setTimeout(() => {
         toast.classList.add('hidden');
     }, 3000);
+}
+
+// ========================================
+// AUTO-STATS FUNCTIONS
+// ========================================
+
+// Load auto-stats service status
+async function loadAutoStatsStatus() {
+    try {
+        const response = await fetch(`${API_BASE}/api/autostats/status`);
+        const data = await response.json();
+        
+        updateAutoStatsUI(data);
+    } catch (err) {
+        console.error('Failed to load auto-stats status:', err);
+    }
+}
+
+// Update auto-stats UI
+function updateAutoStatsUI(status) {
+    const statusBadge = document.getElementById('autoStatsStatus');
+    const apiKeyStatus = document.getElementById('apiKeyStatus');
+    const toggleBtn = document.getElementById('toggleAutoStatsBtn');
+    
+    if (status.enabled) {
+        statusBadge.textContent = 'Enabled';
+        statusBadge.className = 'status-badge status-enabled';
+        toggleBtn.textContent = 'Disable';
+        toggleBtn.className = 'btn btn-danger';
+    } else {
+        statusBadge.textContent = 'Disabled';
+        statusBadge.className = 'status-badge status-disabled';
+        toggleBtn.textContent = 'Enable';
+        toggleBtn.className = 'btn btn-secondary';
+    }
+    
+    if (status.apiKeyConfigured) {
+        apiKeyStatus.textContent = 'API Key: ✓ Configured';
+        apiKeyStatus.style.color = 'rgba(255,255,255,0.95)';
+    } else {
+        apiKeyStatus.textContent = 'API Key: ✗ Not Set';
+        apiKeyStatus.style.color = 'rgba(255,255,255,0.7)';
+    }
+}
+
+// Fetch stats now (manual trigger)
+async function fetchStatsNow() {
+    try {
+        const btn = document.getElementById('fetchNowBtn');
+        btn.disabled = true;
+        btn.textContent = '⏳ Fetching...';
+        
+        const response = await fetch(`${API_BASE}/api/autostats/fetch`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Stats fetch started! Updates will appear automatically', 'success');
+        }
+        
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.textContent = '🔄 Fetch Now';
+        }, 3000);
+    } catch (err) {
+        showToast('Failed to trigger stats fetch', 'error');
+        const btn = document.getElementById('fetchNowBtn');
+        btn.disabled = false;
+        btn.textContent = '🔄 Fetch Now';
+    }
+}
+
+// Toggle auto-stats service
+async function toggleAutoStats() {
+    try {
+        const response = await fetch(`${API_BASE}/api/autostats/status`);
+        const currentStatus = await response.json();
+        
+        const newEnabled = !currentStatus.enabled;
+        
+        const toggleResponse = await fetch(`${API_BASE}/api/autostats/toggle`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ enabled: newEnabled })
+        });
+        
+        const data = await toggleResponse.json();
+        
+        if (data.success) {
+            updateAutoStatsUI({ enabled: newEnabled, apiKeyConfigured: currentStatus.apiKeyConfigured });
+            showToast(newEnabled ? 'Auto-stats enabled' : 'Auto-stats disabled', 'success');
+        }
+    } catch (err) {
+        showToast('Failed to toggle auto-stats', 'error');
+    }
+}
+
+// ========================================
+// WEBSOCKET FOR LIVE UPDATES
+// ========================================
+
+let ws = null;
+
+function setupWebSocket() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}`;
+    
+    try {
+        ws = new WebSocket(wsUrl);
+        
+        ws.onopen = () => {
+            console.log('🔌 WebSocket connected for fantasy updates');
+            
+            // Register for updates
+            ws.send(JSON.stringify({
+                type: 'register',
+                teamId: isAdmin ? 0 : currentTeam.id,
+                teamName: isAdmin ? 'Admin' : currentTeam.name
+            }));
+        };
+        
+        ws.onmessage = (event) => {
+            try {
+                const message = JSON.parse(event.data);
+                handleWebSocketMessage(message);
+            } catch (err) {
+                console.error('Failed to parse WebSocket message:', err);
+            }
+        };
+        
+        ws.onclose = () => {
+            console.log('🔌 WebSocket disconnected, reconnecting in 5s...');
+            setTimeout(setupWebSocket, 5000);
+        };
+        
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+    } catch (err) {
+        console.error('Failed to setup WebSocket:', err);
+    }
+}
+
+function handleWebSocketMessage(message) {
+    switch (message.type) {
+        case 'auto_stats_update':
+            handleAutoStatsUpdate(message);
+            break;
+            
+        case 'match_processed':
+            handleMatchProcessed(message);
+            break;
+            
+        case 'performance_updated':
+            // Refresh current view
+            const activeView = document.querySelector('.fantasy-nav-btn.active')?.dataset.view;
+            if (activeView === 'leaderboard') {
+                loadLeaderboard(currentGameweek);
+            } else if (activeView === 'myteam') {
+                loadMyTeamPerformance(currentGameweek);
+            }
+            break;
+    }
+}
+
+function handleAutoStatsUpdate(data) {
+    console.log(`📊 Auto-update: ${data.playerName} (${data.teamName}) - ${data.fantasyPoints} pts`);
+    
+    // Show toast notification
+    showToast(
+        `${data.playerName} (${data.teamName}): ${data.fantasyPoints} pts - ${data.stats.runs}R ${data.stats.wickets}W`,
+        'info'
+    );
+    
+    // Refresh leaderboard if on that view
+    const activeView = document.querySelector('.fantasy-nav-btn.active')?.dataset.view;
+    if (activeView === 'leaderboard' && data.gameweek === currentGameweek) {
+        setTimeout(() => loadLeaderboard(currentGameweek), 1000);
+    }
+}
+
+function handleMatchProcessed(data) {
+    console.log(`✅ Match processed: ${data.matchName} - ${data.playersUpdated} players updated`);
+    
+    showToast(
+        `Match ${data.matchName} processed! ${data.playersUpdated} players updated`,
+        'success'
+    );
+    
+    // Refresh current view
+    const activeView = document.querySelector('.fantasy-nav-btn.active')?.dataset.view;
+    if (activeView === 'leaderboard' && data.gameweek === currentGameweek) {
+        loadLeaderboard(currentGameweek);
+    } else if (activeView === 'myteam' && data.gameweek === currentGameweek) {
+        loadMyTeamPerformance(currentGameweek);
+    }
 }
 
 // Initialize app

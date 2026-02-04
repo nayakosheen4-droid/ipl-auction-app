@@ -284,6 +284,10 @@ let clients = new Map(); // teamId -> [WebSocket connections]
 let chatHistory = [];
 const CHAT_RETENTION_TIME = 30 * 60 * 1000; // 30 minutes in milliseconds
 
+// Auto-Stats Service
+const autoStatsService = require('./autoStatsService');
+let autoStatsEnabled = false;
+
 // Clean old chat messages
 function cleanOldChatMessages() {
   const now = Date.now();
@@ -600,6 +604,9 @@ function broadcast(data) {
     });
   });
 }
+
+// Initialize auto-stats service with broadcast capability
+autoStatsService.setBroadcast(broadcast);
 
 // Timer functions
 function startAuctionTimer() {
@@ -1600,9 +1607,92 @@ app.get('/api/fantasy/team/:teamId/gameweek/:gameweek', async (req, res) => {
   }
 });
 
+// ========================================
+// AUTO-STATS API ENDPOINTS
+// ========================================
+
+// Get auto-stats service status
+app.get('/api/autostats/status', (req, res) => {
+  res.json({
+    enabled: autoStatsEnabled,
+    apiKeyConfigured: !!process.env.CRICKET_API_KEY
+  });
+});
+
+// Enable/disable auto-stats service
+app.post('/api/autostats/toggle', (req, res) => {
+  try {
+    const { enabled } = req.body;
+    autoStatsEnabled = enabled;
+    
+    if (enabled) {
+      autoStatsService.startAutoStatsService();
+      console.log('✅ Auto-stats service enabled');
+    } else {
+      console.log('⏸️  Auto-stats service disabled');
+    }
+    
+    res.json({ success: true, enabled: autoStatsEnabled });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Trigger immediate stats fetch (for testing/manual)
+app.post('/api/autostats/fetch', async (req, res) => {
+  try {
+    console.log('🚀 Manual stats fetch triggered via API');
+    
+    // Don't wait for completion, respond immediately
+    res.json({ success: true, message: 'Stats fetch started in background' });
+    
+    // Run in background
+    autoStatsService.triggerImmediateFetch();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Set current gameweek for auto-stats
+app.post('/api/autostats/gameweek', (req, res) => {
+  try {
+    const { gameweek } = req.body;
+    
+    if (!gameweek || gameweek < 1) {
+      return res.status(400).json({ error: 'Invalid gameweek' });
+    }
+    
+    autoStatsService.setCurrentGameweek(gameweek);
+    res.json({ success: true, gameweek });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Clear processed matches cache (for testing)
+app.post('/api/autostats/clear-cache', (req, res) => {
+  try {
+    autoStatsService.clearProcessedCache();
+    res.json({ success: true, message: 'Cache cleared' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Initialize and start server
 initializeExcel().then(async () => {
   await loadTeamStateFromExcel();
+  
+  // Start auto-stats service if API key is configured
+  if (process.env.CRICKET_API_KEY) {
+    console.log('🏏 Cricket API key found - enabling auto-stats service');
+    autoStatsEnabled = true;
+    autoStatsService.startAutoStatsService();
+  } else {
+    console.log('⚠️  CRICKET_API_KEY not set - auto-stats disabled');
+    console.log('   Set CRICKET_API_KEY environment variable to enable automatic stats fetching');
+  }
+  
   const PORT = process.env.PORT || 3000;
   server.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);

@@ -1,10 +1,10 @@
-# 🏏 IPL Auction Game
+# 🏏 IPL Auction & Fantasy League
 
-A real-time web-based IPL auction game with Excel backend for managing player auctions across multiple teams.
+A complete real-time web-based IPL auction and fantasy league platform with automatic stats fetching from real IPL matches!
 
 ## Features
 
-✨ **Core Features:**
+✨ **Auction Features:**
 - 🎯 **Player Nomination**: Select players from Excel database and nominate them for auction
 - 💰 **Live Bidding**: Real-time bidding with increments of ₹0.5, ₹1, ₹1.5, or ₹2 Cr
 - 📊 **Budget Tracking**: Track each team's remaining budget in real-time
@@ -15,28 +15,42 @@ A real-time web-based IPL auction game with Excel backend for managing player au
 - 🎴 **RTM (Right to Match)**: Franchise teams can use their RTM card once to match the winning bid
 - 🔧 **Admin Panel**: Admin access to manually award players for testing
 - 🛡️ **Smart Bidding**: Prevents teams from bidding on their own highest bid
+- 🔄 **Turn-Based System**: Random nomination order with position restrictions
+
+🏆 **Fantasy League Features:**
+- 🤖 **Auto Stats Fetching**: Automatically pulls player stats from real IPL matches
+- 📈 **Dream11 Scoring**: Official Dream11-style fantasy point calculation
+- 🎮 **Gameweek System**: Organize matches by gameweek
+- 🏅 **Live Leaderboard**: Real-time team rankings with detailed player breakdown
+- 📊 **Performance Tracking**: View individual player stats and points
+- 🔔 **Real-time Notifications**: Get notified when stats are updated
+- 🌐 **Cricket API Integration**: Free API with 100 calls/day
+- 💾 **Auto Database Updates**: Stats saved to Excel automatically
 
 🎁 **Additional Features:**
 - 🎨 Modern, beautiful UI with team colors
-- 📱 Responsive design
+- 📱 Fully responsive mobile design
 - 🔍 Player search and filtering by position
-- 📈 Live budget display for all teams
-- 🎊 Auction completion notifications
-- 💾 Automatic Excel database management
-- 🔄 Auction history tracking
+- 💬 Real-time chat during auctions
+- ⏱️ Automatic countdown timers
+- 📥 Excel file download for backups
+- 🔄 Full auction data management
 
 ## Tech Stack
 
-- **Backend**: Node.js, Express, WebSocket (ws)
+- **Backend**: Node.js, Express, WebSocket (ws), node-cron
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Database**: Excel (using ExcelJS library)
 - **Real-time**: WebSocket for live bidding updates
+- **API Integration**: Cricket Data API (cricketdata.org)
+- **Automation**: Scheduled jobs for auto stats fetching
 
 ## Installation
 
 ### Prerequisites
 - Node.js (v14 or higher)
 - npm or yarn
+- Cricket API key (optional, for auto-stats - [Get FREE key](https://cricketdata.org/signup.aspx))
 
 ### Setup
 
@@ -60,6 +74,31 @@ Open your browser and navigate to:
 ```
 http://localhost:3000
 ```
+
+### 🤖 Enable Auto-Stats (Optional but Recommended)
+
+To enable automatic stats fetching from real IPL matches:
+
+1. **Get FREE API Key:**
+   - Visit [cricketdata.org/signup.aspx](https://cricketdata.org/signup.aspx)
+   - Sign up with your email (free forever - 100 API calls/day)
+   - Check email for your API key
+
+2. **Set Environment Variable:**
+   ```bash
+   export CRICKET_API_KEY="your_api_key_here"
+   ```
+
+3. **For Railway/Render deployment:**
+   - Add `CRICKET_API_KEY` in environment variables
+   - Service will automatically restart with auto-stats enabled
+
+4. **Verify:**
+   - Login as Admin
+   - Go to Fantasy League → Admin tab
+   - Check "API Key: ✓ Configured"
+
+📖 **Full Setup Guide:** See [AUTO_STATS_SETUP.md](./AUTO_STATS_SETUP.md) for detailed instructions
 
 ## Usage
 

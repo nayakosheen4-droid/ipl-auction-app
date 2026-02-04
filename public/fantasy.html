@@ -66,6 +66,24 @@
                 </div>
                 
                 <div class="admin-fantasy-content">
+                    <!-- Auto-Stats Service -->
+                    <div class="admin-card auto-stats-card">
+                        <h3>🤖 Automatic Stats Fetching</h3>
+                        <div class="auto-stats-status">
+                            <div class="status-indicator">
+                                <span id="autoStatsStatus" class="status-badge status-disabled">Disabled</span>
+                                <span id="apiKeyStatus" class="status-text">API Key: Not configured</span>
+                            </div>
+                            <p class="status-description">
+                                Automatically fetches player stats from real IPL matches every 10 minutes
+                            </p>
+                        </div>
+                        <div class="button-group">
+                            <button id="fetchNowBtn" class="btn btn-admin">🔄 Fetch Now</button>
+                            <button id="toggleAutoStatsBtn" class="btn btn-secondary">Enable</button>
+                        </div>
+                    </div>
+                    
                     <!-- Gameweek Management -->
                     <div class="admin-card">
                         <h3>Gameweek Management</h3>

@@ -265,6 +265,54 @@
     font-size: 1.3rem;
 }
 
+.auto-stats-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.auto-stats-card h3 {
+    color: white;
+}
+
+.auto-stats-status {
+    margin-bottom: 20px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.status-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-badge.status-enabled {
+    background: #28a745;
+    color: white;
+}
+
+.status-badge.status-disabled {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.status-text {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+}
+
+.status-description {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
 .form-group {
     margin-bottom: 15px;
 }
