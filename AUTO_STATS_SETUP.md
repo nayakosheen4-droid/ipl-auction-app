@@ -10,39 +10,90 @@ Your IPL Fantasy League now features **automatic stats fetching** from real IPL 
 
 ## 🚀 Quick Setup
 
-### Step 1: Get Cricket API Key (FREE)
-1. Visit [https://cricketdata.org/signup.aspx](https://cricketdata.org/signup.aspx)
-2. Sign up with your email (FREE forever - 100 API calls/day)
-3. Check your email for your lifetime API key
-4. Copy the API key
+### Choose Your API Provider
 
-### Step 2: Configure Environment Variable
+Your app supports **TWO cricket API providers**:
+
+#### 🏆 **Option 1: RapidAPI Cricbuzz (RECOMMENDED)**
+✅ More reliable, faster, better uptime
+✅ FREE tier available ($0/month)
+✅ Professional-grade API
+
+#### 🔄 **Option 2: CricketData.org (Alternative)**
+✅ Lifetime free (100 calls/day)
+⚠️ Slower and occasionally buggy
+
+**📖 See [API_PROVIDERS_GUIDE.md](./API_PROVIDERS_GUIDE.md) for detailed comparison**
+
+---
+
+### Setup Option 1: RapidAPI Cricbuzz (Recommended)
+
+**Step 1: Get RapidAPI Key**
+1. Visit [rapidapi.com](https://rapidapi.com)
+2. Sign up for FREE account
+3. Search "Cricbuzz Cricket" or go to: [rapidapi.com/cricketapilive/api/cricbuzz-cricket](https://rapidapi.com/cricketapilive/api/cricbuzz-cricket)
+4. Click **"Subscribe to Test"**
+5. Select **"Basic"** plan (FREE - $0.00/month)
+6. Add payment method (required but won't charge)
+7. Copy your **X-RapidAPI-Key**
+
+**Step 2: Configure Environment**
+
+**Railway:**
+```
+Variables to Add:
+- RAPIDAPI_KEY = your_rapidapi_key_here
+- CRICKET_API_PROVIDER = rapidapi
+```
 
 **Local Development:**
 ```bash
-# In your terminal or .env file
-export CRICKET_API_KEY="your_api_key_here"
-
-# Restart the server
+export RAPIDAPI_KEY="your_rapidapi_key_here"
+export CRICKET_API_PROVIDER="rapidapi"
 npm start
 ```
 
-**Railway Deployment:**
-1. Go to your Railway project dashboard
-2. Click on your service
-3. Go to **Variables** tab
-4. Click **+ New Variable**
-5. Add:
-   - **Name:** `CRICKET_API_KEY`
-   - **Value:** your API key from cricketdata.org
-6. Click **Add**
-7. Railway will automatically redeploy with the new variable
+---
 
-**Render/Other Platforms:**
-1. Go to your service settings
-2. Find Environment Variables section
-3. Add `CRICKET_API_KEY` with your API key
-4. Save and redeploy
+### Setup Option 2: CricketData.org (Alternative)
+
+**Step 1: Get CricketData Key**
+1. Visit [cricketdata.org/signup.aspx](https://cricketdata.org/signup.aspx)
+2. Sign up with email (FREE forever - 100 API calls/day)
+3. Check email for API key
+4. Copy the API key
+
+**Step 2: Configure Environment**
+
+**Railway:**
+```
+Variables to Add:
+- CRICKET_API_KEY = your_cricketdata_key_here
+- CRICKET_API_PROVIDER = cricketdata
+```
+
+**Local Development:**
+```bash
+export CRICKET_API_KEY="your_cricketdata_key_here"
+export CRICKET_API_PROVIDER="cricketdata"
+npm start
+```
+
+---
+
+### Which One Should I Use?
+
+**Use RapidAPI Cricbuzz if:**
+- You want best reliability ✅
+- You want fast performance ✅
+- You're okay with RapidAPI signup ✅
+- **This is RECOMMENDED** ⭐
+
+**Use CricketData.org if:**
+- You prefer simpler signup
+- You're okay with occasional issues
+- You want backup option
 
 ### Step 3: Verify Setup
 1. Login as Admin

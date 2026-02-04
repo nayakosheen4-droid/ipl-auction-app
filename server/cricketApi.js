@@ -1,9 +1,20 @@
-// Cricket API Integration
+// Cricket API Integration with Multiple Providers
 const axios = require('axios');
 
-// API Configuration
+// API Provider Configuration
+const API_PROVIDER = process.env.CRICKET_API_PROVIDER || 'rapidapi'; // 'rapidapi' or 'cricketdata'
+
+// RapidAPI Cricbuzz (RECOMMENDED - More reliable, free tier available)
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY || '';
+const RAPIDAPI_HOST = 'cricbuzz-cricket.p.rapidapi.com';
+const RAPIDAPI_BASE = `https://${RAPIDAPI_HOST}`;
+
+// CricketData.org (Alternative)
 const CRICKET_API_BASE = 'https://api.cricapi.com/v1';
-const API_KEY = process.env.CRICKET_API_KEY || '';
+const CRICKET_API_KEY = process.env.CRICKET_API_KEY || '';
+
+// Active API Key based on provider
+const API_KEY = API_PROVIDER === 'rapidapi' ? RAPIDAPI_KEY : CRICKET_API_KEY;
 
 // Cache for reducing API calls
 let matchesCache = {
@@ -25,25 +36,108 @@ async function getCurrentMatches() {
     }
     
     if (!API_KEY) {
-      console.warn('⚠️  CRICKET_API_KEY not set. Please add it to environment variables.');
+      console.warn(`⚠️  API Key not set for provider: ${API_PROVIDER}`);
+      console.warn('   Set RAPIDAPI_KEY (recommended) or CRICKET_API_KEY environment variable');
       return { data: [] };
     }
     
-    console.log('🌐 Fetching current matches from Cricket API...');
-    const response = await axios.get(`${CRICKET_API_BASE}/currentMatches`, {
-      params: { apikey: API_KEY, offset: 0 },
-      timeout: 10000
-    });
+    console.log(`🌐 Fetching matches from ${API_PROVIDER.toUpperCase()} API...`);
+    
+    let response;
+    if (API_PROVIDER === 'rapidapi') {
+      response = await getRapidAPIMatches();
+    } else {
+      response = await getCricketDataMatches();
+    }
     
     // Update cache
-    matchesCache.data = response.data;
+    matchesCache.data = response;
     matchesCache.timestamp = now;
     
-    return response.data;
+    return response;
   } catch (error) {
     console.error('❌ Error fetching matches:', error.message);
     return { data: [] };
   }
+}
+
+/**
+ * Get matches from RapidAPI Cricbuzz
+ */
+async function getRapidAPIMatches() {
+  try {
+    const response = await axios.get(`${RAPIDAPI_BASE}/matches/v1/recent`, {
+      headers: {
+        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Host': RAPIDAPI_HOST
+      },
+      timeout: 10000
+    });
+    
+    // Transform RapidAPI response to common format
+    return {
+      data: transformRapidAPIMatches(response.data)
+    };
+  } catch (error) {
+    console.error('❌ RapidAPI error:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get matches from CricketData.org
+ */
+async function getCricketDataMatches() {
+  try {
+    const response = await axios.get(`${CRICKET_API_BASE}/currentMatches`, {
+      params: { apikey: CRICKET_API_KEY, offset: 0 },
+      timeout: 10000
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('❌ CricketData API error:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Transform RapidAPI response to common format
+ */
+function transformRapidAPIMatches(rapidData) {
+  const matches = [];
+  
+  if (!rapidData || !rapidData.typeMatches) {
+    return matches;
+  }
+  
+  rapidData.typeMatches.forEach(typeMatch => {
+    if (typeMatch.seriesMatches) {
+      typeMatch.seriesMatches.forEach(seriesMatch => {
+        if (seriesMatch.seriesAdWrapper && seriesMatch.seriesAdWrapper.matches) {
+          seriesMatch.seriesAdWrapper.matches.forEach(matchInfo => {
+            const match = matchInfo.matchInfo;
+            if (match) {
+              matches.push({
+                id: match.matchId?.toString(),
+                name: `${match.team1?.teamName} vs ${match.team2?.teamName}`,
+                matchType: match.matchFormat,
+                status: match.status,
+                series: seriesMatch.seriesAdWrapper.seriesName,
+                seriesName: seriesMatch.seriesAdWrapper.seriesName,
+                matchEnded: match.state === 'Complete',
+                team1: match.team1?.teamName,
+                team2: match.team2?.teamName,
+                venue: match.venueInfo?.ground
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+  
+  return matches;
 }
 
 /**
@@ -52,21 +146,117 @@ async function getCurrentMatches() {
 async function getMatchScorecard(matchId) {
   try {
     if (!API_KEY) {
-      console.warn('⚠️  CRICKET_API_KEY not set');
+      console.warn(`⚠️  API Key not set for provider: ${API_PROVIDER}`);
       return null;
     }
     
-    console.log(`🌐 Fetching scorecard for match ${matchId}...`);
+    console.log(`🌐 Fetching scorecard for match ${matchId} from ${API_PROVIDER.toUpperCase()}...`);
+    
+    if (API_PROVIDER === 'rapidapi') {
+      return await getRapidAPIScorecard(matchId);
+    } else {
+      return await getCricketDataScorecard(matchId);
+    }
+  } catch (error) {
+    console.error(`❌ Error fetching scorecard for ${matchId}:`, error.message);
+    return null;
+  }
+}
+
+/**
+ * Get scorecard from RapidAPI Cricbuzz
+ */
+async function getRapidAPIScorecard(matchId) {
+  try {
+    const response = await axios.get(`${RAPIDAPI_BASE}/mcenter/v1/${matchId}`, {
+      headers: {
+        'X-RapidAPI-Key': RAPIDAPI_KEY,
+        'X-RapidAPI-Host': RAPIDAPI_HOST
+      },
+      timeout: 10000
+    });
+    
+    // Transform to common format
+    return {
+      data: transformRapidAPIScorecard(response.data)
+    };
+  } catch (error) {
+    console.error('❌ RapidAPI scorecard error:', error.message);
+    return null;
+  }
+}
+
+/**
+ * Get scorecard from CricketData.org
+ */
+async function getCricketDataScorecard(matchId) {
+  try {
     const response = await axios.get(`${CRICKET_API_BASE}/match_scorecard`, {
-      params: { apikey: API_KEY, id: matchId },
+      params: { apikey: CRICKET_API_KEY, id: matchId },
       timeout: 10000
     });
     
     return response.data;
   } catch (error) {
-    console.error(`❌ Error fetching scorecard for ${matchId}:`, error.message);
+    console.error('❌ CricketData scorecard error:', error.message);
     return null;
   }
+}
+
+/**
+ * Transform RapidAPI scorecard to common format
+ */
+function transformRapidAPIScorecard(rapidData) {
+  const scorecard = { score: [] };
+  
+  if (!rapidData || !rapidData.scoreCard) {
+    return scorecard;
+  }
+  
+  rapidData.scoreCard.forEach(inning => {
+    const inningData = {
+      r: [], // batting
+      w: []  // bowling
+    };
+    
+    // Parse batting
+    if (inning.batTeamDetails && inning.batTeamDetails.batsmenData) {
+      Object.values(inning.batTeamDetails.batsmenData).forEach(batsman => {
+        if (batsman.batId) {
+          inningData.r.push({
+            batsmanName: batsman.batName,
+            batsman: batsman.batName,
+            r: batsman.runs,
+            b: batsman.balls,
+            '4s': batsman.fours,
+            '6s': batsman.sixes,
+            sr: batsman.strikeRate
+          });
+        }
+      });
+    }
+    
+    // Parse bowling
+    if (inning.bowlTeamDetails && inning.bowlTeamDetails.bowlersData) {
+      Object.values(inning.bowlTeamDetails.bowlersData).forEach(bowler => {
+        if (bowler.bowlId) {
+          inningData.w.push({
+            bowlerName: bowler.bowlName,
+            bowler: bowler.bowlName,
+            o: bowler.overs,
+            m: bowler.maidens,
+            r: bowler.runs,
+            w: bowler.wickets,
+            eco: bowler.economy
+          });
+        }
+      });
+    }
+    
+    scorecard.score.push(inningData);
+  });
+  
+  return scorecard;
 }
 
 /**
@@ -253,5 +443,10 @@ module.exports = {
   filterIPLMatches,
   parsePlayerStats,
   matchPlayerName,
-  setApiKey: (key) => { API_KEY = key; }
+  getApiProvider: () => API_PROVIDER,
+  getApiKeyStatus: () => ({
+    provider: API_PROVIDER,
+    configured: !!API_KEY,
+    recommended: 'rapidapi'
+  })
 };

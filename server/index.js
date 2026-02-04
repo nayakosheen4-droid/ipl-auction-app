@@ -1613,9 +1613,14 @@ app.get('/api/fantasy/team/:teamId/gameweek/:gameweek', async (req, res) => {
 
 // Get auto-stats service status
 app.get('/api/autostats/status', (req, res) => {
+  const cricketApi = require('./cricketApi');
+  const apiStatus = cricketApi.getApiKeyStatus();
+  
   res.json({
     enabled: autoStatsEnabled,
-    apiKeyConfigured: !!process.env.CRICKET_API_KEY
+    apiKeyConfigured: apiStatus.configured,
+    apiProvider: apiStatus.provider,
+    recommendedProvider: apiStatus.recommended
   });
 });
 

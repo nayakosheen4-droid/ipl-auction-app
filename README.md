@@ -77,28 +77,48 @@ http://localhost:3000
 
 ### 🤖 Enable Auto-Stats (Optional but Recommended)
 
-To enable automatic stats fetching from real IPL matches:
+To enable automatic stats fetching from real IPL matches, **choose your API provider**:
+
+#### 🏆 Option 1: RapidAPI Cricbuzz (RECOMMENDED)
+**More reliable, faster, better uptime**
+
+1. **Get FREE API Key:**
+   - Visit [rapidapi.com](https://rapidapi.com)
+   - Search "Cricbuzz Cricket"
+   - Subscribe to FREE Basic plan ($0/mo)
+   - Copy your X-RapidAPI-Key
+
+2. **Set Environment Variables:**
+   ```bash
+   export RAPIDAPI_KEY="your_rapidapi_key_here"
+   export CRICKET_API_PROVIDER="rapidapi"
+   ```
+
+3. **For Railway/Render:**
+   - Add `RAPIDAPI_KEY` in environment variables
+   - Add `CRICKET_API_PROVIDER=rapidapi`
+
+#### 🔄 Option 2: CricketData.org (Alternative)
+**Simpler but slower/buggy**
 
 1. **Get FREE API Key:**
    - Visit [cricketdata.org/signup.aspx](https://cricketdata.org/signup.aspx)
-   - Sign up with your email (free forever - 100 API calls/day)
-   - Check email for your API key
+   - Check email for API key
 
-2. **Set Environment Variable:**
+2. **Set Environment Variables:**
    ```bash
-   export CRICKET_API_KEY="your_api_key_here"
+   export CRICKET_API_KEY="your_key_here"
+   export CRICKET_API_PROVIDER="cricketdata"
    ```
-
-3. **For Railway/Render deployment:**
-   - Add `CRICKET_API_KEY` in environment variables
-   - Service will automatically restart with auto-stats enabled
 
 4. **Verify:**
    - Login as Admin
    - Go to Fantasy League → Admin tab
-   - Check "API Key: ✓ Configured"
+   - Check "API: ✓ [Provider Name]"
 
-📖 **Full Setup Guide:** See [AUTO_STATS_SETUP.md](./AUTO_STATS_SETUP.md) for detailed instructions
+📖 **Full Setup Guide:** 
+- [AUTO_STATS_SETUP.md](./AUTO_STATS_SETUP.md) - Quick setup
+- [API_PROVIDERS_GUIDE.md](./API_PROVIDERS_GUIDE.md) - Detailed comparison
 
 ## Usage
 

@@ -535,11 +535,14 @@ function updateAutoStatsUI(status) {
         toggleBtn.className = 'btn btn-secondary';
     }
     
+    const provider = status.apiProvider || 'unknown';
+    const providerName = provider === 'rapidapi' ? 'RapidAPI Cricbuzz' : 'CricketData.org';
+    
     if (status.apiKeyConfigured) {
-        apiKeyStatus.textContent = 'API Key: ✓ Configured';
+        apiKeyStatus.textContent = `API: ✓ ${providerName}`;
         apiKeyStatus.style.color = 'rgba(255,255,255,0.95)';
     } else {
-        apiKeyStatus.textContent = 'API Key: ✗ Not Set';
+        apiKeyStatus.textContent = `API: ✗ ${providerName} (Not Set)`;
         apiKeyStatus.style.color = 'rgba(255,255,255,0.7)';
     }
 }
