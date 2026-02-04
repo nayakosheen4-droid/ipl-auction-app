@@ -36,7 +36,7 @@ async function init() {
     setupEventListeners();
     
     // Initialize chat with empty state
-    chatMessages.innerHTML = '<div class="chat-empty">💬 Chat will appear here<br>Start the conversation!</div>';
+    chatMessages.innerHTML = '<div class="chat-empty">Chat will appear here<br>Start the conversation!</div>';
     
     // Check for saved session
     const savedTeam = localStorage.getItem('currentTeam');
@@ -718,7 +718,7 @@ async function validateMarkOut() {
             if (data.budget < budgetNeeded + 1) {
                 return {
                     canMarkOut: false,
-                    message: `⚠️ Warning: You may not have enough budget to complete minimum 16 players!`
+                    message: `Warning: You may not have enough budget to complete minimum 16 players!`
                 };
             }
         }
@@ -735,7 +735,7 @@ async function validateMarkOut() {
         if (unmetRequirements.length > 0) {
             return {
                 canMarkOut: false,
-                message: `⚠️ Warning: Missing required positions - ${unmetRequirements.join(', ')}`
+                message: `Warning: Missing required positions - ${unmetRequirements.join(', ')}`
             };
         }
         
@@ -805,7 +805,7 @@ async function showMyTeam(teamIdOverride = null) {
         ['Wicket-keeper', 'Batsman', 'Bowler', 'All-rounder'].forEach(position => {
             const req = requirements[position] || { current: 0, minimum: 0, met: false };
             const statusColor = req.met ? '#28a745' : (req.needed > 0 ? '#dc3545' : '#ffc107');
-            const statusIcon = req.met ? '✓' : (req.needed > 0 ? '⚠' : '○');
+            const statusIcon = req.met ? '✓' : (req.needed > 0 ? '!' : '-');
             positionHTML += `
                 <div style="background: rgba(255,255,255,0.2); padding: 8px; border-radius: 6px;">
                     <div style="font-size: 0.85rem; opacity: 0.9;">${position}</div>
@@ -837,14 +837,14 @@ async function showMyTeam(teamIdOverride = null) {
                 </div>
             </div>
             ${positionHTML}
-            ${squadStatus.atMaximum ? '<div style="margin-top: 10px; padding: 8px; background: #dc3545; border-radius: 6px; font-size: 0.9rem;">⚠️ Squad Full (18 players)</div>' : ''}
-            ${!squadStatus.meetsMinimum && data.totalPlayers >= 14 ? '<div style="margin-top: 10px; padding: 8px; background: #ffc107; color: #000; border-radius: 6px; font-size: 0.9rem;">⚠️ Complete minimum requirements!</div>' : ''}
+            ${squadStatus.atMaximum ? '<div style="margin-top: 10px; padding: 8px; background: #dc3545; border-radius: 6px; font-size: 0.9rem;">Squad Full (18 players)</div>' : ''}
+            ${!squadStatus.meetsMinimum && data.totalPlayers >= 14 ? '<div style="margin-top: 10px; padding: 8px; background: #ffc107; color: #000; border-radius: 6px; font-size: 0.9rem;">Complete minimum requirements!</div>' : ''}
         `;
         
         const playersDiv = document.getElementById('myTeamPlayers');
         
         if (data.players.length === 0) {
-            console.log('⚠️ No players found');
+            console.log('No players found');
             playersDiv.innerHTML = '<div class="empty-team">No players yet. Start bidding!</div>';
         } else {
             console.log(`✅ Displaying ${data.players.length} players`);
