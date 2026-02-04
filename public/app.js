@@ -367,8 +367,45 @@ function handleWebSocketMessage(data) {
     }
 }
 
+// Update nomination info display
+function updateNominationInfo(state) {
+    if (!state.nominationOrder || state.nominationOrder.length === 0) {
+        // Hide nomination info if not initialized
+        const nominationInfoElements = document.querySelectorAll('.nomination-info');
+        nominationInfoElements.forEach(el => el.classList.add('hidden'));
+        return;
+    }
+    
+    // Show nomination info
+    const nominationInfoElements = document.querySelectorAll('.nomination-info');
+    nominationInfoElements.forEach(el => el.classList.remove('hidden'));
+    
+    // Get current and next team names
+    const currentTeamId = state.currentTurnTeam;
+    const currentIndex = state.currentTurnIndex || 0;
+    const nextIndex = (currentIndex + 1) % state.nominationOrder.length;
+    const nextTeamId = state.nominationOrder[nextIndex];
+    
+    const currentTeam = allTeams.find(t => t.id === currentTeamId);
+    const nextTeam = allTeams.find(t => t.id === nextTeamId);
+    
+    // Update both sets of nomination displays (inactive and active auction)
+    const currentNominatorEl = document.getElementById('currentNominator');
+    const nextNominatorEl = document.getElementById('nextNominator');
+    const currentNominatorActiveEl = document.getElementById('currentNominatorActive');
+    const nextNominatorActiveEl = document.getElementById('nextNominatorActive');
+    
+    if (currentNominatorEl) currentNominatorEl.textContent = currentTeam ? currentTeam.name : '-';
+    if (nextNominatorEl) nextNominatorEl.textContent = nextTeam ? nextTeam.name : '-';
+    if (currentNominatorActiveEl) currentNominatorActiveEl.textContent = currentTeam ? currentTeam.name : '-';
+    if (nextNominatorActiveEl) nextNominatorActiveEl.textContent = nextTeam ? nextTeam.name : '-';
+}
+
 // Update auction state
 function updateAuctionState(state) {
+    // Update nomination info
+    updateNominationInfo(state);
+    
     if (state.auctionActive && state.currentPlayer) {
         noAuction.classList.add('hidden');
         activeAuction.classList.remove('hidden');
