@@ -66,6 +66,7 @@ let auctionState = {
   nominationOrder: [], // Array of team IDs in random order
   currentTurnIndex: 0, // Index in nominationOrder
   currentTurnTeam: null, // Team ID whose turn it is
+  nominationDirection: 'forward', // 'forward' or 'reverse' for bidirectional order
   teams: JSON.parse(JSON.stringify(TEAMS)) // Deep copy
 };
 
@@ -83,6 +84,12 @@ function shuffleArray(array) {
   return shuffled;
 }
 
+// Helper function to get team name
+function getTeamName(teamId) {
+  const team = auctionState.teams.find(t => t.id === teamId);
+  return team ? team.name : `Team ${teamId}`;
+}
+
 // Initialize nomination order
 function initializeNominationOrder() {
   // Exclude Admin (id: 0) from nomination order - they only control, don't play
@@ -90,11 +97,13 @@ function initializeNominationOrder() {
   auctionState.nominationOrder = shuffleArray(teamIds);
   auctionState.currentTurnIndex = 0;
   auctionState.currentTurnTeam = auctionState.nominationOrder[0];
+  auctionState.nominationDirection = 'forward'; // Start with forward direction
   
   console.log('🎲 Nomination order set (Admin excluded):', auctionState.nominationOrder.map(id => {
     const team = TEAMS.find(t => t.id === id);
     return team ? team.name : id;
   }).join(' → '));
+  console.log('📍 Direction: forward (will reverse after reaching end)');
   
   return auctionState.nominationOrder;
 }
@@ -240,6 +249,7 @@ async function performFullReset() {
       nominationOrder: [],
       currentTurnIndex: 0,
       currentTurnTeam: null,
+      nominationDirection: 'forward',
       teams: JSON.parse(JSON.stringify(TEAMS))
     };
     
@@ -254,36 +264,58 @@ async function performFullReset() {
   }
 }
 
-// Move to next team's turn
+// Move to next team's turn (bidirectional: forward then reverse)
 async function advanceToNextTurn() {
   if (auctionState.nominationOrder.length === 0) {
     console.log('⚠️  No nomination order set');
     return;
   }
   
-  const maxAttempts = auctionState.nominationOrder.length;
+  const maxAttempts = auctionState.nominationOrder.length * 2; // Check all teams in both directions
   let attempts = 0;
   
   while (attempts < maxAttempts) {
-    // Move to next team
-    auctionState.currentTurnIndex = (auctionState.currentTurnIndex + 1) % auctionState.nominationOrder.length;
+    // Move based on direction
+    if (auctionState.nominationDirection === 'forward') {
+      auctionState.currentTurnIndex++;
+      
+      // Check if we reached the end
+      if (auctionState.currentTurnIndex >= auctionState.nominationOrder.length) {
+        // Reverse direction and go back
+        auctionState.nominationDirection = 'reverse';
+        auctionState.currentTurnIndex = auctionState.nominationOrder.length - 1;
+        console.log('🔄 Reached end of order - reversing direction');
+      }
+    } else { // reverse
+      auctionState.currentTurnIndex--;
+      
+      // Check if we reached the beginning
+      if (auctionState.currentTurnIndex < 0) {
+        // Reverse direction and go forward
+        auctionState.nominationDirection = 'forward';
+        auctionState.currentTurnIndex = 0;
+        console.log('🔄 Reached start of order - reversing direction');
+      }
+    }
+    
     auctionState.currentTurnTeam = auctionState.nominationOrder[auctionState.currentTurnIndex];
     
     const team = auctionState.teams.find(t => t.id === auctionState.currentTurnTeam);
     const teamName = team ? team.name : 'Unknown';
+    const directionSymbol = auctionState.nominationDirection === 'forward' ? '→' : '←';
     
     // Check if team can nominate
     const canNominate = await canTeamNominate(auctionState.currentTurnTeam);
     
     if (canNominate.canNominate) {
-      console.log(`✅ Turn advanced to: ${teamName}`);
+      console.log(`✅ Turn advanced to: ${teamName} ${directionSymbol} (Index: ${auctionState.currentTurnIndex})`);
       broadcast({
         type: 'turn_change',
         state: auctionState
       });
       return;
     } else {
-      console.log(`⏭️  Skipping ${teamName}: ${canNominate.reason}`);
+      console.log(`⏭️  Skipping ${teamName} ${directionSymbol}: ${canNominate.reason}`);
       attempts++;
     }
   }
@@ -923,7 +955,11 @@ function stopRTMTimer() {
 // Complete auction helper
 async function completeAuction(winningTeam, finalPrice, isRTM) {
   try {
-    console.log(`🔄 Completing auction: ${auctionState.currentPlayer.name} to ${winningTeam.name} for ₹${finalPrice} Cr`);
+    // Save player and winner info BEFORE resetting state
+    const soldPlayerName = auctionState.currentPlayer.name;
+    const soldPlayerData = { ...auctionState.currentPlayer };
+    
+    console.log(`🔄 Completing auction: ${soldPlayerName} to ${winningTeam.name} for ₹${finalPrice} Cr`);
     
     // Stop any active timers
     stopAuctionTimer();
@@ -935,14 +971,14 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
     }
     
     await saveSoldPlayer(
-      auctionState.currentPlayer,
+      soldPlayerData,
       winningTeam.id,
       winningTeam.name,
       finalPrice,
       isRTM
     );
 
-    // Reset auction state but preserve nomination order
+    // Reset auction state but preserve nomination order and direction
     auctionState = {
       currentPlayer: null,
       currentBid: 0,
@@ -960,19 +996,20 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       nominationOrder: auctionState.nominationOrder,
       currentTurnIndex: auctionState.currentTurnIndex,
       currentTurnTeam: auctionState.currentTurnTeam,
+      nominationDirection: auctionState.nominationDirection, // Preserve direction
       teams: auctionState.teams
     };
     
     // Advance to next team's turn
     await advanceToNextTurn();
     
-    console.log(`✅ Auction completed successfully`);
+    console.log(`✅ Auction completed successfully - next turn: ${getTeamName(auctionState.currentTurnTeam)}`);
     
     // Broadcast auction completion with updated state (AFTER advanceToNextTurn)
     broadcast({ 
       type: 'auction_complete', 
       winner: winningTeam.name,
-      player: auctionState.currentPlayer.name,
+      player: soldPlayerName, // Use saved name
       price: finalPrice,
       rtmUsed: isRTM,
       teams: auctionState.teams,
@@ -1307,6 +1344,7 @@ app.post('/api/auction/nominate', async (req, res) => {
       nominationOrder: auctionState.nominationOrder,
       currentTurnIndex: auctionState.currentTurnIndex,
       currentTurnTeam: auctionState.currentTurnTeam,
+      nominationDirection: auctionState.nominationDirection,
       teams: auctionState.teams
     };
 
