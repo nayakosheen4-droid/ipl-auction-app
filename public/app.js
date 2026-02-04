@@ -356,6 +356,15 @@ function updateAuctionState(state) {
         document.getElementById('currentPlayerPosition').textContent = state.currentPlayer.position;
         document.getElementById('currentBidAmount').textContent = `₹${state.currentBid} Cr`;
         
+        // Display franchise badge if player has a franchise
+        const franchiseBadge = document.getElementById('franchiseBadge');
+        if (state.currentPlayer.franchiseShorthand && state.currentPlayer.franchiseShorthand !== 'N/A') {
+            franchiseBadge.textContent = state.currentPlayer.franchiseShorthand;
+            franchiseBadge.classList.remove('hidden');
+        } else {
+            franchiseBadge.classList.add('hidden');
+        }
+        
         // Show franchise badge
         const franchiseBadge = document.getElementById('franchiseBadge');
         if (state.currentPlayer.franchiseId) {
@@ -485,8 +494,14 @@ function displayPlayers(players) {
     players.forEach(player => {
         const div = document.createElement('div');
         div.className = 'player-item';
+        
+        // Get franchise shorthand
+        const franchise = allTeams.find(t => t.id === player.franchiseId);
+        const franchiseBadge = franchise && franchise.shorthand ? 
+            `<span class="player-franchise-badge">${franchise.shorthand}</span>` : '';
+        
         div.innerHTML = `
-            <h3>${player.name}</h3>
+            <h3>${player.name} ${franchiseBadge}</h3>
             <div class="position">${player.position}</div>
             <div class="base-price">Base: ₹${player.basePrice} Cr</div>
         `;

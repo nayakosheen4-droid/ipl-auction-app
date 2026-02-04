@@ -36,14 +36,16 @@ app.use(express.static(path.join(__dirname, '../public'), {
 const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2024';
 const TEAMS = [
-  { id: 1, name: 'Mumbai Indians', password: 'mi2024', budget: 100, color: '#004BA0', rtmUsed: false },
-  { id: 2, name: 'Chennai Super Kings', password: 'csk2024', budget: 100, color: '#FDB913', rtmUsed: false },
-  { id: 3, name: 'Royal Challengers Bangalore', password: 'rcb2024', budget: 100, color: '#EC1C24', rtmUsed: false },
-  { id: 4, name: 'Kolkata Knight Riders', password: 'kkr2024', budget: 100, color: '#3A225D', rtmUsed: false },
-  { id: 5, name: 'Delhi Capitals', password: 'dc2024', budget: 100, color: '#004C93', rtmUsed: false },
-  { id: 6, name: 'Punjab Kings', password: 'pbks2024', budget: 100, color: '#DD1F2D', rtmUsed: false },
-  { id: 7, name: 'Rajasthan Royals', password: 'rr2024', budget: 100, color: '#254AA5', rtmUsed: false },
-  { id: 8, name: 'Sunrisers Hyderabad', password: 'srh2024', budget: 100, color: '#FF822A', rtmUsed: false }
+  { id: 1, name: 'Mumbai Indians', shorthand: 'MI', password: 'mi2026', budget: 100, color: '#004BA0', rtmUsed: false },
+  { id: 2, name: 'Chennai Super Kings', shorthand: 'CSK', password: 'csk2026', budget: 100, color: '#FDB913', rtmUsed: false },
+  { id: 3, name: 'Royal Challengers Bangalore', shorthand: 'RCB', password: 'rcb2026', budget: 100, color: '#EC1C24', rtmUsed: false },
+  { id: 4, name: 'Kolkata Knight Riders', shorthand: 'KKR', password: 'kkr2026', budget: 100, color: '#3A225D', rtmUsed: false },
+  { id: 5, name: 'Delhi Capitals', shorthand: 'DC', password: 'dc2026', budget: 100, color: '#004C93', rtmUsed: false },
+  { id: 6, name: 'Punjab Kings', shorthand: 'PBKS', password: 'pbks2026', budget: 100, color: '#DD1F2D', rtmUsed: false },
+  { id: 7, name: 'Rajasthan Royals', shorthand: 'RR', password: 'rr2026', budget: 100, color: '#254AA5', rtmUsed: false },
+  { id: 8, name: 'Sunrisers Hyderabad', shorthand: 'SRH', password: 'srh2026', budget: 100, color: '#FF822A', rtmUsed: false },
+  { id: 9, name: 'Gujarat Titans', shorthand: 'GT', password: 'gt2026', budget: 100, color: '#1C2E4A', rtmUsed: false },
+  { id: 10, name: 'Lucknow Super Giants', shorthand: 'LSG', password: 'lsg2026', budget: 100, color: '#3D9BE9', rtmUsed: false }
 ];
 
 // In-memory state
@@ -319,90 +321,124 @@ async function initializeExcel() {
       { header: 'Franchise ID', key: 'franchiseId', width: 15 }
     ];
 
-    // IPL 2025 Players - Based on actual IPL 2025 squads
-    // Franchise IDs: 1=MI, 2=CSK, 3=RCB, 4=KKR, 5=DC, 6=PBKS, 7=RR, 8=GT/SRH, 0=Other
+    // IPL 2026 Players - Based on actual IPL 2026 squads (Updated Feb 2026)
+    // Franchise IDs: 1=MI, 2=CSK, 3=RCB, 4=KKR, 5=DC, 6=PBKS, 7=RR, 8=SRH, 9=GT, 10=LSG
     const samplePlayers = [
-      // Mumbai Indians (1)
-      { id: 1, name: 'Rohit Sharma', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
-      { id: 2, name: 'Jasprit Bumrah', position: 'Bowler', basePrice: 0.5, franchiseId: 1 },
-      { id: 3, name: 'Suryakumar Yadav', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
-      { id: 4, name: 'Hardik Pandya', position: 'All-rounder', basePrice: 0.5, franchiseId: 1 },
-      { id: 5, name: 'Ishan Kishan', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 1 },
-      { id: 6, name: 'Tilak Varma', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
+      // Mumbai Indians (1) - Captain: Hardik Pandya
+      { id: 1, name: 'Hardik Pandya', position: 'All-rounder', basePrice: 0.5, franchiseId: 1 },
+      { id: 2, name: 'Rohit Sharma', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
+      { id: 3, name: 'Jasprit Bumrah', position: 'Bowler', basePrice: 0.5, franchiseId: 1 },
+      { id: 4, name: 'Suryakumar Yadav', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
+      { id: 5, name: 'Tilak Varma', position: 'Batsman', basePrice: 0.5, franchiseId: 1 },
+      { id: 6, name: 'Trent Boult', position: 'Bowler', basePrice: 0.5, franchiseId: 1 },
+      { id: 7, name: 'Mitchell Santner', position: 'All-rounder', basePrice: 0.5, franchiseId: 1 },
+      { id: 8, name: 'Quinton de Kock', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 1 },
+      { id: 9, name: 'Deepak Chahar', position: 'Bowler', basePrice: 0.5, franchiseId: 1 },
+      { id: 10, name: 'Shardul Thakur', position: 'All-rounder', basePrice: 0.5, franchiseId: 1 },
       
-      // Chennai Super Kings (2)
-      { id: 7, name: 'MS Dhoni', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 2 },
-      { id: 8, name: 'Ravindra Jadeja', position: 'All-rounder', basePrice: 0.5, franchiseId: 2 },
-      { id: 9, name: 'Ruturaj Gaikwad', position: 'Batsman', basePrice: 0.5, franchiseId: 2 },
-      { id: 10, name: 'Shivam Dube', position: 'All-rounder', basePrice: 0.5, franchiseId: 2 },
-      { id: 11, name: 'Matheesha Pathirana', position: 'Bowler', basePrice: 0.5, franchiseId: 2 },
+      // Chennai Super Kings (2) - Captain: Ruturaj Gaikwad
+      { id: 11, name: 'MS Dhoni', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 2 },
+      { id: 12, name: 'Ruturaj Gaikwad', position: 'Batsman', basePrice: 0.5, franchiseId: 2 },
+      { id: 13, name: 'Sanju Samson', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 2 },
+      { id: 14, name: 'Shivam Dube', position: 'All-rounder', basePrice: 0.5, franchiseId: 2 },
+      { id: 15, name: 'Ravindra Jadeja', position: 'All-rounder', basePrice: 0.5, franchiseId: 2 },
+      { id: 16, name: 'Khaleel Ahmed', position: 'Bowler', basePrice: 0.5, franchiseId: 2 },
+      { id: 17, name: 'Noor Ahmad', position: 'Bowler', basePrice: 0.5, franchiseId: 2 },
+      { id: 18, name: 'Matt Henry', position: 'Bowler', basePrice: 0.5, franchiseId: 2 },
+      { id: 19, name: 'Rahul Chahar', position: 'Bowler', basePrice: 0.5, franchiseId: 2 },
+      { id: 20, name: 'Dewald Brevis', position: 'Batsman', basePrice: 0.5, franchiseId: 2 },
       
-      // Royal Challengers Bangalore (3)
-      { id: 12, name: 'Virat Kohli', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
-      { id: 13, name: 'Rajat Patidar', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
-      { id: 14, name: 'Yash Dayal', position: 'Bowler', basePrice: 0.5, franchiseId: 3 },
-      { id: 15, name: 'Phil Salt', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 3 },
-      { id: 16, name: 'Josh Hazlewood', position: 'Bowler', basePrice: 0.5, franchiseId: 3 },
+      // Royal Challengers Bangalore (3) - Captain: Rajat Patidar, Champions 2025
+      { id: 21, name: 'Virat Kohli', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
+      { id: 22, name: 'Rajat Patidar', position: 'Batsman', basePrice: 0.5, franchiseId: 3 },
+      { id: 23, name: 'Phil Salt', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 3 },
+      { id: 24, name: 'Josh Hazlewood', position: 'Bowler', basePrice: 0.5, franchiseId: 3 },
+      { id: 25, name: 'Yash Dayal', position: 'Bowler', basePrice: 0.5, franchiseId: 3 },
+      { id: 26, name: 'Venkatesh Iyer', position: 'All-rounder', basePrice: 0.5, franchiseId: 3 },
+      { id: 27, name: 'Krunal Pandya', position: 'All-rounder', basePrice: 0.5, franchiseId: 3 },
+      { id: 28, name: 'Bhuvneshwar Kumar', position: 'Bowler', basePrice: 0.5, franchiseId: 3 },
+      { id: 29, name: 'Tim David', position: 'All-rounder', basePrice: 0.5, franchiseId: 3 },
+      { id: 30, name: 'Jitesh Sharma', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 3 },
       
-      // Kolkata Knight Riders (4)
-      { id: 17, name: 'Rinku Singh', position: 'Batsman', basePrice: 0.5, franchiseId: 4 },
-      { id: 18, name: 'Varun Chakravarthy', position: 'Bowler', basePrice: 0.5, franchiseId: 4 },
-      { id: 19, name: 'Sunil Narine', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
-      { id: 20, name: 'Andre Russell', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
-      { id: 21, name: 'Shreyas Iyer', position: 'Batsman', basePrice: 0.5, franchiseId: 4 },
-      { id: 22, name: 'Venkatesh Iyer', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      // Kolkata Knight Riders (4) - Biggest Buy: Cameron Green Rs 25.20 Cr
+      { id: 31, name: 'Cameron Green', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 32, name: 'Rinku Singh', position: 'Batsman', basePrice: 0.5, franchiseId: 4 },
+      { id: 33, name: 'Sunil Narine', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 34, name: 'Varun Chakravarthy', position: 'Bowler', basePrice: 0.5, franchiseId: 4 },
+      { id: 35, name: 'Andre Russell', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 36, name: 'Ajinkya Rahane', position: 'Batsman', basePrice: 0.5, franchiseId: 4 },
+      { id: 37, name: 'Harshit Rana', position: 'Bowler', basePrice: 0.5, franchiseId: 4 },
+      { id: 38, name: 'Ramandeep Singh', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 39, name: 'Rovman Powell', position: 'All-rounder', basePrice: 0.5, franchiseId: 4 },
+      { id: 40, name: 'Umran Malik', position: 'Bowler', basePrice: 0.5, franchiseId: 4 },
       
-      // Delhi Capitals (5)
-      { id: 23, name: 'Axar Patel', position: 'All-rounder', basePrice: 0.5, franchiseId: 5 },
-      { id: 24, name: 'Kuldeep Yadav', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
-      { id: 25, name: 'Tristan Stubbs', position: 'Batsman', basePrice: 0.5, franchiseId: 5 },
-      { id: 26, name: 'Abishek Porel', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 5 },
-      { id: 27, name: 'KL Rahul', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 5 },
+      // Delhi Capitals (5) - Captain: Axar Patel
+      { id: 41, name: 'Axar Patel', position: 'All-rounder', basePrice: 0.5, franchiseId: 5 },
+      { id: 42, name: 'KL Rahul', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 5 },
+      { id: 43, name: 'Abishek Porel', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 5 },
+      { id: 44, name: 'Tristan Stubbs', position: 'Batsman', basePrice: 0.5, franchiseId: 5 },
+      { id: 45, name: 'Kuldeep Yadav', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
+      { id: 46, name: 'Mitchell Starc', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
+      { id: 47, name: 'T Natarajan', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
+      { id: 48, name: 'Nitish Rana', position: 'Batsman', basePrice: 0.5, franchiseId: 5 },
+      { id: 49, name: 'Karun Nair', position: 'Batsman', basePrice: 0.5, franchiseId: 5 },
+      { id: 50, name: 'Mukesh Kumar', position: 'Bowler', basePrice: 0.5, franchiseId: 5 },
       
-      // Punjab Kings (6)
-      { id: 28, name: 'Shashank Singh', position: 'All-rounder', basePrice: 0.5, franchiseId: 6 },
-      { id: 29, name: 'Prabhsimran Singh', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 6 },
-      { id: 30, name: 'Arshdeep Singh', position: 'Bowler', basePrice: 0.5, franchiseId: 6 },
-      { id: 31, name: 'Marcus Stoinis', position: 'All-rounder', basePrice: 0.5, franchiseId: 6 },
-      { id: 32, name: 'Shreyas Iyer', position: 'Batsman', basePrice: 0.5, franchiseId: 6 },
+      // Punjab Kings (6) - Captain: Shreyas Iyer
+      { id: 51, name: 'Shreyas Iyer', position: 'Batsman', basePrice: 0.5, franchiseId: 6 },
+      { id: 52, name: 'Prabhsimran Singh', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 6 },
+      { id: 53, name: 'Shashank Singh', position: 'All-rounder', basePrice: 0.5, franchiseId: 6 },
+      { id: 54, name: 'Marcus Stoinis', position: 'All-rounder', basePrice: 0.5, franchiseId: 6 },
+      { id: 55, name: 'Arshdeep Singh', position: 'Bowler', basePrice: 0.5, franchiseId: 6 },
+      { id: 56, name: 'Yuzvendra Chahal', position: 'Bowler', basePrice: 0.5, franchiseId: 6 },
+      { id: 57, name: 'Marco Jansen', position: 'All-rounder', basePrice: 0.5, franchiseId: 6 },
+      { id: 58, name: 'Lockie Ferguson', position: 'Bowler', basePrice: 0.5, franchiseId: 6 },
+      { id: 59, name: 'Priyansh Arya', position: 'Batsman', basePrice: 0.5, franchiseId: 6 },
+      { id: 60, name: 'Nehal Wadhera', position: 'Batsman', basePrice: 0.5, franchiseId: 6 },
       
-      // Rajasthan Royals (7)
-      { id: 33, name: 'Sanju Samson', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 7 },
-      { id: 34, name: 'Yashasvi Jaiswal', position: 'Batsman', basePrice: 0.5, franchiseId: 7 },
-      { id: 35, name: 'Riyan Parag', position: 'All-rounder', basePrice: 0.5, franchiseId: 7 },
-      { id: 36, name: 'Sandeep Sharma', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
-      { id: 37, name: 'Dhruv Jurel', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 7 },
-      { id: 38, name: 'Shimron Hetmyer', position: 'Batsman', basePrice: 0.5, franchiseId: 7 },
+      // Rajasthan Royals (7) - Lost Sanju Samson to CSK
+      { id: 61, name: 'Yashasvi Jaiswal', position: 'Batsman', basePrice: 0.5, franchiseId: 7 },
+      { id: 62, name: 'Riyan Parag', position: 'All-rounder', basePrice: 0.5, franchiseId: 7 },
+      { id: 63, name: 'Dhruv Jurel', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 7 },
+      { id: 64, name: 'Shimron Hetmyer', position: 'Batsman', basePrice: 0.5, franchiseId: 7 },
+      { id: 65, name: 'Sandeep Sharma', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
+      { id: 66, name: 'Maheesh Theekshana', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
+      { id: 67, name: 'Wanindu Hasaranga', position: 'All-rounder', basePrice: 0.5, franchiseId: 7 },
+      { id: 68, name: 'Jofra Archer', position: 'Bowler', basePrice: 0.5, franchiseId: 7 },
       
-      // Sunrisers Hyderabad (8)
-      { id: 39, name: 'Pat Cummins', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
-      { id: 40, name: 'Abhishek Sharma', position: 'All-rounder', basePrice: 0.5, franchiseId: 8 },
-      { id: 41, name: 'Travis Head', position: 'Batsman', basePrice: 0.5, franchiseId: 8 },
-      { id: 42, name: 'Nitish Kumar Reddy', position: 'All-rounder', basePrice: 0.5, franchiseId: 8 },
-      { id: 43, name: 'Heinrich Klaasen', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 8 },
+      // Sunrisers Hyderabad (8) - Captain: Pat Cummins
+      { id: 69, name: 'Pat Cummins', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
+      { id: 70, name: 'Travis Head', position: 'Batsman', basePrice: 0.5, franchiseId: 8 },
+      { id: 71, name: 'Abhishek Sharma', position: 'All-rounder', basePrice: 0.5, franchiseId: 8 },
+      { id: 72, name: 'Heinrich Klaasen', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 8 },
+      { id: 73, name: 'Nitish Kumar Reddy', position: 'All-rounder', basePrice: 0.5, franchiseId: 8 },
+      { id: 74, name: 'Ishan Kishan', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 8 },
+      { id: 75, name: 'Harshal Patel', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
+      { id: 76, name: 'Jaydev Unadkat', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
+      { id: 77, name: 'Brydon Carse', position: 'Bowler', basePrice: 0.5, franchiseId: 8 },
       
-      // Gujarat Titans & Others
-      { id: 44, name: 'Rashid Khan', position: 'All-rounder', basePrice: 0.5, franchiseId: 0 },
-      { id: 45, name: 'Shubman Gill', position: 'Batsman', basePrice: 0.5, franchiseId: 0 },
-      { id: 46, name: 'Mohammed Shami', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 47, name: 'Rahul Tewatia', position: 'All-rounder', basePrice: 0.5, franchiseId: 0 },
+      // Gujarat Titans (9) - Captain: Shubman Gill
+      { id: 78, name: 'Shubman Gill', position: 'Batsman', basePrice: 0.5, franchiseId: 9 },
+      { id: 79, name: 'Rashid Khan', position: 'All-rounder', basePrice: 0.5, franchiseId: 9 },
+      { id: 80, name: 'Jos Buttler', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 9 },
+      { id: 81, name: 'Washington Sundar', position: 'All-rounder', basePrice: 0.5, franchiseId: 9 },
+      { id: 82, name: 'Kagiso Rabada', position: 'Bowler', basePrice: 0.5, franchiseId: 9 },
+      { id: 83, name: 'Mohammed Siraj', position: 'Bowler', basePrice: 0.5, franchiseId: 9 },
+      { id: 84, name: 'Prasidh Krishna', position: 'Bowler', basePrice: 0.5, franchiseId: 9 },
+      { id: 85, name: 'Sai Sudharsan', position: 'Batsman', basePrice: 0.5, franchiseId: 9 },
+      { id: 86, name: 'Ishant Sharma', position: 'Bowler', basePrice: 0.5, franchiseId: 9 },
       
-      // Lucknow Super Giants
-      { id: 48, name: 'Nicholas Pooran', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 0 },
-      { id: 49, name: 'Ravi Bishnoi', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 50, name: 'Mayank Yadav', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 51, name: 'Ayush Badoni', position: 'All-rounder', basePrice: 0.5, franchiseId: 0 },
-      
-      // Additional Star Players
-      { id: 52, name: 'Jos Buttler', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 0 },
-      { id: 53, name: 'Yuzvendra Chahal', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 54, name: 'Mohammed Siraj', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 55, name: 'Rishabh Pant', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 0 },
-      { id: 56, name: 'Kagiso Rabada', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 57, name: 'Trent Boult', position: 'Bowler', basePrice: 0.5, franchiseId: 0 },
-      { id: 58, name: 'Glenn Maxwell', position: 'All-rounder', basePrice: 0.5, franchiseId: 0 },
-      { id: 59, name: 'David Warner', position: 'Batsman', basePrice: 0.5, franchiseId: 0 },
-      { id: 60, name: 'Quinton de Kock', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 0 }
+      // Lucknow Super Giants (10) - Captain: Rishabh Pant
+      { id: 87, name: 'Rishabh Pant', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 10 },
+      { id: 88, name: 'Nicholas Pooran', position: 'Wicket-keeper', basePrice: 0.5, franchiseId: 10 },
+      { id: 89, name: 'Mohammed Shami', position: 'Bowler', basePrice: 0.5, franchiseId: 10 },
+      { id: 90, name: 'Mitchell Marsh', position: 'All-rounder', basePrice: 0.5, franchiseId: 10 },
+      { id: 91, name: 'Aiden Markram', position: 'Batsman', basePrice: 0.5, franchiseId: 10 },
+      { id: 92, name: 'Mayank Yadav', position: 'Bowler', basePrice: 0.5, franchiseId: 10 },
+      { id: 93, name: 'Avesh Khan', position: 'Bowler', basePrice: 0.5, franchiseId: 10 },
+      { id: 94, name: 'Mohsin Khan', position: 'Bowler', basePrice: 0.5, franchiseId: 10 },
+      { id: 95, name: 'Shahbaz Ahmed', position: 'All-rounder', basePrice: 0.5, franchiseId: 10 },
+      { id: 96, name: 'Arjun Tendulkar', position: 'All-rounder', basePrice: 0.5, franchiseId: 10 }
     ];
 
     playersSheet.addRows(samplePlayers);
@@ -1164,6 +1200,10 @@ app.post('/api/auction/nominate', async (req, res) => {
     if (!player) {
       return res.status(404).json({ error: 'Player not found' });
     }
+    
+    // Add franchise shorthand to player info
+    const franchise = TEAMS.find(t => t.id === player.franchiseId);
+    player.franchiseShorthand = franchise ? franchise.shorthand : 'N/A';
 
     if (auctionState.auctionActive) {
       return res.status(400).json({ error: 'Auction already in progress' });
