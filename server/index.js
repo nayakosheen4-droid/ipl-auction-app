@@ -1317,13 +1317,40 @@ app.get('/api/auction/state', (req, res) => {
 
 // Get all teams with budgets
 app.get('/api/teams', (req, res) => {
-  res.json(auctionState.teams.map(t => ({
-    id: t.id,
-    name: t.name,
-    shorthand: t.shorthand,
-    budget: t.budget,
-    color: t.color
-  })));
+  try {
+    console.log('📡 API /api/teams requested');
+    
+    if (!auctionState || !auctionState.teams) {
+      console.error('❌ ERROR: auctionState.teams is undefined!');
+      console.error('   auctionState:', auctionState);
+      return res.status(500).json({ 
+        error: 'Server state not initialized', 
+        teams: TEAMS.map(t => ({
+          id: t.id,
+          name: t.name,
+          shorthand: t.shorthand,
+          budget: t.budget,
+          color: t.color
+        }))
+      });
+    }
+    
+    console.log('  Teams in state:', auctionState.teams.length);
+    
+    const teamsData = auctionState.teams.map(t => ({
+      id: t.id,
+      name: t.name,
+      shorthand: t.shorthand,
+      budget: t.budget,
+      color: t.color
+    }));
+    
+    console.log('  Sending teams:', teamsData.map(t => `${t.name} (${t.shorthand})`).join(', '));
+    res.json(teamsData);
+  } catch (error) {
+    console.error('❌ ERROR in /api/teams:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get all teams with detailed info (player counts, etc)

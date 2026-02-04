@@ -61,8 +61,30 @@ async function init() {
 // Load teams for dropdown
 async function loadTeams() {
     try {
+        console.log('🔄 Loading teams from:', `${API_BASE}/api/teams`);
         const response = await fetch(`${API_BASE}/api/teams`);
-        allTeams = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Handle both successful response and error fallback with teams
+        if (data.error && data.teams) {
+            console.warn('⚠️ Server returned fallback teams:', data.error);
+            allTeams = data.teams;
+        } else if (Array.isArray(data)) {
+            allTeams = data;
+        } else {
+            throw new Error('Invalid response format');
+        }
+        
+        console.log('✅ Teams loaded:', allTeams.length, 'teams');
+        
+        if (allTeams.length === 0) {
+            throw new Error('No teams available');
+        }
         
         teamSelect.innerHTML = '<option value="">Select Team</option>';
         
@@ -77,9 +99,19 @@ async function loadTeams() {
             option.value = team.id;
             option.textContent = team.name;
             teamSelect.appendChild(option);
+            console.log(`  ✓ Added team: ${team.name} (ID: ${team.id}${team.shorthand ? `, ${team.shorthand}` : ''})`);
         });
+        
+        console.log('✅ Team dropdown populated with', allTeams.length, 'teams + Admin');
     } catch (err) {
-        showToast('Failed to load teams', 'error');
+        console.error('❌ Failed to load teams:', err);
+        showToast('Failed to load teams: ' + err.message, 'error');
+        
+        // Fallback: Show error in dropdown with helpful link
+        teamSelect.innerHTML = `
+            <option value="">❌ Error: ${err.message}</option>
+            <option value="" disabled>Please refresh or check health status</option>
+        `;
     }
 }
 

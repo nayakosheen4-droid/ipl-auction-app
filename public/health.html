@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Auction - Health Check</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #00ffff;
+            border-bottom: 2px solid #00ff00;
+            padding-bottom: 10px;
+        }
+        .test {
+            background: #2a2a2a;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .test-name {
+            font-weight: bold;
+            color: #ffff00;
+            margin-bottom: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .pass { background: #00ff00; color: #000; }
+        .fail { background: #ff0000; color: #fff; }
+        .pending { background: #ffff00; color: #000; }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border-left: 3px solid #00ff00;
+            font-size: 0.9em;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00ffff;
+        }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏏 IPL Auction - System Health Check</h1>
+        
+        <div style="margin: 20px 0;">
+            <button onclick="runAllTests()">🔄 Run All Tests</button>
+            <button onclick="window.location.href='/'">🏠 Back to Auction</button>
+        </div>
+
+        <div id="tests"></div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+
+        const tests = [
+            {
+                name: 'Server Connectivity',
+                async run() {
+                    const response = await fetch(`${API_BASE}/`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return 'Server is responding';
+                }
+            },
+            {
+                name: 'Teams API (/api/teams)',
+                async run() {
+                    const response = await fetch(`${API_BASE}/api/teams`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const teams = await response.json();
+                    if (!Array.isArray(teams)) throw new Error('Response is not an array');
+                    if (teams.length === 0) throw new Error('No teams returned');
+                    return `✅ ${teams.length} teams loaded:\n${teams.map(t => `  • ${t.name} (${t.shorthand}) - ₹${t.budget} Cr`).join('\n')}`;
+                }
+            },
+            {
+                name: 'Teams Detailed API (/api/teams/detailed)',
+                async run() {
+                    const response = await fetch(`${API_BASE}/api/teams/detailed`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const teams = await response.json();
+                    if (!Array.isArray(teams)) throw new Error('Response is not an array');
+                    return `✅ ${teams.length} teams with details:\n${teams.map(t => `  • ${t.name}: ${t.playerCount} players`).join('\n')}`;
+                }
+            },
+            {
+                name: 'Available Players API (/api/players/available)',
+                async run() {
+                    const response = await fetch(`${API_BASE}/api/players/available`);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    const players = await response.json();
+                    if (!Array.isArray(players)) throw new Error('Response is not an array');
+                    return `✅ ${players.length} players available for auction`;
+                }
+            },
+            {
+                name: 'WebSocket Connection',
+                async run() {
+                    return new Promise((resolve, reject) => {
+                        const ws = new WebSocket(`${API_BASE.replace('http', 'ws')}`);
+                        const timeout = setTimeout(() => {
+                            ws.close();
+                            reject(new Error('Connection timeout'));
+                        }, 5000);
+                        
+                        ws.onopen = () => {
+                            clearTimeout(timeout);
+                            ws.close();
+                            resolve('✅ WebSocket connection successful');
+                        };
+                        
+                        ws.onerror = (error) => {
+                            clearTimeout(timeout);
+                            reject(new Error('WebSocket connection failed'));
+                        };
+                    });
+                }
+            },
+            {
+                name: 'Frontend Team Dropdown Loading',
+                async run() {
+                    const response = await fetch(`${API_BASE}/api/teams`);
+                    const teams = await response.json();
+                    
+                    // Simulate what the frontend does
+                    const selectHTML = '<option value="">Select Team</option>\n' +
+                                     '<option value="0">Admin</option>\n' +
+                                     teams.map(t => `<option value="${t.id}">${t.name}</option>`).join('\n');
+                    
+                    return `✅ Dropdown would have ${teams.length + 2} options (Admin + ${teams.length} teams)\n\nHTML Preview:\n${selectHTML}`;
+                }
+            }
+        ];
+
+        async function runAllTests() {
+            const container = document.getElementById('tests');
+            container.innerHTML = '';
+
+            for (const test of tests) {
+                const testDiv = document.createElement('div');
+                testDiv.className = 'test';
+                testDiv.innerHTML = `
+                    <div class="test-name">${test.name}</div>
+                    <span class="status pending">RUNNING...</span>
+                    <div class="result" style="display:none"></div>
+                `;
+                container.appendChild(testDiv);
+
+                try {
+                    const result = await test.run();
+                    testDiv.querySelector('.status').className = 'status pass';
+                    testDiv.querySelector('.status').textContent = 'PASS ✅';
+                    const resultDiv = testDiv.querySelector('.result');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `<pre>${result}</pre>`;
+                } catch (error) {
+                    testDiv.querySelector('.status').className = 'status fail';
+                    testDiv.querySelector('.status').textContent = 'FAIL ❌';
+                    const resultDiv = testDiv.querySelector('.result');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `<pre style="color: #ff6b6b;">Error: ${error.message}\n${error.stack || ''}</pre>`;
+                }
+            }
+        }
+
+        // Run tests on load
+        runAllTests();
+    </script>
+</body>
+</html>
