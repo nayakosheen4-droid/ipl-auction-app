@@ -597,8 +597,18 @@ async function validateBid() {
         if (squadStatus.atMaximum) {
             return {
                 canBid: false,
-                message: '⚠️ Cannot buy more players - Maximum 18 players reached!'
+                message: 'Cannot buy more players - Maximum 18 players reached!'
             };
+        }
+        
+        // Check overseas quota
+        if (auctionState.currentPlayer && auctionState.currentPlayer.overseas) {
+            if (data.overseasCount >= 10) {
+                return {
+                    canBid: false,
+                    message: 'Cannot bid on overseas player - Maximum 10 overseas players limit reached!'
+                };
+            }
         }
         
         // Check if approaching maximum without meeting minimums
@@ -614,7 +624,7 @@ async function validateBid() {
             if (unmetRequirements.length > 0 && data.totalPlayers >= 17) {
                 return {
                     canBid: false,
-                    message: `⚠️ You must complete minimum requirements first: ${unmetRequirements.join(', ')}`
+                    message: `You must complete minimum requirements first: ${unmetRequirements.join(', ')}`
                 };
             }
         }
@@ -778,6 +788,10 @@ async function showMyTeam(teamIdOverride = null) {
             <div style="margin-top: 10px; opacity: 0.9; display: flex; justify-content: space-between;">
                 <span>Players: ${data.totalPlayers || data.players.length}/18</span>
                 <span>Spent: ₹${(100 - data.budget).toFixed(1)} Cr</span>
+            </div>
+            <div style="margin-top: 10px; opacity: 0.9; display: flex; justify-content: space-between;">
+                <span>Overseas: ${data.overseasCount || 0}/10</span>
+                <span>Indian: ${(data.totalPlayers || 0) - (data.overseasCount || 0)}</span>
             </div>
             <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.3);">
                 <strong>Max Bid: ₹${data.maxBid || data.budget} Cr</strong>

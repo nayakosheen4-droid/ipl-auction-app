@@ -85,17 +85,29 @@ function shuffleArray(array) {
 
 // Initialize nomination order
 function initializeNominationOrder() {
-  const teamIds = TEAMS.map(t => t.id);
+  // Exclude Admin (id: 0) from nomination order - they only control, don't play
+  const teamIds = TEAMS.map(t => t.id).filter(id => id !== 0);
   auctionState.nominationOrder = shuffleArray(teamIds);
   auctionState.currentTurnIndex = 0;
   auctionState.currentTurnTeam = auctionState.nominationOrder[0];
   
-  console.log('🎲 Nomination order set:', auctionState.nominationOrder.map(id => {
+  console.log('🎲 Nomination order set (Admin excluded):', auctionState.nominationOrder.map(id => {
     const team = TEAMS.find(t => t.id === id);
     return team ? team.name : id;
   }).join(' → '));
   
   return auctionState.nominationOrder;
+}
+
+// Get overseas player count for a team
+async function getTeamOverseasCount(teamId) {
+  try {
+    const players = await getTeamPlayers(teamId);
+    return players.filter(p => p.overseas === true || p.overseas === 'true').length;
+  } catch (err) {
+    console.error('Error counting overseas players:', err);
+    return 0;
+  }
 }
 
 // Check if team can nominate
@@ -318,7 +330,8 @@ async function initializeExcel() {
       { header: 'Name', key: 'name', width: 30 },
       { header: 'Position', key: 'position', width: 20 },
       { header: 'Base Price', key: 'basePrice', width: 15 },
-      { header: 'Franchise ID', key: 'franchiseId', width: 15 }
+      { header: 'Franchise ID', key: 'franchiseId', width: 15 },
+      { header: 'Overseas', key: 'overseas', width: 10 }
     ];
 
     // IPL 2026 Players - Based on actual IPL 2026 squads (Updated Feb 2026)
@@ -440,8 +453,24 @@ async function initializeExcel() {
       { id: 95, name: 'Shahbaz Ahmed', position: 'All-rounder', basePrice: 0.5, franchiseId: 10 },
       { id: 96, name: 'Arjun Tendulkar', position: 'All-rounder', basePrice: 0.5, franchiseId: 10 }
     ];
+    
+    // List of overseas (non-Indian) player names  
+    const overseasPlayers = [
+      'Trent Boult', 'Mitchell Santner', 'Quinton de Kock', 'Noor Ahmad', 'Matt Henry', 'Dewald Brevis',
+      'Phil Salt', 'Josh Hazlewood', 'Tim David', 'Cameron Green', 'Andre Russell', 'Sunil Narine',
+      'Rovman Powell', 'Tristan Stubbs', 'Mitchell Starc', 'Marcus Stoinis', 'Marco Jansen',
+      'Lockie Ferguson', 'Shimron Hetmyer', 'Maheesh Theekshana', 'Wanindu Hasaranga', 'Jofra Archer',
+      'Pat Cummins', 'Travis Head', 'Heinrich Klaasen', 'Brydon Carse', 'Rashid Khan', 'Jos Buttler',
+      'Kagiso Rabada', 'Nicholas Pooran', 'Mitchell Marsh', 'Aiden Markram'
+    ];
+    
+    // Add overseas field to all players
+    const playersWithOverseas = samplePlayers.map(player => ({
+      ...player,
+      overseas: overseasPlayers.includes(player.name)
+    }));
 
-    playersSheet.addRows(samplePlayers);
+    playersSheet.addRows(playersWithOverseas);
 
     // Sold Players Sheet
     const soldSheet = workbook.addWorksheet('Sold Players');
@@ -553,11 +582,23 @@ async function getTeamPlayers(teamId) {
       const rowTeamId = row.getCell(4).value;
       console.log(`  Row ${rowNumber}: TeamID=${rowTeamId}, Player=${row.getCell(2).value}, Match=${rowTeamId === teamId}`);
       if (rowTeamId === teamId) {
+        // Get player details from Players sheet to check overseas status
+        const playersSheet = workbook.getWorksheet('Players');
+        let isOverseas = false;
+        const playerId = row.getCell(1).value;
+        
+        playersSheet.eachRow((playerRow, playerRowNumber) => {
+          if (playerRowNumber > 1 && playerRow.getCell(1).value === playerId) {
+            isOverseas = playerRow.getCell(6).value === true || playerRow.getCell(6).value === 'true';
+          }
+        });
+        
         players.push({
-          playerId: row.getCell(1).value,
+          playerId: playerId,
           playerName: row.getCell(2).value,
           position: row.getCell(3).value,
-          finalPrice: row.getCell(6).value
+          finalPrice: row.getCell(6).value,
+          overseas: isOverseas
         });
       }
     }
@@ -1134,13 +1175,18 @@ app.get('/api/team/:teamId/players', async (req, res) => {
       };
     });
     
+    // Count overseas players
+    const overseasCount = players.filter(p => p.overseas === true || p.overseas === 'true').length;
+    
     const response = { 
       players, 
       budget: team ? team.budget : 100,
       positionCounts,
       maxBid: Math.round(maxBid * 10) / 10, // Round to 1 decimal
       squadStatus,
-      totalPlayers
+      totalPlayers,
+      overseasCount,
+      overseasLimit: 10
     };
     console.log(`  Returning:`, response);
     res.json(response);
@@ -1255,7 +1301,7 @@ app.post('/api/auction/nominate', async (req, res) => {
 });
 
 // Place bid
-app.post('/api/auction/bid', (req, res) => {
+app.post('/api/auction/bid', async (req, res) => {
   try {
     const { teamId, increment } = req.body;
 
@@ -1271,6 +1317,16 @@ app.post('/api/auction/bid', (req, res) => {
     const newBid = auctionState.currentBid + increment;
     if (newBid > team.budget) {
       return res.status(400).json({ error: 'Insufficient budget' });
+    }
+    
+    // Check overseas quota if current player is overseas
+    if (auctionState.currentPlayer && auctionState.currentPlayer.overseas) {
+      const overseasCount = await getTeamOverseasCount(teamId);
+      if (overseasCount >= 10) {
+        return res.status(400).json({ 
+          error: 'Cannot bid on overseas player - Maximum 10 overseas players limit reached!' 
+        });
+      }
     }
 
     // Remove team from out list if they were out

@@ -10,7 +10,7 @@
     <!-- Login Screen -->
     <div id="loginScreen" class="screen">
         <div class="login-container">
-            <h1>🏏 IPL Auction Game</h1>
+            <h1>IPL Auction Game</h1>
             <p class="subtitle">Select your team and enter password</p>
             <form id="loginForm">
                 <select id="teamSelect" required>
@@ -27,14 +27,14 @@
     <div id="auctionScreen" class="screen hidden">
         <header>
             <div class="header-left">
-                <h1>🏏 IPL Auction</h1>
+                <h1>IPL Auction</h1>
                 <div id="teamInfo" class="team-info"></div>
             </div>
             <div class="header-right">
                 <select id="adminTeamViewer" class="admin-team-selector hidden">
                     <option value="">View Team...</option>
                 </select>
-                <button id="fantasyLeagueBtn" class="btn btn-fantasy">🏆 Fantasy League</button>
+                <button id="fantasyLeagueBtn" class="btn btn-fantasy">Fantasy League</button>
                 <button id="viewTeamBtn" class="btn btn-secondary">View My Team</button>
                 <button id="logoutBtn" class="btn btn-danger">Logout</button>
             </div>
@@ -69,12 +69,34 @@
                     <div class="placeholder">
                         <h2>No Active Auction</h2>
                         <p>Select a player from the left panel to start bidding</p>
+                        <div id="nominationInfo" class="nomination-info hidden">
+                            <div class="nomination-card">
+                                <div class="nomination-label">Current Turn</div>
+                                <div id="currentNominator" class="nomination-team">-</div>
+                            </div>
+                            <div class="nomination-arrow">→</div>
+                            <div class="nomination-card">
+                                <div class="nomination-label">Next Turn</div>
+                                <div id="nextNominator" class="nomination-team">-</div>
+                            </div>
+                        </div>
                         <div id="turnNotification" class="turn-notification hidden"></div>
-                        <button id="initializeAuctionBtn" class="btn btn-initialize hidden">🎲 Initialize Auction Order</button>
+                        <button id="initializeAuctionBtn" class="btn btn-initialize hidden">Initialize Auction Order</button>
                     </div>
                 </div>
 
                 <div id="activeAuction" class="active-auction hidden">
+                    <div id="nominationInfo" class="nomination-info">
+                        <div class="nomination-card">
+                            <div class="nomination-label">Current Turn</div>
+                            <div id="currentNominatorActive" class="nomination-team">-</div>
+                        </div>
+                        <div class="nomination-arrow">→</div>
+                        <div class="nomination-card">
+                            <div class="nomination-label">Next Turn</div>
+                            <div id="nextNominatorActive" class="nomination-team">-</div>
+                        </div>
+                    </div>
                     <div id="activeTurnNotification" class="turn-notification hidden"></div>
                     
                     <div class="player-card">
@@ -111,7 +133,7 @@
                     <!-- RTM Phase -->
                     <div id="rtmPhase" class="rtm-phase hidden">
                         <div class="rtm-card">
-                            <h2>🎯 Right to Match Available!</h2>
+                            <h2>Right to Match Available!</h2>
                             <p id="rtmMessage"></p>
                             
                             <!-- RTM Timer -->
@@ -152,13 +174,13 @@
                         
                         <!-- Reset Auction Section -->
                         <div class="admin-section">
-                            <button id="adminResetBtn" class="btn btn-reset-auction">🔄 Reset Current Auction</button>
-                            <button id="adminFullResetBtn" class="btn btn-full-reset">🗑️ Full Reset (Clear All Data)</button>
+                            <button id="adminResetBtn" class="btn btn-reset-auction">Reset Current Auction</button>
+                            <button id="adminFullResetBtn" class="btn btn-full-reset">Full Reset (Clear All Data)</button>
                         </div>
                         
                         <!-- Download Excel Section -->
                         <div class="admin-section">
-                            <button id="adminDownloadBtn" class="btn btn-download-excel">📥 Download Excel File</button>
+                            <button id="adminDownloadBtn" class="btn btn-download-excel">Download Excel File</button>
                         </div>
                     </div>
 
