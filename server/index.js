@@ -792,14 +792,21 @@ function startAuctionTimer() {
         // 2. Franchise team hasn't used RTM yet
         // 3. Franchise team is not the winning bidder
         // 4. Franchise team has enough budget
-        // 5. Franchise team is not marked out
-        const franchiseIsOut = auctionState.teamsOut.includes(franchiseTeam?.id);
+        // 5. Franchise team is not marked out (ONLY if they marked themselves out, not admin)
+        // NOTE: We DON'T check teamsOut because admin might mark teams out for testing
+        // Only the franchise team can decline by marking themselves out
+        
+        console.log(`🔍 RTM Check for ${franchiseTeam?.name}:`);
+        console.log(`  - Has franchise: ${!!franchiseTeam}`);
+        console.log(`  - RTM not used: ${!franchiseTeam?.rtmUsed}`);
+        console.log(`  - Not winning bidder: ${franchiseTeam?.id !== winningTeam.id}`);
+        console.log(`  - Has budget: ${franchiseTeam?.budget >= auctionState.currentBid} (₹${franchiseTeam?.budget} >= ₹${auctionState.currentBid})`);
+        console.log(`  - Winner is: ${winningTeam.name}`);
         
         if (franchiseTeam && 
             !franchiseTeam.rtmUsed && 
             franchiseTeam.id !== winningTeam.id &&
-            franchiseTeam.budget >= auctionState.currentBid &&
-            !franchiseIsOut) {
+            franchiseTeam.budget >= auctionState.currentBid) {
           
           console.log(`🎯 RTM opportunity available for ${franchiseTeam.name}`);
           
@@ -935,15 +942,7 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       isRTM
     );
 
-    broadcast({ 
-      type: 'auction_complete', 
-      winner: winningTeam.name,
-      player: auctionState.currentPlayer.name,
-      price: finalPrice,
-      rtmUsed: isRTM,
-      teams: auctionState.teams
-    });
-
+    // Reset auction state but preserve nomination order
     auctionState = {
       currentPlayer: null,
       currentBid: 0,
@@ -964,10 +963,21 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       teams: auctionState.teams
     };
     
-    console.log(`✅ Auction completed successfully`);
-    
     // Advance to next team's turn
     await advanceToNextTurn();
+    
+    console.log(`✅ Auction completed successfully`);
+    
+    // Broadcast auction completion with updated state (AFTER advanceToNextTurn)
+    broadcast({ 
+      type: 'auction_complete', 
+      winner: winningTeam.name,
+      player: auctionState.currentPlayer.name,
+      price: finalPrice,
+      rtmUsed: isRTM,
+      teams: auctionState.teams,
+      state: auctionState // Include full state with updated turn
+    });
   } catch (err) {
     console.error(`❌ Error completing auction:`, err);
     throw err;
