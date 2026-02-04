@@ -395,9 +395,6 @@ function updateAuctionState(state) {
             franchiseBadge.classList.remove('hidden');
         } else {
             franchiseBadge.classList.add('hidden');
-            franchiseBadge.style.display = 'inline-block';
-        } else {
-            franchiseBadge.style.display = 'none';
         }
         
         const bidderTeam = allTeams.find(t => t.id === state.currentBidder);
