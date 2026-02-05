@@ -320,6 +320,15 @@ function handleWebSocketMessage(data) {
             updateNominationInfo(data.state); // Update nomination display
             showToast('Team marked back IN', 'info');
             break;
+        case 'team_marked_back_in':
+            updateAuctionState(data.state);
+            updateNominationInfo(data.state);
+            if (data.teamId === currentTeam.id) {
+                showToast('You are back in the auction!', 'success');
+            } else {
+                showToast(`${data.teamName} is back in the auction`, 'info');
+            }
+            break;
         case 'rtm_opportunity':
             showRTMPhase(data);
             break;
@@ -332,6 +341,21 @@ function handleWebSocketMessage(data) {
             updateTeamsBudget(data.teams);
             loadAvailablePlayers();
             updateNominationInfo(data.state || auctionState); // Update nomination display
+            
+            // Auto-refresh current view based on left panel selection
+            if (leftPanelView === 'sold') {
+                displaySoldPlayers(); // Refresh sold players list
+            } else if (leftPanelView === 'teams') {
+                displayAllTeams(); // Refresh teams view
+            }
+            // 'unsold' view is already refreshed by loadAvailablePlayers()
+            
+            // If My Team modal is open and it's the logged-in user's team, refresh it
+            const myTeamModal = document.getElementById('myTeamModal');
+            if (!myTeamModal.classList.contains('hidden')) {
+                showMyTeam(); // Refresh the modal with updated data
+            }
+            
             setTimeout(() => {
                 noAuction.classList.remove('hidden');
                 activeAuction.classList.add('hidden');
@@ -475,20 +499,24 @@ function updateAuctionState(state) {
         bidButtons.forEach(btn => {
             const increment = parseFloat(btn.dataset.increment);
             const newBid = state.currentBid + increment;
+            
+            // Update button text to show final bid amount instead of increment
+            btn.textContent = `₹${newBid.toFixed(1)} Cr`;
+            
             // Disable if: out, insufficient budget, admin, or already highest bidder
             btn.disabled = isAdmin || isOut || !myTeam || newBid > myTeam.budget || isCurrentBidder;
         });
         
-        // Update out button
+        // Update out button - allow toggle between out/in
         const outBtn = document.getElementById('markOutBtn');
         if (isAdmin) {
             outBtn.style.display = 'none';
         } else {
             outBtn.style.display = 'block';
             if (isOut) {
-                outBtn.textContent = 'Marked Out';
+                outBtn.textContent = 'Mark Back In';
                 outBtn.classList.add('marked');
-                outBtn.disabled = true;
+                outBtn.disabled = false; // Allow marking back in
             } else {
                 outBtn.textContent = 'Mark Out';
                 outBtn.classList.remove('marked');
@@ -717,6 +745,20 @@ async function validateBid() {
 // Mark out
 async function markOut() {
     try {
+        // Check if already marked out - if so, mark back in
+        const isOut = auctionState.teamsOut.includes(currentTeam.id);
+        
+        if (isOut) {
+            // Mark back in via WebSocket
+            ws.send(JSON.stringify({
+                type: 'mark_back_in',
+                teamId: currentTeam.id
+            }));
+            showToast('Marked back into auction', 'info');
+            return;
+        }
+        
+        // Mark out logic (original)
         // Validate squad can afford to pass
         const validation = await validateMarkOut();
         if (!validation.canMarkOut) {

@@ -1194,6 +1194,27 @@ wss.on('connection', (ws) => {
             });
           }
         }
+      } else if (data.type === 'mark_back_in') {
+        // Regular user marking themselves back in
+        if (auctionState.auctionActive && data.teamId !== undefined) {
+          const index = auctionState.teamsOut.indexOf(data.teamId);
+          if (index > -1) {
+            auctionState.teamsOut.splice(index, 1);
+            const team = auctionState.teams.find(t => t.id === data.teamId);
+            const teamName = team ? team.name : `Team ${data.teamId}`;
+            console.log(`✅ ${teamName} marked themselves back IN auction`);
+            
+            // Stop timer if it was running (since we now have more teams)
+            stopAuctionTimer();
+
+            broadcast({ 
+              type: 'team_marked_back_in', 
+              state: auctionState,
+              teamId: data.teamId,
+              teamName: teamName
+            });
+          }
+        }
       }
     } catch (err) {
       console.error('WebSocket message error:', err);
