@@ -354,7 +354,10 @@ async function getMatchScorecardPreview(matchId, matchName = null) {
   try {
     const scorecard = await getMatchScorecard(matchId);
     if (!scorecard || !scorecard.data) {
-      return { success: false, error: 'No scorecard data available' };
+      return {
+        success: false,
+        error: 'No scorecard data available for this match ID. Use a match ID from Cricbuzz.com (in the URL: .../live-cricket-scores/12345/...) or load schedule when IPL/live matches are available.'
+      };
     }
     const apiPlayerStats = parsePlayerStats(scorecard);
     const soldPlayers = await getAllSoldPlayers();

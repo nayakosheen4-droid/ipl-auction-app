@@ -23,6 +23,7 @@
         <div class="fantasy-nav">
             <button class="fantasy-nav-btn active" data-view="leaderboard">🏆 Leaderboard</button>
             <button class="fantasy-nav-btn" data-view="myteam">👥 My Team</button>
+            <button class="fantasy-nav-btn" data-view="schedule">📅 Schedule</button>
             <button class="fantasy-nav-btn admin-only hidden" data-view="admin">⚙️ Admin</button>
         </div>
 
@@ -56,6 +57,26 @@
                         <span id="myteamTotalPoints" class="points-value">0</span>
                     </div>
                     <div id="myteamPlayers" class="myteam-players"></div>
+                </div>
+            </div>
+
+            <!-- Schedule View (visible to all – load and see match schedule) -->
+            <div id="scheduleView" class="fantasy-view hidden">
+                <div class="view-header">
+                    <h2>Match Schedule</h2>
+                </div>
+                <div class="schedule-standalone-panel">
+                    <div class="admin-schedule-controls">
+                        <label for="scheduleSeasonMain" class="schedule-label">Season:</label>
+                        <select id="scheduleSeasonMain" class="schedule-season-select">
+                            <option value="2025" selected>IPL 2025</option>
+                            <option value="2024">IPL 2024</option>
+                        </select>
+                        <button id="loadScheduleBtnMain" type="button" class="btn btn-admin load-schedule-btn">Load schedule</button>
+                    </div>
+                    <div id="scheduleListMain" class="schedule-list schedule-list-main">
+                        <p class="schedule-placeholder">Click “Load schedule” to fetch and show all matches for the selected season.</p>
+                    </div>
                 </div>
             </div>
 
@@ -95,7 +116,7 @@
                             <button id="loadScheduleBtn" class="btn btn-admin">Load schedule</button>
                         </div>
                         <div id="scheduleList" class="schedule-list">
-                            <p class="schedule-placeholder">Load schedule to see matches. Click a match to view player stats.</p>
+                            <p class="schedule-placeholder">Load schedule to see matches. Click a match to view player stats. Use match IDs from Cricbuzz.com URLs when the API returns no scorecard.</p>
                         </div>
                     </div>
 

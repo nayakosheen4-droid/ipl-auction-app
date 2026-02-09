@@ -77,12 +77,17 @@ function setupEventListeners() {
         loadMyTeamPerformance(currentGameweek);
     });
     
+    // Schedule: Load schedule button (visible to ALL users – Schedule tab)
+    const loadScheduleBtnMain = document.getElementById('loadScheduleBtnMain');
+    if (loadScheduleBtnMain) loadScheduleBtnMain.addEventListener('click', loadSchedule);
+
     // Admin controls
     if (isAdmin) {
         document.getElementById('setGameweekBtn').addEventListener('click', setGameweek);
         document.getElementById('fetchNowBtn').addEventListener('click', fetchStatsNow);
         document.getElementById('toggleAutoStatsBtn').addEventListener('click', toggleAutoStats);
-        document.getElementById('loadScheduleBtn').addEventListener('click', loadSchedule);
+        const loadScheduleBtn = document.getElementById('loadScheduleBtn');
+        if (loadScheduleBtn) loadScheduleBtn.addEventListener('click', loadSchedule);
         document.getElementById('addToLeaderboardBtn').addEventListener('click', addToLeaderboard);
         document.getElementById('scheduleList').addEventListener('click', (e) => {
             const card = e.target.closest('.schedule-match-card');
@@ -107,6 +112,8 @@ function showView(viewName) {
     } else if (viewName === 'myteam') {
         document.getElementById('myteamView').classList.remove('hidden');
         loadMyTeamPerformance(currentGameweek);
+    } else if (viewName === 'schedule') {
+        document.getElementById('scheduleView').classList.remove('hidden');
     } else if (viewName === 'admin' && isAdmin) {
         document.getElementById('adminView').classList.remove('hidden');
         loadAutoStatsStatus();
@@ -598,37 +605,54 @@ async function toggleAutoStats() {
     }
 }
 
-// Load schedule and render match list (admin)
+// Load schedule and render match list (works from Schedule tab and Admin tab)
 async function loadSchedule() {
-    const btn = document.getElementById('loadScheduleBtn');
-    const listEl = document.getElementById('scheduleList');
-    const season = document.getElementById('scheduleSeason') ? document.getElementById('scheduleSeason').value : '2025';
-    btn.disabled = true;
-    btn.textContent = 'Loading...';
-    listEl.innerHTML = '<p class="schedule-placeholder">Loading schedule...</p>';
+    const season = (document.getElementById('scheduleSeasonMain') || document.getElementById('scheduleSeason'))?.value || '2025';
+    const btnMain = document.getElementById('loadScheduleBtnMain');
+    const btnAdmin = document.getElementById('loadScheduleBtn');
+    const listMain = document.getElementById('scheduleListMain');
+    const listAdmin = document.getElementById('scheduleList');
+
+    const setLoading = (on) => {
+        const text = on ? 'Loading...' : 'Load schedule';
+        if (btnMain) { btnMain.disabled = on; btnMain.textContent = text; }
+        if (btnAdmin) { btnAdmin.disabled = on; btnAdmin.textContent = text; }
+        const loadingHtml = '<p class="schedule-placeholder">Loading schedule...</p>';
+        if (listMain) listMain.innerHTML = loadingHtml;
+        if (listAdmin) listAdmin.innerHTML = loadingHtml;
+    };
+
+    setLoading(true);
 
     try {
         const response = await fetch(`${API_BASE}/api/autostats/matches?season=${encodeURIComponent(season)}&schedule=true`);
         const data = await response.json();
 
+        const placeholderNoMatches = '<p class="schedule-placeholder">No matches in schedule. Try another season or set IPL_SERIES_ID_2025 / IPL2025_MATCH_IDS.</p>';
+
         if (data.success && data.matches && data.matches.length > 0) {
-            listEl.innerHTML = data.matches.map(m => `
+            const matchesHtml = data.matches.map(m => `
                 <button type="button" class="schedule-match-card" data-match-id="${m.id}" data-match-name="${escapeAttr(m.name || '')}">
                     <span class="match-card-name">${escapeHtml(m.name || `Match ${m.id}`)}</span>
                     <span class="match-card-meta">${escapeHtml(m.series || '')} · ${m.status || ''} ${m.matchEnded ? '· Completed' : ''}</span>
                 </button>
             `).join('');
-            showToast(`Loaded ${data.count} matches. Click one to see player stats.`, 'success');
+            if (listMain) listMain.innerHTML = matchesHtml;
+            if (listAdmin) listAdmin.innerHTML = matchesHtml;
+            showToast(`Loaded ${data.count} matches.`, 'success');
         } else {
-            listEl.innerHTML = '<p class="schedule-placeholder">No matches in schedule. Try another season or set IPL_SERIES_ID_2025 / IPL2025_MATCH_IDS.</p>';
+            if (listMain) listMain.innerHTML = placeholderNoMatches;
+            if (listAdmin) listAdmin.innerHTML = placeholderNoMatches;
             showToast('No matches found for this season', 'info');
         }
     } catch (err) {
-        listEl.innerHTML = '<p class="schedule-placeholder">Failed to load schedule.</p>';
+        const failHtml = '<p class="schedule-placeholder">Failed to load schedule.</p>';
+        if (listMain) listMain.innerHTML = failHtml;
+        if (listAdmin) listAdmin.innerHTML = failHtml;
         showToast('Failed to load schedule', 'error');
     }
-    btn.disabled = false;
-    btn.textContent = 'Load schedule';
+
+    setLoading(false);
 }
 
 function escapeHtml(s) {
@@ -665,8 +689,10 @@ async function selectMatch(matchId, matchName) {
         const data = await response.json();
 
         if (!data.success) {
-            tbodyAll.innerHTML = '<tr><td colspan="9">' + escapeHtml(data.error || 'No scorecard') + '</td></tr>';
+            const errMsg = data.error || 'No scorecard';
+            tbodyAll.innerHTML = '<tr><td colspan="9"><span class="scorecard-error">' + escapeHtml(errMsg) + '</span></td></tr>';
             tbodyLeague.innerHTML = '<tr><td colspan="7">No data</td></tr>';
+            document.getElementById('addToLeaderboardBtn').disabled = true;
             return;
         }
 

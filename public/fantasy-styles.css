@@ -313,6 +313,29 @@
     overflow-y: auto;
 }
 
+.schedule-standalone-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    max-width: 560px;
+}
+
+.schedule-standalone-panel .schedule-label {
+    font-weight: 500;
+    color: #555;
+    margin-right: 8px;
+}
+
+.schedule-standalone-panel .admin-schedule-controls {
+    margin-bottom: 16px;
+}
+
+.schedule-standalone-panel .schedule-list-main {
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
 .schedule-placeholder {
     color: #999;
     font-size: 0.95rem;
@@ -439,6 +462,14 @@
 .add-hint {
     color: #666;
     font-size: 0.85rem;
+}
+
+.scorecard-error {
+    display: block;
+    max-width: 480px;
+    line-height: 1.4;
+    color: #c00;
+    font-size: 0.9rem;
 }
 
 .admin-fantasy-content {

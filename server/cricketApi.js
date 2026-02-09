@@ -393,42 +393,55 @@ async function getMatchScorecard(matchId) {
 
 /**
  * Get scorecard from RapidAPI Cricbuzz
+ * Tries multiple endpoints and param names (APIs vary: matchid, id, matchId)
  */
 async function getRapidAPIScorecard(matchId) {
-  // Try both possible scorecard endpoints
   const endpoints = [
-    { path: '/matches/scoreboard', param: 'matchid' },
-    { path: '/matches/info', param: 'matchid' }
+    { path: '/matches/scoreboard', params: [{ matchid: matchId }, { id: matchId }] },
+    { path: '/matches/info', params: [{ matchid: matchId }, { id: matchId }] },
+    { path: '/mcc/v1/scoreboard', params: [{ id: matchId }, { matchid: matchId }] }
   ];
-  
+
   for (const endpoint of endpoints) {
-    try {
-      console.log(`🔍 Fetching scorecard from: ${RAPIDAPI_BASE}${endpoint.path}?${endpoint.param}=${matchId}`);
-      const response = await axios.get(`${RAPIDAPI_BASE}${endpoint.path}`, {
-        params: { [endpoint.param]: matchId },
-        headers: {
-          'x-rapidapi-key': RAPIDAPI_KEY,
-          'x-rapidapi-host': RAPIDAPI_HOST
-        },
-        timeout: 10000
-      });
-      
-      console.log(`✅ Scorecard received for match ${matchId} from ${endpoint.path}`);
-      console.log('📊 Response structure:', JSON.stringify(response.data).substring(0, 400));
-      
-      // Transform to common format
-      return {
-        data: transformRapidAPIScorecard(response.data)
-      };
-    } catch (error) {
-      console.error(`   ❌ ${endpoint.path}: ${error.message}`);
-      if (error.response) {
-        console.error('      Status:', error.response.status);
+    for (const paramSet of endpoint.params) {
+      try {
+        const paramKey = Object.keys(paramSet)[0];
+        const paramVal = paramSet[paramKey];
+        console.log(`🔍 Trying ${RAPIDAPI_BASE}${endpoint.path}?${paramKey}=${paramVal}`);
+        const response = await axios.get(`${RAPIDAPI_BASE}${endpoint.path}`, {
+          params: paramSet,
+          headers: {
+            'x-rapidapi-key': RAPIDAPI_KEY,
+            'x-rapidapi-host': RAPIDAPI_HOST
+          },
+          timeout: 10000
+        });
+
+        const raw = response.data;
+        const transformed = transformRapidAPIScorecard(raw);
+        const hasScore = transformed.score && transformed.score.length > 0;
+
+        if (hasScore) {
+          console.log(`✅ Scorecard OK for match ${matchId} from ${endpoint.path}`);
+          return { data: transformed };
+        }
+
+        // 200 but no scorecard – log structure for debugging
+        const keys = raw && typeof raw === 'object' ? Object.keys(raw) : [];
+        console.warn(`   ⚠️ No scoreCard in response. Top-level keys: ${keys.join(', ')}`);
+        if (raw && (raw.body || raw.data)) {
+          const inner = raw.body || raw.data;
+          console.warn(`   Inner keys: ${typeof inner === 'object' && inner ? Object.keys(inner).join(', ') : 'n/a'}`);
+        }
+      } catch (error) {
+        const status = error.response?.status;
+        const msg = error.response?.data?.message || error.message;
+        console.error(`   ❌ ${endpoint.path} (${Object.keys(paramSet)[0]}=...): ${msg}${status ? ` [${status}]` : ''}`);
       }
     }
   }
-  
-  console.error(`❌ Could not fetch scorecard for match ${matchId} from any endpoint`);
+
+  console.error(`❌ No scorecard for match ${matchId} from any endpoint. Use a match ID from "Load schedule" (live/recent) or Cricbuzz.com.`);
   return null;
 }
 
@@ -450,58 +463,71 @@ async function getCricketDataScorecard(matchId) {
 }
 
 /**
- * Transform RapidAPI scorecard to common format
+ * Transform RapidAPI/Cricbuzz scorecard to common format.
+ * Handles multiple response shapes: scoreCard/scorecard, body/data wrapper, batTeamDetails/battingDetails, etc.
  */
 function transformRapidAPIScorecard(rapidData) {
   const scorecard = { score: [] };
-  
-  if (!rapidData || !rapidData.scoreCard) {
-    return scorecard;
+  if (!rapidData || typeof rapidData !== 'object') return scorecard;
+
+  const unwrap = (obj) => {
+    if (!obj) return obj;
+    if (obj.body && typeof obj.body === 'object') return obj.body;
+    if (obj.data && typeof obj.data === 'object') return obj.data;
+    return obj;
+  };
+  const data = unwrap(rapidData);
+  const innings = data?.scoreCard || data?.scorecard || data?.innings || [];
+  const arr = Array.isArray(innings) ? innings : (innings && innings.length !== undefined ? [innings] : []);
+
+  for (const inning of arr) {
+    const inningData = { r: [], w: [] };
+    const batDetails = inning?.batTeamDetails || inning?.battingDetails || inning?.batsmen;
+    const bowlDetails = inning?.bowlTeamDetails || inning?.bowlingDetails || inning?.bowlers;
+
+    const batsmenData = batDetails?.batsmenData || batDetails?.batsmen || batDetails;
+    const batsmenList = Array.isArray(batsmenData)
+      ? batsmenData
+      : (batsmenData && typeof batsmenData === 'object' ? Object.values(batsmenData) : []);
+
+    for (const batsman of batsmenList) {
+      if (!batsman) continue;
+      const name = batsman.batName || batsman.batsmanName || batsman.name || batsman.playerName;
+      if (!name && !batsman.batId && !batsman.id) continue;
+      inningData.r.push({
+        batsmanName: name || 'Unknown',
+        batsman: name || 'Unknown',
+        r: batsman.runs ?? batsman.r ?? 0,
+        b: batsman.balls ?? batsman.b ?? 0,
+        '4s': batsman.fours ?? batsman['4s'] ?? 0,
+        '6s': batsman.sixes ?? batsman['6s'] ?? 0,
+        sr: batsman.strikeRate ?? batsman.sr ?? 0
+      });
+    }
+
+    const bowlersData = bowlDetails?.bowlersData || bowlDetails?.bowlers || bowlDetails;
+    const bowlersList = Array.isArray(bowlersData)
+      ? bowlersData
+      : (bowlersData && typeof bowlersData === 'object' ? Object.values(bowlersData) : []);
+
+    for (const bowler of bowlersList) {
+      if (!bowler) continue;
+      const name = bowler.bowlName || bowler.bowlerName || bowler.name || bowler.playerName;
+      if (!name && !bowler.bowlId && !bowler.id) continue;
+      inningData.w.push({
+        bowlerName: name || 'Unknown',
+        bowler: name || 'Unknown',
+        o: bowler.overs ?? bowler.o ?? 0,
+        m: bowler.maidens ?? bowler.m ?? 0,
+        r: bowler.runs ?? bowler.r ?? 0,
+        w: bowler.wickets ?? bowler.w ?? 0,
+        eco: bowler.economy ?? bowler.eco ?? 0
+      });
+    }
+
+    if (inningData.r.length || inningData.w.length) scorecard.score.push(inningData);
   }
-  
-  rapidData.scoreCard.forEach(inning => {
-    const inningData = {
-      r: [], // batting
-      w: []  // bowling
-    };
-    
-    // Parse batting
-    if (inning.batTeamDetails && inning.batTeamDetails.batsmenData) {
-      Object.values(inning.batTeamDetails.batsmenData).forEach(batsman => {
-        if (batsman.batId) {
-          inningData.r.push({
-            batsmanName: batsman.batName,
-            batsman: batsman.batName,
-            r: batsman.runs,
-            b: batsman.balls,
-            '4s': batsman.fours,
-            '6s': batsman.sixes,
-            sr: batsman.strikeRate
-          });
-        }
-      });
-    }
-    
-    // Parse bowling
-    if (inning.bowlTeamDetails && inning.bowlTeamDetails.bowlersData) {
-      Object.values(inning.bowlTeamDetails.bowlersData).forEach(bowler => {
-        if (bowler.bowlId) {
-          inningData.w.push({
-            bowlerName: bowler.bowlName,
-            bowler: bowler.bowlName,
-            o: bowler.overs,
-            m: bowler.maidens,
-            r: bowler.runs,
-            w: bowler.wickets,
-            eco: bowler.economy
-          });
-        }
-      });
-    }
-    
-    scorecard.score.push(inningData);
-  });
-  
+
   return scorecard;
 }
 
