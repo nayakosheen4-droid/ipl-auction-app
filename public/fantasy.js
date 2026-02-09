@@ -692,6 +692,17 @@ async function selectMatch(matchId, matchName) {
 
     const tbodyAll = document.querySelector('#allPlayersTable tbody');
     const tbodyLeague = document.querySelector('#leaguePlayersTable tbody');
+
+    // Placeholder schedule IDs (e.g. ipl2025-1) have no scorecard — show friendly message
+    const isPlaceholder = /^ipl2025-\d+$/.test(String(matchId));
+    if (isPlaceholder) {
+        const msg = 'This is a schedule placeholder. Scorecard and fantasy points are available for live or completed matches — use match IDs from Cricbuzz.com (in the URL: .../live-cricket-scores/12345/...).';
+        tbodyAll.innerHTML = '<tr><td colspan="9"><span class="scorecard-placeholder">' + escapeHtml(msg) + '</span></td></tr>';
+        tbodyLeague.innerHTML = '<tr><td colspan="7">—</td></tr>';
+        document.getElementById('addToLeaderboardBtn').disabled = true;
+        return;
+    }
+
     tbodyAll.innerHTML = '<tr><td colspan="9">Loading...</td></tr>';
     tbodyLeague.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
 

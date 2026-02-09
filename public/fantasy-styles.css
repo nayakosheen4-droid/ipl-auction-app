@@ -472,6 +472,14 @@
     font-size: 0.9rem;
 }
 
+.scorecard-placeholder {
+    display: block;
+    max-width: 520px;
+    line-height: 1.5;
+    color: #555;
+    font-size: 0.9rem;
+}
+
 .admin-fantasy-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
