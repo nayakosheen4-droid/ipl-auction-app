@@ -2229,7 +2229,7 @@ app.get('/api/autostats/matches', async (req, res) => {
   } catch (err) {
     console.error('getMatchesForListing error:', err.message);
     if (season === '2025') {
-      matches = [{ id: '95353', name: 'IPL 2025 Match 95353', series: 'IPL 2025', status: 'Scheduled', matchType: 't20', matchEnded: false }];
+      matches = Array.from({ length: 74 }, (_, i) => ({ id: `ipl2025-${i + 1}`, name: `IPL 2025 - Match ${i + 1}`, series: 'IPL 2025', status: 'Scheduled', matchType: 't20', matchEnded: false }));
     }
   }
 

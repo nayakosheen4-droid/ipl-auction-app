@@ -30,11 +30,22 @@ const SCHEDULE_TTL = 15 * 60 * 1000; // 15 minutes
 // Known IPL 2025 series ID for CricketData.org (optional env override)
 const IPL_SERIES_ID_2025 = process.env.IPL_SERIES_ID_2025 || '';
 
-// Fallback: known IPL 2025 Cricbuzz match IDs for testing when schedule API returns nothing.
-// Add IDs from cricbuzz.com URLs or set env IPL2025_MATCH_IDS=id1,id2
-const IPL2025_FALLBACK_MATCH_IDS = process.env.IPL2025_MATCH_IDS
+// Full IPL 2025 schedule: 74 matches (league + playoffs). Used when API returns no/few matches.
+const IPL_2025_MATCH_COUNT = 74;
+const IPL2025_FULL_SCHEDULE = Array.from({ length: IPL_2025_MATCH_COUNT }, (_, i) => ({
+  id: `ipl2025-${i + 1}`,
+  name: `IPL 2025 - Match ${i + 1}`,
+  matchType: 't20',
+  status: 'Scheduled',
+  series: 'IPL 2025',
+  seriesName: 'IPL 2025',
+  matchEnded: false
+}));
+
+// Optional: override with real Cricbuzz match IDs (comma-separated) for scorecard support. Else we use full 74-match list.
+const IPL2025_MATCH_IDS_OVERRIDE = process.env.IPL2025_MATCH_IDS
   ? process.env.IPL2025_MATCH_IDS.split(',').map(s => s.trim()).filter(Boolean)
-  : ['95353']; // one example ID so "List matches" returns something for E2E testing
+  : [];
 
 /**
  * Get current/recent matches
@@ -247,19 +258,24 @@ async function getSchedule(season) {
     if (result.data.length) console.log(`✅ Got ${result.data.length} matches from RapidAPI (live/recent/upcoming)`);
   }
 
-  if (result.data.length === 0 && normSeason === '2025' && IPL2025_FALLBACK_MATCH_IDS.length > 0) {
-    result = {
-      data: IPL2025_FALLBACK_MATCH_IDS.map(id => ({
-        id,
-        name: `IPL 2025 Match ${id}`,
-        matchType: 't20',
-        status: 'Scheduled',
-        series: 'IPL 2025',
-        seriesName: 'IPL 2025',
-        matchEnded: false
-      }))
-    };
-    console.log(`📋 Using ${result.data.length} fallback match IDs for IPL 2025 testing`);
+  if (result.data.length === 0 && normSeason === '2025') {
+    if (IPL2025_MATCH_IDS_OVERRIDE.length > 0) {
+      result = {
+        data: IPL2025_MATCH_IDS_OVERRIDE.map((id, i) => ({
+          id,
+          name: `IPL 2025 - Match ${i + 1}`,
+          matchType: 't20',
+          status: 'Scheduled',
+          series: 'IPL 2025',
+          seriesName: 'IPL 2025',
+          matchEnded: false
+        }))
+      };
+      console.log(`📋 Using ${result.data.length} match IDs from IPL2025_MATCH_IDS for IPL 2025`);
+    } else {
+      result = { data: [...IPL2025_FULL_SCHEDULE] };
+      console.log(`📋 Using full IPL 2025 schedule: ${result.data.length} matches`);
+    }
   }
 
   scheduleCache[cacheKey] = { data: result, timestamp: now };
