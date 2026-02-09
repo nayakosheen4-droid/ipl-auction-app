@@ -2108,13 +2108,25 @@ app.post('/api/autostats/fetch', async (req, res) => {
 app.post('/api/autostats/gameweek', (req, res) => {
   try {
     const { gameweek } = req.body;
-    
+
     if (!gameweek || gameweek < 1) {
       return res.status(400).json({ error: 'Invalid gameweek' });
     }
-    
+
     autoStatsService.setCurrentGameweek(gameweek);
     res.json({ success: true, gameweek });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Set current season for schedule (e.g. 2025 for IPL 2025)
+app.post('/api/autostats/season', (req, res) => {
+  try {
+    const { season } = req.body;
+    const s = String(season || '2025').replace(/\D/g, '') || '2025';
+    autoStatsService.setCurrentSeason(s);
+    res.json({ success: true, season: s });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -2130,40 +2142,82 @@ app.post('/api/autostats/clear-cache', (req, res) => {
   }
 });
 
-// Test: Fetch specific match by ID (for testing any match)
+// Get scorecard + player stats + league players with fantasy points (preview)
+app.get('/api/autostats/match/:matchId/scorecard', async (req, res) => {
+  try {
+    const { matchId } = req.params;
+    const matchName = req.query.matchName || null;
+    const data = await autoStatsService.getMatchScorecardPreview(matchId, matchName);
+    if (!data.success) {
+      return res.status(404).json({ success: false, error: data.error });
+    }
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Process match and add fantasy points to sheet (single button: "Add to leaderboard")
 app.post('/api/autostats/test-match', async (req, res) => {
   try {
     const { matchId } = req.body;
-    
+
     if (!matchId) {
       return res.status(400).json({ error: 'matchId required' });
     }
-    
-    console.log(`🧪 TEST MODE: Fetching match ${matchId}`);
-    
-    // Don't wait for completion, respond immediately
-    res.json({ 
-      success: true, 
-      message: `Testing match ${matchId} in background`,
-      matchId 
+
+    console.log(`🧪 Processing match ${matchId} → adding to leaderboard`);
+
+    res.json({
+      success: true,
+      message: `Adding match ${matchId} to leaderboard`,
+      matchId
     });
-    
-    // Process in background
+
     autoStatsService.testSpecificMatch(matchId);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// Get recent matches list (for finding match IDs)
+// Get schedule for a season (schedule-first: list of matches from schedule)
+app.get('/api/autostats/schedule', async (req, res) => {
+  try {
+    const cricketApi = require('./cricketApi');
+    const season = req.query.season || '2025';
+    const schedule = await cricketApi.getSchedule(season);
+    const matches = (schedule.data || []).map(m => ({
+      id: m.id,
+      name: m.name,
+      series: m.series || m.seriesName,
+      status: m.status,
+      matchType: m.matchType,
+      matchEnded: m.matchEnded,
+      date: m.date,
+      team1: m.team1,
+      team2: m.team2,
+      venue: m.venue
+    }));
+    res.json({
+      success: true,
+      season,
+      count: matches.length,
+      matches
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get matches list: schedule-first (by season), then fallback to live/recent
 app.get('/api/autostats/matches', async (req, res) => {
   try {
     const cricketApi = require('./cricketApi');
-    const matchesData = await cricketApi.getCurrentMatches();
-    
-    // Return all matches with their IDs for testing
-    const matches = matchesData.data || [];
-    const matchList = matches.map(m => ({
+    const season = req.query.season || '2025';
+    const useScheduleFirst = req.query.schedule !== 'false';
+    const matchesData = await cricketApi.getMatchesForListing({ season, useScheduleFirst });
+
+    const matches = (matchesData.data || []).map(m => ({
       id: m.id,
       name: m.name,
       series: m.series || m.seriesName,
@@ -2171,11 +2225,12 @@ app.get('/api/autostats/matches', async (req, res) => {
       matchType: m.matchType,
       matchEnded: m.matchEnded
     }));
-    
-    res.json({ 
-      success: true, 
-      count: matchList.length,
-      matches: matchList 
+
+    res.json({
+      success: true,
+      count: matches.length,
+      season: useScheduleFirst ? season : null,
+      matches
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -2186,14 +2241,15 @@ app.get('/api/autostats/matches', async (req, res) => {
 initializeExcel().then(async () => {
   await loadTeamStateFromExcel();
   
-  // Start auto-stats service if API key is configured
-  if (process.env.CRICKET_API_KEY) {
-    console.log('🏏 Cricket API key found - enabling auto-stats service');
+  // Start auto-stats service if any cricket API key is configured
+  const hasCricketKey = !!(process.env.CRICKET_API_KEY || process.env.RAPIDAPI_KEY);
+  if (hasCricketKey) {
+    console.log('🏏 Cricket API key found - enabling auto-stats service (schedule-first flow)');
     autoStatsEnabled = true;
     autoStatsService.startAutoStatsService();
   } else {
-    console.log('⚠️  CRICKET_API_KEY not set - auto-stats disabled');
-    console.log('   Set CRICKET_API_KEY environment variable to enable automatic stats fetching');
+    console.log('⚠️  No cricket API key set - auto-stats disabled');
+    console.log('   Set CRICKET_API_KEY or RAPIDAPI_KEY (and CRICKET_API_PROVIDER=rapidapi) for automatic stats');
   }
   
   const PORT = process.env.PORT || 3000;

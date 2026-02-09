@@ -4,6 +4,7 @@ const ExcelJS = require('exceljs');
 const path = require('path');
 const {
   getCurrentMatches,
+  getSchedule,
   getMatchScorecard,
   filterIPLMatches,
   parsePlayerStats,
@@ -15,6 +16,7 @@ const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
 
 let broadcastCallback = null;
 let currentGameweek = 1;
+let currentSeason = process.env.IPL_SEASON || '2025'; // e.g. IPL2025
 let processedMatches = new Set(); // Track matches we've already processed
 
 /**
@@ -30,6 +32,14 @@ function setBroadcast(fn) {
 function setCurrentGameweek(gw) {
   currentGameweek = gw;
   console.log(`📅 Auto-stats service set to gameweek ${gw}`);
+}
+
+/**
+ * Set current season for schedule (e.g. '2025' or 'IPL2025')
+ */
+function setCurrentSeason(season) {
+  currentSeason = String(season || '2025').replace(/\D/g, '') || '2025';
+  console.log(`📅 Auto-stats service set to season IPL ${currentSeason}`);
 }
 
 /**
@@ -264,38 +274,43 @@ async function processMatch(match) {
 }
 
 /**
- * Check for completed IPL matches and fetch stats
+ * Check for completed IPL matches and fetch stats.
+ * Schedule-first: get schedule for current season → filter completed → fetch scorecard & stats per match.
  */
 async function checkAndFetchStats() {
-  console.log('\n🔍 Checking for completed IPL matches...');
-  
+  console.log('\n🔍 Checking for completed IPL matches (schedule-first)...');
+
   try {
-    // Get current matches
-    const matchesData = await getCurrentMatches();
-    const iplMatches = filterIPLMatches(matchesData);
-    
-    console.log(`📋 Found ${iplMatches.length} IPL matches`);
-    
+    // 1) Get schedule for current season (IPL 2025, etc.)
+    const scheduleData = await getSchedule(currentSeason);
+    let iplMatches = scheduleData.data || [];
+
+    // 2) If schedule is empty, fallback to live/recent/upcoming
     if (iplMatches.length === 0) {
-      console.log('⚠️  No IPL matches found. This is normal if IPL season hasn\'t started.');
+      console.log('📋 No schedule for season, trying current/live matches...');
+      const currentData = await getCurrentMatches();
+      iplMatches = filterIPLMatches(currentData);
+    }
+
+    console.log(`📋 Found ${iplMatches.length} IPL matches (season ${currentSeason})`);
+
+    if (iplMatches.length === 0) {
+      console.log('⚠️  No IPL matches found. Set IPL_SEASON or IPL_SERIES_ID_2025 for schedule, or ensure API returns live/recent matches.');
       return;
     }
-    
-    // Process completed matches
-    const completedMatches = iplMatches.filter(m => 
-      m.matchEnded === true || 
-      m.status?.toLowerCase().includes('won') ||
-      m.status?.toLowerCase().includes('completed')
+
+    // 3) Process completed matches only
+    const completedMatches = iplMatches.filter(m =>
+      m.matchEnded === true ||
+      (m.status && /won|completed|finished|complete/i.test(String(m.status)))
     );
-    
+
     console.log(`✅ ${completedMatches.length} completed matches to process`);
-    
+
     for (const match of completedMatches) {
       await processMatch(match);
-      // Delay between matches to respect API limits
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
-    
   } catch (err) {
     console.error('❌ Error in auto-stats check:', err.message);
   }
@@ -329,6 +344,67 @@ function startAutoStatsService() {
   });
   
   console.log('✅ Auto-Stats Service running!\n');
+}
+
+/**
+ * Get scorecard + player stats + league players with fantasy points (preview, no save).
+ * Used by admin UI to show match detail before "Add to leaderboard".
+ */
+async function getMatchScorecardPreview(matchId, matchName = null) {
+  try {
+    const scorecard = await getMatchScorecard(matchId);
+    if (!scorecard || !scorecard.data) {
+      return { success: false, error: 'No scorecard data available' };
+    }
+    const apiPlayerStats = parsePlayerStats(scorecard);
+    const soldPlayers = await getAllSoldPlayers();
+    const leaguePlayers = [];
+    for (const apiStats of apiPlayerStats) {
+      const matchedPlayer = soldPlayers.find(sp =>
+        matchPlayerName(apiStats.playerName, sp.playerName)
+      );
+      if (matchedPlayer) {
+        const fantasyPoints = calculateFantasyPoints(apiStats, matchedPlayer.position);
+        leaguePlayers.push({
+          playerId: matchedPlayer.playerId,
+          playerName: matchedPlayer.playerName,
+          teamName: matchedPlayer.teamName,
+          position: matchedPlayer.position,
+          runs: apiStats.runs || 0,
+          ballsFaced: apiStats.ballsFaced || 0,
+          fours: apiStats.fours || 0,
+          sixes: apiStats.sixes || 0,
+          wickets: apiStats.wickets || 0,
+          oversBowled: apiStats.oversBowled || 0,
+          runsConceded: apiStats.runsConceded || 0,
+          catches: apiStats.catches || 0,
+          stumpings: apiStats.stumpings || 0,
+          fantasyPoints
+        });
+      }
+    }
+    return {
+      success: true,
+      matchId,
+      matchName: matchName || `Match ${matchId}`,
+      allPlayers: apiPlayerStats.map(p => ({
+        playerName: p.playerName,
+        runs: p.runs || 0,
+        ballsFaced: p.ballsFaced || 0,
+        fours: p.fours || 0,
+        sixes: p.sixes || 0,
+        wickets: p.wickets || 0,
+        oversBowled: p.oversBowled || 0,
+        runsConceded: p.runsConceded || 0,
+        catches: p.catches || 0,
+        stumpings: p.stumpings || 0
+      })),
+      leaguePlayers
+    };
+  } catch (err) {
+    console.error(`❌ getMatchScorecardPreview ${matchId}:`, err.message);
+    return { success: false, error: err.message };
+  }
 }
 
 /**
@@ -370,6 +446,8 @@ module.exports = {
   startAutoStatsService,
   setBroadcast,
   setCurrentGameweek,
+  setCurrentSeason,
+  getMatchScorecardPreview,
   triggerImmediateFetch,
   clearProcessedCache,
   testSpecificMatch

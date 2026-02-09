@@ -62,142 +62,76 @@
             <!-- Admin View -->
             <div id="adminView" class="fantasy-view hidden">
                 <div class="view-header">
-                    <h2>Admin: Enter Match Results</h2>
-                </div>
-                
-                <div class="admin-fantasy-content">
-                    <!-- Auto-Stats Service -->
-                    <div class="admin-card auto-stats-card">
-                        <h3>🤖 Automatic Stats Fetching</h3>
-                        <div class="auto-stats-status">
-                            <div class="status-indicator">
-                                <span id="autoStatsStatus" class="status-badge status-disabled">Disabled</span>
-                                <span id="apiKeyStatus" class="status-text">API Key: Not configured</span>
-                            </div>
-                            <p class="status-description">
-                                Automatically fetches player stats from real IPL matches every 10 minutes
-                            </p>
-                        </div>
-                        <div class="button-group">
-                            <button id="fetchNowBtn" class="btn btn-admin">🔄 Fetch Now</button>
-                            <button id="toggleAutoStatsBtn" class="btn btn-secondary">Enable</button>
-                        </div>
-                        
-                        <!-- Testing Tools -->
-                        <div class="test-tools" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid rgba(255,255,255,0.2);">
-                            <h4 style="color: white; margin-bottom: 10px;">🧪 Testing Tools</h4>
-                            
-                            <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                <p style="color: white; font-size: 0.9rem; margin: 0;">
-                                    💡 <strong>Tip:</strong> Free Cricbuzz API may not have a match list endpoint.<br>
-                                    Find match IDs from <a href="https://www.cricbuzz.com" target="_blank" style="color: #ffd700;">Cricbuzz.com</a> URLs!
-                                </p>
-                            </div>
-                            
-                            <div class="button-group" style="margin-bottom: 10px;">
-                                <button id="listMatchesBtn" class="btn btn-secondary">📋 Try List Matches</button>
-                            </div>
-                            <div class="form-group">
-                                <label style="color: white;">Test Specific Match ID:</label>
-                                <input type="text" id="testMatchId" placeholder="e.g., 102040 or 95353" style="width: 100%;">
-                                <small style="color: rgba(255,255,255,0.7); display: block; margin-top: 5px;">
-                                    Match IDs can be found in Cricbuzz URLs: cricbuzz.com/live-cricket-scores/<strong>95353</strong>/...
-                                </small>
-                            </div>
-                            <button id="testMatchBtn" class="btn btn-admin">🧪 Test This Match</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Gameweek Management -->
-                    <div class="admin-card">
-                        <h3>Gameweek Management</h3>
-                        <div class="form-group">
-                            <label>Gameweek Number:</label>
-                            <input type="number" id="gwNumber" min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
+                    <h2>Admin: Match Results &amp; Leaderboard</h2>
+                    <div class="admin-top-actions">
+                        <div class="admin-gw-row">
+                            <label>Gameweek:</label>
+                            <input type="number" id="gwNumber" min="1" value="1" class="admin-gw-input">
                             <select id="gwStatus">
                                 <option value="Upcoming">Upcoming</option>
                                 <option value="Active">Active</option>
                                 <option value="Completed">Completed</option>
                             </select>
+                            <button id="setGameweekBtn" class="btn btn-secondary">Set</button>
                         </div>
-                        <button id="setGameweekBtn" class="btn btn-admin">Set Gameweek</button>
+                        <div class="admin-autostats-row">
+                            <span id="autoStatsStatus" class="status-badge status-disabled">Off</span>
+                            <span id="apiKeyStatus" class="status-text">API not configured</span>
+                            <button id="fetchNowBtn" class="btn btn-secondary btn-sm">Fetch Now</button>
+                            <button id="toggleAutoStatsBtn" class="btn btn-secondary btn-sm">Enable</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-schedule-layout">
+                    <!-- Left: Schedule -->
+                    <div class="admin-schedule-panel">
+                        <h3>📅 Schedule</h3>
+                        <div class="admin-schedule-controls">
+                            <select id="scheduleSeason">
+                                <option value="2025" selected>IPL 2025</option>
+                                <option value="2024">IPL 2024</option>
+                            </select>
+                            <button id="loadScheduleBtn" class="btn btn-admin">Load schedule</button>
+                        </div>
+                        <div id="scheduleList" class="schedule-list">
+                            <p class="schedule-placeholder">Load schedule to see matches. Click a match to view player stats.</p>
+                        </div>
                     </div>
 
-                    <!-- Player Stats Entry -->
-                    <div class="admin-card">
-                        <h3>Enter Player Stats</h3>
-                        <div class="form-group">
-                            <label>Match ID:</label>
-                            <input type="text" id="matchId" placeholder="e.g., MI_vs_CSK_GW1">
+                    <!-- Right: Match detail + Add to leaderboard -->
+                    <div class="admin-detail-panel">
+                        <div id="matchDetailEmpty" class="match-detail-empty">
+                            <p>← Select a match from the schedule to see player stats and add to leaderboard.</p>
                         </div>
-                        <div class="form-group">
-                            <label>Gameweek:</label>
-                            <input type="number" id="statGameweek" min="1" value="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Player:</label>
-                            <select id="statPlayerSelect">
-                                <option value="">Select Player</option>
-                            </select>
-                        </div>
-                        
-                        <div class="stats-grid">
-                            <div class="form-group">
-                                <label>Runs:</label>
-                                <input type="number" id="statRuns" min="0" value="0">
+                        <div id="matchDetailContent" class="match-detail-content hidden">
+                            <h3 id="matchDetailTitle" class="match-detail-title"></h3>
+                            <div class="match-detail-tables">
+                                <div class="match-detail-section">
+                                    <h4>All players (match stats)</h4>
+                                    <div id="allPlayersTableWrap" class="table-wrap">
+                                        <table class="admin-stats-table" id="allPlayersTable">
+                                            <thead><tr><th>Player</th><th>R</th><th>B</th><th>4s</th><th>6s</th><th>W</th><th>O</th><th>RC</th><th>C</th></tr></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="match-detail-section">
+                                    <h4>Your league players (fantasy points)</h4>
+                                    <div id="leaguePlayersTableWrap" class="table-wrap">
+                                        <table class="admin-stats-table" id="leaguePlayersTable">
+                                            <thead><tr><th>Player</th><th>Team</th><th>Pos</th><th>R</th><th>W</th><th>C</th><th>Pts</th></tr></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Balls Faced:</label>
-                                <input type="number" id="statBalls" min="0" value="0">
+                            <div class="add-to-leaderboard-row">
+                                <button id="addToLeaderboardBtn" class="btn btn-admin btn-add-leaderboard">
+                                    ✓ Add to leaderboard
+                                </button>
+                                <span id="addToLeaderboardHint" class="add-hint">Calculates fantasy points for all league players in this match and saves to sheet.</span>
                             </div>
-                            <div class="form-group">
-                                <label>Fours:</label>
-                                <input type="number" id="statFours" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Sixes:</label>
-                                <input type="number" id="statSixes" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Wickets:</label>
-                                <input type="number" id="statWickets" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Overs:</label>
-                                <input type="number" id="statOvers" min="0" step="0.1" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Runs Conceded:</label>
-                                <input type="number" id="statRunsConceded" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Maidens:</label>
-                                <input type="number" id="statMaidens" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Catches:</label>
-                                <input type="number" id="statCatches" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Stumpings:</label>
-                                <input type="number" id="statStumpings" min="0" value="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Run Outs:</label>
-                                <input type="number" id="statRunOuts" min="0" value="0">
-                            </div>
-                        </div>
-                        
-                        <div id="pointsPreview" class="points-preview hidden">
-                            <strong>Calculated Points:</strong> <span id="previewPoints">0</span>
-                        </div>
-                        
-                        <div class="button-group">
-                            <button id="calculatePointsBtn" class="btn btn-secondary">Calculate Points</button>
-                            <button id="submitStatsBtn" class="btn btn-admin">Submit Stats</button>
                         </div>
                     </div>
                 </div>

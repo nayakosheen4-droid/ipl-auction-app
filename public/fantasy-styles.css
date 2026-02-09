@@ -246,6 +246,201 @@
 }
 
 /* Admin Fantasy View */
+.admin-top-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.admin-gw-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-gw-row label { margin: 0; color: #666; font-size: 0.9rem; }
+.admin-gw-input { width: 60px; padding: 8px 10px; border: 2px solid #e0e0e0; border-radius: 6px; }
+.admin-autostats-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-autostats-row .status-text { color: #666; font-size: 0.85rem; }
+.admin-autostats-row .status-badge.status-disabled { background: #e0e0e0; color: #555; }
+.admin-autostats-row .status-badge.status-enabled { background: #28a745; color: white; }
+.btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+.admin-schedule-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.admin-schedule-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 20px;
+}
+
+.admin-schedule-panel h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.admin-schedule-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.admin-schedule-controls select {
+    flex: 1;
+    padding: 10px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.schedule-list {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.schedule-placeholder {
+    color: #999;
+    font-size: 0.95rem;
+    padding: 20px 0;
+    margin: 0;
+}
+
+.schedule-match-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.schedule-match-card:hover {
+    background: #e8ecff;
+    border-color: #667eea;
+}
+
+.schedule-match-card.selected {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.schedule-match-card .match-card-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.schedule-match-card .match-card-meta {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.schedule-match-card.selected .match-card-meta {
+    color: rgba(255,255,255,0.9);
+}
+
+.admin-detail-panel {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    min-height: 320px;
+}
+
+.match-detail-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: #999;
+}
+
+.match-detail-content .match-detail-title {
+    margin: 0 0 20px 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.match-detail-tables {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.match-detail-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #555;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    margin-bottom: 8px;
+}
+
+.admin-stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.admin-stats-table th,
+.admin-stats-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-stats-table th {
+    background: #f0f0f0;
+    font-weight: 600;
+    color: #555;
+}
+
+.admin-stats-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.add-to-leaderboard-row {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-add-leaderboard {
+    padding: 14px 28px;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.add-hint {
+    color: #666;
+    font-size: 0.85rem;
+}
+
 .admin-fantasy-content {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -462,6 +657,19 @@
 
     .admin-fantasy-content {
         grid-template-columns: 1fr;
+    }
+
+    .admin-schedule-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-schedule-panel {
+        position: static;
+    }
+
+    .admin-top-actions {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .stats-grid {

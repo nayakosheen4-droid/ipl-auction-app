@@ -105,10 +105,23 @@ npm start
 
 ## 🎯 How It Works
 
+### Schedule-first flow (IPL 2025)
+The system uses a **schedule-first** flow so "List matches" is reliable:
+1. **Schedules** – Fetch match schedule for the season (e.g. IPL 2025) from the API or fallback list.
+2. **Match IDs** – List matches from that schedule so you get IDs even when there are no live games.
+3. **Stats** – For each completed match in the schedule, fetch scorecard and player stats, then calculate fantasy points.
+
+So you first get the schedule, then based on the schedule you fetch particular matches and player stats. This fixes "fetch matches gives 0 results" when live/recent endpoints are empty.
+
+**IPL 2025 testing:**
+- In Admin → Testing Tools, choose **Season: IPL 2025** and click **List Available Matches**. You get matches from the schedule (or fallback IDs if the API has no schedule).
+- Copy a **Match ID** into "Test Specific Match ID" and click **Test This Match** to run scorecard + fantasy points for that match end-to-end.
+- Optional env: `IPL_SERIES_ID_2025` (CricketData series ID) or `IPL2025_MATCH_IDS=id1,id2` for fallback match IDs.
+
 ### Automatic Mode (Recommended)
 Once API key is configured, the system automatically:
-1. **Every 10 minutes:** Checks for completed IPL matches
-2. **Fetches Scorecard:** Gets detailed player statistics
+1. **Every 10 minutes:** Gets schedule for current season (IPL 2025), finds completed matches
+2. **Fetches Scorecard:** Gets detailed player statistics for each completed match
 3. **Matches Players:** Finds your auction players in the match
 4. **Calculates Points:** Uses Dream11 formula
 5. **Updates Database:** Saves to Excel automatically

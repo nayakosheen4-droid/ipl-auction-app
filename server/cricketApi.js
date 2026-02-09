@@ -23,6 +23,19 @@ let matchesCache = {
   ttl: 5 * 60 * 1000 // 5 minutes
 };
 
+// Schedule cache: season -> { data, timestamp }
+let scheduleCache = {};
+const SCHEDULE_TTL = 15 * 60 * 1000; // 15 minutes
+
+// Known IPL 2025 series ID for CricketData.org (optional env override)
+const IPL_SERIES_ID_2025 = process.env.IPL_SERIES_ID_2025 || '';
+
+// Fallback: known IPL 2025 Cricbuzz match IDs for testing when schedule API returns nothing.
+// Add IDs from cricbuzz.com URLs or set env IPL2025_MATCH_IDS=id1,id2
+const IPL2025_FALLBACK_MATCH_IDS = process.env.IPL2025_MATCH_IDS
+  ? process.env.IPL2025_MATCH_IDS.split(',').map(s => s.trim()).filter(Boolean)
+  : ['95353']; // one example ID so "List matches" returns something for E2E testing
+
 /**
  * Get current/recent matches
  */
@@ -119,6 +132,152 @@ async function getCricketDataMatches() {
     console.error('❌ CricketData API error:', error.message);
     throw error;
   }
+}
+
+/**
+ * Get schedule for a series (CricketData.org series_info or matches by series)
+ * Returns array of matches in common format.
+ */
+async function getSeriesScheduleCricketData(seriesId) {
+  if (!CRICKET_API_KEY) return { data: [] };
+  try {
+    const response = await axios.get(`${CRICKET_API_BASE}/series_info`, {
+      params: { apikey: CRICKET_API_KEY, id: seriesId },
+      timeout: 10000
+    });
+    const data = response.data;
+    if (!data) return { data: [] };
+    if (data.status === 'failure' || (data.status && data.status !== 'success')) return { data: [] };
+    const raw = data.data || data;
+    const matches = raw.matches || raw.data || data.matches || [];
+    const arr = Array.isArray(matches) ? matches : [];
+    const seriesName = raw.name || data.seriesName || data.name || 'IPL';
+    const out = arr.map(m => ({
+      id: m.id || m.matchId || m.match_id,
+      name: m.name || (m.team1 && m.team2 ? `${m.team1} vs ${m.team2}` : 'Match'),
+      matchType: m.matchType || m.format || 't20',
+      status: m.status || m.state || '',
+      series: seriesName,
+      seriesName,
+      matchEnded: m.matchEnded || m.completed || (m.status && /won|complete|finished/i.test(String(m.status))),
+      team1: m.team1 || m.teamA,
+      team2: m.team2 || m.teamB,
+      venue: m.venue || m.ground,
+      date: m.date || m.startDate
+    })).filter(m => m.id);
+    return { data: out };
+  } catch (error) {
+    console.error('❌ CricketData series_info error:', error.message);
+    return { data: [] };
+  }
+}
+
+/**
+ * Get all matches from CricketData (matches endpoint) and filter by IPL + season
+ */
+async function getCricketDataMatchesFull(offset = 0) {
+  if (!CRICKET_API_KEY) return { data: [] };
+  try {
+    const response = await axios.get(`${CRICKET_API_BASE}/matches`, {
+      params: { apikey: CRICKET_API_KEY, offset },
+      timeout: 10000
+    });
+    return response.data;
+  } catch (error) {
+    console.error('❌ CricketData matches API error:', error.message);
+    return { data: [] };
+  }
+}
+
+/**
+ * Get schedule for a season (e.g. "2025" or "IPL2025").
+ * 1) If CricketData: try series_info with IPL_SERIES_ID_2025, else try matches endpoint and filter IPL.
+ * 2) If RapidAPI: use live/recent/upcoming (no full schedule endpoint).
+ * 3) Fallback: return matches from fallback list as minimal schedule for testing.
+ */
+async function getSchedule(season) {
+  const normSeason = String(season || '2025').replace(/\D/g, '') || '2025';
+  const cacheKey = `ipl${normSeason}`;
+  const now = Date.now();
+  if (scheduleCache[cacheKey] && (now - scheduleCache[cacheKey].timestamp) < SCHEDULE_TTL) {
+    console.log(`📦 Using cached schedule for IPL ${normSeason}`);
+    return scheduleCache[cacheKey].data;
+  }
+
+  let result = { data: [] };
+
+  if (API_PROVIDER === 'cricketdata' && CRICKET_API_KEY) {
+    if (IPL_SERIES_ID_2025 && normSeason === '2025') {
+      result = await getSeriesScheduleCricketData(IPL_SERIES_ID_2025);
+      if (result.data.length) console.log(`✅ Got ${result.data.length} matches from series schedule (IPL 2025)`);
+    }
+    if (result.data.length === 0) {
+      const full = await getCricketDataMatchesFull(0);
+      const list = full.data || full.matches || [];
+      const ipl = list.filter(m => {
+        const name = (m.name || m.series || m.seriesName || '').toLowerCase();
+        return (name.includes('ipl') || name.includes('indian premier league')) &&
+          (name.includes(normSeason) || (m.date && String(m.date).includes(normSeason)));
+      });
+      result = { data: ipl.map(m => ({
+        id: m.id || m.matchId,
+        name: m.name || `${m.team1 || ''} vs ${m.team2 || ''}`,
+        matchType: m.matchType || 't20',
+        status: m.status || '',
+        series: m.series || m.seriesName,
+        seriesName: m.series || m.seriesName,
+        matchEnded: m.matchEnded || /won|complete|finished/i.test(m.status || ''),
+        team1: m.team1,
+        team2: m.team2,
+        venue: m.venue,
+        date: m.date
+      })) };
+      if (result.data.length) console.log(`✅ Got ${result.data.length} IPL ${normSeason} matches from matches API`);
+    }
+  }
+
+  if (API_PROVIDER === 'rapidapi' && RAPIDAPI_KEY) {
+    const current = await getCurrentMatches();
+    const ipl = filterIPLMatches(current);
+    const forSeason = ipl.filter(m => {
+      const s = (m.series || m.seriesName || m.name || '').toLowerCase();
+      return s.includes(normSeason) || s.includes('ipl');
+    });
+    result = { data: forSeason.length ? forSeason : ipl };
+    if (result.data.length) console.log(`✅ Got ${result.data.length} matches from RapidAPI (live/recent/upcoming)`);
+  }
+
+  if (result.data.length === 0 && normSeason === '2025' && IPL2025_FALLBACK_MATCH_IDS.length > 0) {
+    result = {
+      data: IPL2025_FALLBACK_MATCH_IDS.map(id => ({
+        id,
+        name: `IPL 2025 Match ${id}`,
+        matchType: 't20',
+        status: 'Scheduled',
+        series: 'IPL 2025',
+        seriesName: 'IPL 2025',
+        matchEnded: false
+      }))
+    };
+    console.log(`📋 Using ${result.data.length} fallback match IDs for IPL 2025 testing`);
+  }
+
+  scheduleCache[cacheKey] = { data: result, timestamp: now };
+  return result;
+}
+
+/**
+ * Get matches for listing: schedule-first (by season), then fallback to current matches.
+ */
+async function getMatchesForListing(options = {}) {
+  const { season = '2025', useScheduleFirst = true } = options;
+  if (useScheduleFirst) {
+    const schedule = await getSchedule(season);
+    if (schedule.data && schedule.data.length > 0) {
+      return schedule;
+    }
+  }
+  return getCurrentMatches();
 }
 
 /**
@@ -525,6 +684,8 @@ function matchPlayerName(apiPlayerName, ourPlayerName) {
 
 module.exports = {
   getCurrentMatches,
+  getSchedule,
+  getMatchesForListing,
   getMatchScorecard,
   getMatchFantasyPoints,
   filterIPLMatches,

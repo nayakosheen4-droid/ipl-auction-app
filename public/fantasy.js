@@ -7,6 +7,8 @@ let currentTeam = null;
 let isAdmin = false;
 let currentGameweek = 1;
 let allSoldPlayers = [];
+let selectedMatchId = null;
+let selectedMatchName = null;
 
 // Check session
 const savedTeam = localStorage.getItem('currentTeam');
@@ -78,18 +80,16 @@ function setupEventListeners() {
     // Admin controls
     if (isAdmin) {
         document.getElementById('setGameweekBtn').addEventListener('click', setGameweek);
-        document.getElementById('calculatePointsBtn').addEventListener('click', calculatePreview);
-        document.getElementById('submitStatsBtn').addEventListener('click', submitPlayerStats);
-        
-        // Auto-stats controls
         document.getElementById('fetchNowBtn').addEventListener('click', fetchStatsNow);
         document.getElementById('toggleAutoStatsBtn').addEventListener('click', toggleAutoStats);
-        
-        // Testing tools
-        document.getElementById('listMatchesBtn').addEventListener('click', listAvailableMatches);
-        document.getElementById('testMatchBtn').addEventListener('click', testSpecificMatch);
-        
-        // Load auto-stats status
+        document.getElementById('loadScheduleBtn').addEventListener('click', loadSchedule);
+        document.getElementById('addToLeaderboardBtn').addEventListener('click', addToLeaderboard);
+        document.getElementById('scheduleList').addEventListener('click', (e) => {
+            const card = e.target.closest('.schedule-match-card');
+            if (card && card.dataset.matchId) {
+                selectMatch(card.dataset.matchId, card.dataset.matchName || '');
+            }
+        });
         loadAutoStatsStatus();
     }
     
@@ -109,6 +109,7 @@ function showView(viewName) {
         loadMyTeamPerformance(currentGameweek);
     } else if (viewName === 'admin' && isAdmin) {
         document.getElementById('adminView').classList.remove('hidden');
+        loadAutoStatsStatus();
     }
 }
 
@@ -135,18 +136,20 @@ async function loadAllSoldPlayers() {
             });
         }
         
-        // Populate player dropdown for admin
+        // Populate player dropdown for admin (if manual stats form exists)
         if (isAdmin) {
             const select = document.getElementById('statPlayerSelect');
-            select.innerHTML = '<option value="">Select Player</option>';
-            allSoldPlayers.forEach(player => {
-                const option = document.createElement('option');
-                option.value = player.playerId;
-                option.textContent = `${player.playerName} (${player.position}) - ${player.teamName}`;
-                option.dataset.position = player.position;
-                option.dataset.playerName = player.playerName;
-                select.appendChild(option);
-            });
+            if (select) {
+                select.innerHTML = '<option value="">Select Player</option>';
+                allSoldPlayers.forEach(player => {
+                    const option = document.createElement('option');
+                    option.value = player.playerId;
+                    option.textContent = `${player.playerName} (${player.position}) - ${player.teamName}`;
+                    option.dataset.position = player.position;
+                    option.dataset.playerName = player.playerName;
+                    select.appendChild(option);
+                });
+            }
         }
     } catch (err) {
         console.error('Failed to load sold players:', err);
@@ -327,9 +330,10 @@ async function setGameweek() {
     }
 }
 
-// Admin: Calculate points preview
+// Admin: Calculate points preview (used only if manual stats form exists)
 function calculatePreview() {
     const select = document.getElementById('statPlayerSelect');
+    if (!select) return;
     const selectedOption = select.options[select.selectedIndex];
     
     if (!selectedOption.value) {
@@ -410,11 +414,13 @@ async function calculatePointsOnServer(stats, position) {
     }
 }
 
-// Admin: Submit player stats
+// Admin: Submit player stats (used only if manual stats form exists)
 async function submitPlayerStats() {
-    const matchId = document.getElementById('matchId').value.trim();
-    const gameweek = parseInt(document.getElementById('statGameweek').value);
+    const matchIdEl = document.getElementById('matchId');
     const select = document.getElementById('statPlayerSelect');
+    if (!matchIdEl || !select) return;
+    const matchId = matchIdEl.value.trim();
+    const gameweek = parseInt(document.getElementById('statGameweek').value);
     const selectedOption = select.options[select.selectedIndex];
     
     if (!matchId) {
@@ -476,21 +482,14 @@ async function submitPlayerStats() {
     }
 }
 
-// Clear stats form
+// Clear stats form (no-op if manual form was removed)
 function clearStatsForm() {
-    document.getElementById('statPlayerSelect').value = '';
-    document.getElementById('statRuns').value = '0';
-    document.getElementById('statBalls').value = '0';
-    document.getElementById('statFours').value = '0';
-    document.getElementById('statSixes').value = '0';
-    document.getElementById('statWickets').value = '0';
-    document.getElementById('statOvers').value = '0';
-    document.getElementById('statRunsConceded').value = '0';
-    document.getElementById('statMaidens').value = '0';
-    document.getElementById('statCatches').value = '0';
-    document.getElementById('statStumpings').value = '0';
-    document.getElementById('statRunOuts').value = '0';
-    document.getElementById('pointsPreview').classList.add('hidden');
+    const sel = document.getElementById('statPlayerSelect');
+    if (!sel) return;
+    sel.value = '';
+    const ids = ['statRuns', 'statBalls', 'statFours', 'statSixes', 'statWickets', 'statOvers', 'statRunsConceded', 'statMaidens', 'statCatches', 'statStumpings', 'statRunOuts'];
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = '0'; });
+    const prev = document.getElementById('pointsPreview'); if (prev) prev.classList.add('hidden');
 }
 
 // Show toast notification
@@ -526,29 +525,22 @@ function updateAutoStatsUI(status) {
     const statusBadge = document.getElementById('autoStatsStatus');
     const apiKeyStatus = document.getElementById('apiKeyStatus');
     const toggleBtn = document.getElementById('toggleAutoStatsBtn');
-    
+    if (!statusBadge || !apiKeyStatus) return;
+
     if (status.enabled) {
         statusBadge.textContent = 'Enabled';
         statusBadge.className = 'status-badge status-enabled';
-        toggleBtn.textContent = 'Disable';
-        toggleBtn.className = 'btn btn-danger';
+        if (toggleBtn) { toggleBtn.textContent = 'Disable'; toggleBtn.className = 'btn btn-danger'; }
     } else {
         statusBadge.textContent = 'Disabled';
         statusBadge.className = 'status-badge status-disabled';
-        toggleBtn.textContent = 'Enable';
-        toggleBtn.className = 'btn btn-secondary';
+        if (toggleBtn) { toggleBtn.textContent = 'Enable'; toggleBtn.className = 'btn btn-secondary'; }
     }
-    
+
     const provider = status.apiProvider || 'unknown';
     const providerName = provider === 'rapidapi' ? 'RapidAPI Cricbuzz' : 'CricketData.org';
-    
-    if (status.apiKeyConfigured) {
-        apiKeyStatus.textContent = `API: ✓ ${providerName}`;
-        apiKeyStatus.style.color = 'rgba(255,255,255,0.95)';
-    } else {
-        apiKeyStatus.textContent = `API: ✗ ${providerName} (Not Set)`;
-        apiKeyStatus.style.color = 'rgba(255,255,255,0.7)';
-    }
+    apiKeyStatus.textContent = status.apiKeyConfigured ? `API: ✓ ${providerName}` : `API: ✗ ${providerName} (Not Set)`;
+    apiKeyStatus.style.color = '';
 }
 
 // Fetch stats now (manual trigger)
@@ -606,86 +598,138 @@ async function toggleAutoStats() {
     }
 }
 
-// List available matches
-async function listAvailableMatches() {
+// Load schedule and render match list (admin)
+async function loadSchedule() {
+    const btn = document.getElementById('loadScheduleBtn');
+    const listEl = document.getElementById('scheduleList');
+    const season = document.getElementById('scheduleSeason') ? document.getElementById('scheduleSeason').value : '2025';
+    btn.disabled = true;
+    btn.textContent = 'Loading...';
+    listEl.innerHTML = '<p class="schedule-placeholder">Loading schedule...</p>';
+
     try {
-        const btn = document.getElementById('listMatchesBtn');
-        btn.disabled = true;
-        btn.textContent = '⏳ Loading...';
-        
-        const response = await fetch(`${API_BASE}/api/autostats/matches`);
+        const response = await fetch(`${API_BASE}/api/autostats/matches?season=${encodeURIComponent(season)}&schedule=true`);
         const data = await response.json();
-        
-        if (data.success && data.matches) {
-            console.log(`\n📋 Found ${data.count} matches:`);
-            console.log('=============================================');
-            
-            data.matches.forEach((match, index) => {
-                console.log(`\n${index + 1}. Match ID: ${match.id}`);
-                console.log(`   Name: ${match.name}`);
-                console.log(`   Series: ${match.series}`);
-                console.log(`   Status: ${match.status}`);
-                console.log(`   Type: ${match.matchType}`);
-                console.log(`   Completed: ${match.matchEnded ? 'Yes' : 'No'}`);
-            });
-            
-            console.log('\n=============================================');
-            console.log('💡 Copy a Match ID and paste in "Test Specific Match ID" field');
-            
-            showToast(`Found ${data.count} matches! Check browser console (F12)`, 'success');
+
+        if (data.success && data.matches && data.matches.length > 0) {
+            listEl.innerHTML = data.matches.map(m => `
+                <button type="button" class="schedule-match-card" data-match-id="${m.id}" data-match-name="${escapeAttr(m.name || '')}">
+                    <span class="match-card-name">${escapeHtml(m.name || `Match ${m.id}`)}</span>
+                    <span class="match-card-meta">${escapeHtml(m.series || '')} · ${m.status || ''} ${m.matchEnded ? '· Completed' : ''}</span>
+                </button>
+            `).join('');
+            showToast(`Loaded ${data.count} matches. Click one to see player stats.`, 'success');
         } else {
-            showToast('No matches found', 'info');
+            listEl.innerHTML = '<p class="schedule-placeholder">No matches in schedule. Try another season or set IPL_SERIES_ID_2025 / IPL2025_MATCH_IDS.</p>';
+            showToast('No matches found for this season', 'info');
         }
-        
-        btn.disabled = false;
-        btn.textContent = '📋 List Available Matches';
     } catch (err) {
-        showToast('Failed to list matches', 'error');
-        const btn = document.getElementById('listMatchesBtn');
-        btn.disabled = false;
-        btn.textContent = '📋 List Available Matches';
+        listEl.innerHTML = '<p class="schedule-placeholder">Failed to load schedule.</p>';
+        showToast('Failed to load schedule', 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Load schedule';
+}
+
+function escapeHtml(s) {
+    const div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+}
+function escapeAttr(s) {
+    return String(s).replace(/"/g, '&quot;');
+}
+
+// Select a match: fetch scorecard and show player stats (admin)
+async function selectMatch(matchId, matchName) {
+    selectedMatchId = matchId;
+    selectedMatchName = matchName || `Match ${matchId}`;
+
+    document.querySelectorAll('.schedule-match-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.matchId === matchId);
+    });
+
+    document.getElementById('matchDetailEmpty').classList.add('hidden');
+    const content = document.getElementById('matchDetailContent');
+    content.classList.remove('hidden');
+    document.getElementById('matchDetailTitle').textContent = selectedMatchName;
+
+    const tbodyAll = document.querySelector('#allPlayersTable tbody');
+    const tbodyLeague = document.querySelector('#leaguePlayersTable tbody');
+    tbodyAll.innerHTML = '<tr><td colspan="9">Loading...</td></tr>';
+    tbodyLeague.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
+
+    try {
+        const url = `${API_BASE}/api/autostats/match/${encodeURIComponent(matchId)}/scorecard?matchName=${encodeURIComponent(selectedMatchName)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.success) {
+            tbodyAll.innerHTML = '<tr><td colspan="9">' + escapeHtml(data.error || 'No scorecard') + '</td></tr>';
+            tbodyLeague.innerHTML = '<tr><td colspan="7">No data</td></tr>';
+            return;
+        }
+
+        tbodyAll.innerHTML = (data.allPlayers || []).map(p => `
+            <tr>
+                <td>${escapeHtml(p.playerName)}</td>
+                <td>${p.runs}</td>
+                <td>${p.ballsFaced}</td>
+                <td>${p.fours}</td>
+                <td>${p.sixes}</td>
+                <td>${p.wickets}</td>
+                <td>${p.oversBowled}</td>
+                <td>${p.runsConceded}</td>
+                <td>${p.catches}</td>
+            </tr>
+        `).join('') || '<tr><td colspan="9">No player stats</td></tr>';
+
+        tbodyLeague.innerHTML = (data.leaguePlayers || []).map(p => `
+            <tr>
+                <td>${escapeHtml(p.playerName)}</td>
+                <td>${escapeHtml(p.teamName)}</td>
+                <td>${escapeHtml(p.position)}</td>
+                <td>${p.runs}</td>
+                <td>${p.wickets}</td>
+                <td>${p.catches}</td>
+                <td><strong>${p.fantasyPoints}</strong></td>
+            </tr>
+        `).join('') || '<tr><td colspan="7">No league players in this match</td></tr>';
+
+        document.getElementById('addToLeaderboardBtn').disabled = false;
+    } catch (err) {
+        tbodyAll.innerHTML = '<tr><td colspan="9">Error loading scorecard</td></tr>';
+        tbodyLeague.innerHTML = '<tr><td colspan="7">Error</td></tr>';
+        document.getElementById('addToLeaderboardBtn').disabled = true;
     }
 }
 
-// Test specific match
-async function testSpecificMatch() {
+// Single button: add current match to leaderboard (admin)
+async function addToLeaderboard() {
+    if (!selectedMatchId) {
+        showToast('Select a match first', 'error');
+        return;
+    }
+    const btn = document.getElementById('addToLeaderboardBtn');
+    btn.disabled = true;
+    btn.textContent = 'Adding...';
     try {
-        const matchId = document.getElementById('testMatchId').value.trim();
-        
-        if (!matchId) {
-            showToast('Please enter a Match ID', 'error');
-            return;
-        }
-        
-        const btn = document.getElementById('testMatchBtn');
-        btn.disabled = true;
-        btn.textContent = '⏳ Processing...';
-        
         const response = await fetch(`${API_BASE}/api/autostats/test-match`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ matchId })
+            body: JSON.stringify({ matchId: selectedMatchId })
         });
-        
         const data = await response.json();
-        
         if (data.success) {
-            showToast(`Testing match ${matchId}! Check console for progress`, 'success');
-            console.log(`🧪 Testing match ${matchId} - processing in background...`);
+            showToast('Match added to leaderboard. Points will update shortly.', 'success');
         } else {
-            showToast('Failed to test match', 'error');
+            showToast('Failed to add to leaderboard', 'error');
         }
-        
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.textContent = '🧪 Test This Match';
-        }, 3000);
     } catch (err) {
-        showToast('Failed to test match', 'error');
-        const btn = document.getElementById('testMatchBtn');
-        btn.disabled = false;
-        btn.textContent = '🧪 Test This Match';
+        showToast('Failed to add to leaderboard', 'error');
     }
+    btn.disabled = false;
+    btn.textContent = '✓ Add to leaderboard';
 }
 
 // ========================================
