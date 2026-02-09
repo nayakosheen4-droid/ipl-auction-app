@@ -617,9 +617,11 @@ async function loadSchedule() {
         const text = on ? 'Loading...' : 'Load schedule';
         if (btnMain) { btnMain.disabled = on; btnMain.textContent = text; }
         if (btnAdmin) { btnAdmin.disabled = on; btnAdmin.textContent = text; }
-        const loadingHtml = '<p class="schedule-placeholder">Loading schedule...</p>';
-        if (listMain) listMain.innerHTML = loadingHtml;
-        if (listAdmin) listAdmin.innerHTML = loadingHtml;
+        if (on) {
+            const loadingHtml = '<p class="schedule-placeholder">Loading schedule...</p>';
+            if (listMain) listMain.innerHTML = loadingHtml;
+            if (listAdmin) listAdmin.innerHTML = loadingHtml;
+        }
     };
 
     setLoading(true);
