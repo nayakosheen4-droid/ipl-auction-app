@@ -625,8 +625,18 @@ async function loadSchedule() {
     setLoading(true);
 
     try {
-        const response = await fetch(`${API_BASE}/api/autostats/matches?season=${encodeURIComponent(season)}&schedule=true`);
-        const data = await response.json();
+        const url = `${API_BASE}/api/autostats/matches?season=${encodeURIComponent(season)}&schedule=true`;
+        const response = await fetch(url);
+        let data;
+        try {
+            data = await response.json();
+        } catch (_) {
+            data = { success: false };
+        }
+        if (!response.ok) {
+            data.success = false;
+            data.matches = [];
+        }
 
         const placeholderNoMatches = '<p class="schedule-placeholder">No matches in schedule. Try another season or set IPL_SERIES_ID_2025 / IPL2025_MATCH_IDS.</p>';
 
