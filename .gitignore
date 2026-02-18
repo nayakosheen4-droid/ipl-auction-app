@@ -4,4 +4,11 @@ node_modules/
 .env
 data/*_backup.xlsx
 data/~$*.xlsx
-
+~$*.xlsx
+*.xlsx
+cricketdata/scorecards/
+cricketdata/schedule.json
+cricketdata/espn-extras.json
+cricketdata/fetched-match-ids.json
+cricsheet/
+data/

@@ -1,65 +1,42 @@
-// Automatic Stats Fetching Service
+/**
+ * Auto-stats and match scorecard preview – uses cricketdata.org only.
+ */
 const cron = require('node-cron');
 const ExcelJS = require('exceljs');
 const path = require('path');
-const {
-  getCurrentMatches,
-  getSchedule,
-  getMatchScorecard,
-  filterIPLMatches,
-  parsePlayerStats,
-  matchPlayerName
-} = require('./cricketApi');
+const cricketdata = require('./cricketdataService');
 const { calculateFantasyPoints } = require('./fantasy');
 
 const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
 
 let broadcastCallback = null;
 let currentGameweek = 1;
-let currentSeason = process.env.IPL_SEASON || '2025'; // e.g. IPL2025
-let processedMatches = new Set(); // Track matches we've already processed
+let currentSeason = process.env.IPL_SEASON || '2025';
+let processedMatches = new Set();
 
-/**
- * Set broadcast function for WebSocket updates
- */
 function setBroadcast(fn) {
   broadcastCallback = fn;
 }
 
-/**
- * Set current gameweek
- */
 function setCurrentGameweek(gw) {
   currentGameweek = gw;
-  console.log(`📅 Auto-stats service set to gameweek ${gw}`);
+  console.log('📅 Auto-stats: gameweek', gw);
 }
 
-/**
- * Set current season for schedule (e.g. '2025' or 'IPL2025')
- */
 function setCurrentSeason(season) {
   currentSeason = String(season || '2025').replace(/\D/g, '') || '2025';
-  console.log(`📅 Auto-stats service set to season IPL ${currentSeason}`);
+  console.log('📅 Auto-stats: season IPL', currentSeason);
 }
 
-/**
- * Broadcast update to all connected clients
- */
 function broadcast(message) {
-  if (broadcastCallback) {
-    broadcastCallback(message);
-  }
+  if (broadcastCallback) broadcastCallback(message);
 }
 
-/**
- * Get all sold players from Excel
- */
 async function getAllSoldPlayers() {
   try {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     const soldSheet = workbook.getWorksheet('Sold Players');
-    
     const players = [];
     soldSheet.eachRow((row, num) => {
       if (num > 1) {
@@ -72,302 +49,212 @@ async function getAllSoldPlayers() {
         });
       }
     });
-    
     return players;
   } catch (err) {
-    console.error('❌ Error loading sold players:', err.message);
+    console.error('❌ getAllSoldPlayers:', err.message);
     return [];
   }
 }
 
-/**
- * Check if performance already exists
- */
 async function performanceExists(matchId, playerId) {
   try {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     const perfSheet = workbook.getWorksheet('Player Performance');
-    
     let exists = false;
     perfSheet.eachRow((row, num) => {
-      if (num > 1 && row.getCell(1).value === matchId && row.getCell(3).value === playerId) {
-        exists = true;
-      }
+      if (num > 1 && row.getCell(1).value === matchId && row.getCell(3).value === playerId) exists = true;
     });
-    
     return exists;
   } catch (err) {
     return false;
   }
 }
 
-/**
- * Save player performance to Excel
- */
 async function savePlayerPerformance(matchId, gameweek, player, stats, fantasyPoints) {
   try {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(DATA_PATH);
     const perfSheet = workbook.getWorksheet('Player Performance');
-    
-    // Check if already exists
     let existingRow = null;
     perfSheet.eachRow((row, num) => {
-      if (num > 1 && row.getCell(1).value === matchId && row.getCell(3).value === player.playerId) {
-        existingRow = num;
-      }
+      if (num > 1 && row.getCell(1).value === matchId && row.getCell(3).value === player.playerId) existingRow = num;
     });
-    
-    const perfData = {
-      matchId,
-      gameweek,
-      playerId: player.playerId,
-      playerName: player.playerName,
-      position: player.position,
-      runs: stats.runs || 0,
-      ballsFaced: stats.ballsFaced || 0,
-      fours: stats.fours || 0,
-      sixes: stats.sixes || 0,
-      wickets: stats.wickets || 0,
-      oversBowled: stats.oversBowled || 0,
-      runsConceded: stats.runsConceded || 0,
-      maidens: stats.maidens || 0,
-      catches: stats.catches || 0,
-      stumpings: stats.stumpings || 0,
-      runOuts: stats.runOuts || 0,
-      fantasyPoints
-    };
-    
+    const perfData = [
+      matchId, gameweek, player.playerId, player.playerName, player.position,
+      stats.runs || 0, stats.ballsFaced || 0, stats.fours || 0, stats.sixes || 0,
+      stats.wickets || 0, stats.oversBowled || 0, stats.runsConceded || 0, stats.maidens || 0,
+      stats.catches || 0, stats.stumpings || 0, stats.runOuts || 0, fantasyPoints
+    ];
     if (existingRow) {
-      // Update existing
       const row = perfSheet.getRow(existingRow);
-      Object.keys(perfData).forEach((key, index) => {
-        row.getCell(index + 1).value = perfData[key];
-      });
+      perfData.forEach((value, index) => { row.getCell(index + 1).value = value; });
       row.commit();
     } else {
-      // Add new
       perfSheet.addRow(perfData);
     }
-    
     await workbook.xlsx.writeFile(DATA_PATH);
     return true;
   } catch (err) {
-    console.error(`❌ Error saving performance for ${player.playerName}:`, err.message);
+    console.error('❌ savePlayerPerformance:', err.message);
     return false;
   }
 }
 
-/**
- * Process a completed match
- */
+function parsePlayerStats(scorecard) {
+  const playerStats = [];
+  if (!scorecard || !scorecard.data || !scorecard.data.score) return playerStats;
+  const data = scorecard.data;
+  data.score.forEach(inning => {
+    if (inning.r && Array.isArray(inning.r)) {
+      inning.r.forEach(batsman => {
+        const playerName = batsman.batsmanName || batsman.batsman;
+        const runs = parseInt(batsman.r) || 0;
+        const balls = parseInt(batsman.b) || 0;
+        const fours = parseInt(batsman['4s']) || 0;
+        const sixes = parseInt(batsman['6s']) || 0;
+        let player = playerStats.find(p => p.playerName === playerName);
+        if (!player) {
+          player = {
+            playerName,
+            runs: 0, ballsFaced: 0, fours: 0, sixes: 0, wickets: 0, oversBowled: 0,
+            runsConceded: 0, maidens: 0, catches: 0, stumpings: 0, runOuts: 0, strikeRate: 0, economyRate: 0
+          };
+          playerStats.push(player);
+        }
+        player.runs = runs;
+        player.ballsFaced = balls;
+        player.fours = fours;
+        player.sixes = sixes;
+        player.strikeRate = balls ? Math.round((runs / balls) * 100) : 0;
+      });
+    }
+    if (inning.w && Array.isArray(inning.w)) {
+      inning.w.forEach(bowler => {
+        const playerName = bowler.bowlerName || bowler.bowler;
+        const overs = parseFloat(bowler.o) || 0;
+        const maidens = parseInt(bowler.m) || 0;
+        const runs = parseInt(bowler.r) || 0;
+        const wickets = parseInt(bowler.w) || 0;
+        const economy = parseFloat(bowler.eco) || 0;
+        let player = playerStats.find(p => p.playerName === playerName);
+        if (!player) {
+          player = {
+            playerName,
+            runs: 0, ballsFaced: 0, fours: 0, sixes: 0, wickets: 0, oversBowled: 0,
+            runsConceded: 0, maidens: 0, catches: 0, stumpings: 0, runOuts: 0, strikeRate: 0, economyRate: 0
+          };
+          playerStats.push(player);
+        }
+        player.wickets = wickets;
+        player.oversBowled = overs;
+        player.runsConceded = runs;
+        player.maidens = maidens;
+        player.economyRate = economy;
+      });
+    }
+  });
+  return playerStats;
+}
+
+function matchPlayerName(apiPlayerName, ourPlayerName) {
+  const normalize = name => (name || '').toLowerCase().replace(/[^a-z]/g, '');
+  const apiNorm = normalize(apiPlayerName);
+  const ourNorm = normalize(ourPlayerName);
+  if (apiNorm === ourNorm) return true;
+  if (apiNorm.includes(ourNorm) || ourNorm.includes(apiNorm)) return true;
+  const apiParts = apiNorm.split(/\s+/).filter(p => p.length > 2);
+  const ourParts = ourNorm.split(/\s+/).filter(p => p.length > 2);
+  if (apiParts.length && ourParts.length && apiParts[apiParts.length - 1] === ourParts[ourParts.length - 1]) return true;
+  return false;
+}
+
 async function processMatch(match) {
   const matchId = match.id;
   const matchName = match.name || 'Unknown';
-  
-  // Skip if already processed
-  if (processedMatches.has(matchId)) {
-    return;
-  }
-  
-  console.log(`\n🏏 Processing match: ${matchName} (ID: ${matchId})`);
-  
+  if (processedMatches.has(matchId)) return;
+  console.log(`🏏 Processing: ${matchName} (${matchId})`);
   try {
-    // Get scorecard
-    const scorecard = await getMatchScorecard(matchId);
+    const scorecard = await cricketdata.getMatchScorecard(matchId);
     if (!scorecard || !scorecard.data) {
-      console.log('⚠️  No scorecard data available yet');
+      console.log('⚠️  No scorecard yet');
       return;
     }
-    
-    // Parse player stats from scorecard
     const apiPlayerStats = parsePlayerStats(scorecard);
-    console.log(`📊 Found stats for ${apiPlayerStats.length} players`);
-    
-    // Get our sold players
     const soldPlayers = await getAllSoldPlayers();
-    console.log(`👥 Matching against ${soldPlayers.length} sold players`);
-    
-    let matchedCount = 0;
     let savedCount = 0;
-    
-    // Match and save stats for our players
     for (const apiStats of apiPlayerStats) {
-      // Try to find matching player in our database
-      const matchedPlayer = soldPlayers.find(sp => 
-        matchPlayerName(apiStats.playerName, sp.playerName)
-      );
-      
-      if (matchedPlayer) {
-        matchedCount++;
-        
-        // Check if we already have this data
-        const exists = await performanceExists(matchId, matchedPlayer.playerId);
-        if (exists) {
-          console.log(`⏭️  Already have stats for ${matchedPlayer.playerName}`);
-          continue;
-        }
-        
-        // Calculate fantasy points
-        const fantasyPoints = calculateFantasyPoints(apiStats, matchedPlayer.position);
-        
-        console.log(`✅ ${matchedPlayer.playerName}: ${fantasyPoints} points`);
-        console.log(`   Runs: ${apiStats.runs}, Wickets: ${apiStats.wickets}, Catches: ${apiStats.catches}`);
-        
-        // Save to Excel
-        const saved = await savePlayerPerformance(
+      const matchedPlayer = soldPlayers.find(sp => matchPlayerName(apiStats.playerName, sp.playerName));
+      if (!matchedPlayer) continue;
+      if (await performanceExists(matchId, matchedPlayer.playerId)) continue;
+      const fantasyPoints = calculateFantasyPoints(apiStats, matchedPlayer.position);
+      const saved = await savePlayerPerformance(matchId, currentGameweek, matchedPlayer, apiStats, fantasyPoints);
+      if (saved) {
+        savedCount++;
+        broadcast({
+          type: 'auto_stats_update',
+          gameweek: currentGameweek,
           matchId,
-          currentGameweek,
-          matchedPlayer,
-          apiStats,
-          fantasyPoints
-        );
-        
-        if (saved) {
-          savedCount++;
-          
-          // Broadcast update to all clients
-          broadcast({
-            type: 'auto_stats_update',
-            gameweek: currentGameweek,
-            matchId,
-            matchName,
-            playerId: matchedPlayer.playerId,
-            playerName: matchedPlayer.playerName,
-            teamName: matchedPlayer.teamName,
-            fantasyPoints,
-            stats: {
-              runs: apiStats.runs,
-              wickets: apiStats.wickets,
-              catches: apiStats.catches
-            }
-          });
-        }
-        
-        // Small delay to avoid overwhelming the system
-        await new Promise(resolve => setTimeout(resolve, 100));
+          matchName,
+          playerId: matchedPlayer.playerId,
+          playerName: matchedPlayer.playerName,
+          teamName: matchedPlayer.teamName,
+          fantasyPoints,
+          stats: { runs: apiStats.runs, wickets: apiStats.wickets, catches: apiStats.catches }
+        });
       }
     }
-    
-    console.log(`\n📈 Match processing complete:`);
-    console.log(`   - Matched: ${matchedCount} players`);
-    console.log(`   - Saved: ${savedCount} new performances`);
-    
-    // Mark match as processed
     processedMatches.add(matchId);
-    
-    // Broadcast completion
     if (savedCount > 0) {
-      broadcast({
-        type: 'match_processed',
-        matchId,
-        matchName,
-        gameweek: currentGameweek,
-        playersUpdated: savedCount
-      });
+      broadcast({ type: 'match_processed', matchId, matchName, gameweek: currentGameweek, playersUpdated: savedCount });
     }
-    
   } catch (err) {
-    console.error(`❌ Error processing match ${matchId}:`, err.message);
+    console.error(`❌ processMatch ${matchId}:`, err.message);
   }
 }
 
-/**
- * Check for completed IPL matches and fetch stats.
- * Schedule-first: get schedule for current season → filter completed → fetch scorecard & stats per match.
- */
 async function checkAndFetchStats() {
-  console.log('\n🔍 Checking for completed IPL matches (schedule-first)...');
-
+  console.log('🔍 Checking IPL 2025 completed matches...');
   try {
-    // 1) Get schedule for current season (IPL 2025, etc.)
-    const scheduleData = await getSchedule(currentSeason);
-    let iplMatches = scheduleData.data || [];
-
-    // 2) If schedule is empty, fallback to live/recent/upcoming
-    if (iplMatches.length === 0) {
-      console.log('📋 No schedule for season, trying current/live matches...');
-      const currentData = await getCurrentMatches();
-      iplMatches = filterIPLMatches(currentData);
-    }
-
-    console.log(`📋 Found ${iplMatches.length} IPL matches (season ${currentSeason})`);
-
-    if (iplMatches.length === 0) {
-      console.log('⚠️  No IPL matches found. Set IPL_SEASON or IPL_SERIES_ID_2025 for schedule, or ensure API returns live/recent matches.');
-      return;
-    }
-
-    // 3) Process completed matches only
-    const completedMatches = iplMatches.filter(m =>
-      m.matchEnded === true ||
-      (m.status && /won|completed|finished|complete/i.test(String(m.status)))
+    const { data: iplMatches } = await cricketdata.getIPL2025Schedule();
+    const completed = (iplMatches || []).filter(m =>
+      m.matchEnded === true || (m.status && /won|completed|finished|complete/i.test(String(m.status)))
     );
-
-    console.log(`✅ ${completedMatches.length} completed matches to process`);
-
-    for (const match of completedMatches) {
+    for (const match of completed) {
       await processMatch(match);
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(r => setTimeout(r, 1500));
     }
   } catch (err) {
-    console.error('❌ Error in auto-stats check:', err.message);
+    console.error('❌ checkAndFetchStats:', err.message);
   }
 }
 
-/**
- * Manual trigger for testing/immediate fetch
- */
-async function triggerImmediateFetch() {
-  console.log('🚀 Manual stats fetch triggered');
-  await checkAndFetchStats();
+function triggerImmediateFetch() {
+  console.log('🚀 Manual stats fetch');
+  checkAndFetchStats();
 }
 
-/**
- * Start the auto-stats service
- */
 function startAutoStatsService() {
-  console.log('\n🚀 Starting Auto-Stats Service');
-  console.log('   - Checking every 10 minutes for completed matches');
-  console.log('   - Will auto-fetch and calculate fantasy points');
-  
-  // Run immediately on start
-  setTimeout(() => {
-    checkAndFetchStats();
-  }, 5000); // Wait 5 seconds after server start
-  
-  // Schedule to run every 10 minutes
-  // Cron format: minute hour day month weekday
-  cron.schedule('*/10 * * * *', () => {
-    checkAndFetchStats();
-  });
-  
-  console.log('✅ Auto-Stats Service running!\n');
+  console.log('🚀 Auto-stats service started (cricketdata.org, IPL 2025)');
+  setTimeout(() => checkAndFetchStats(), 5000);
+  cron.schedule('*/10 * * * *', () => checkAndFetchStats());
 }
 
-/**
- * Get scorecard + player stats + league players with fantasy points (preview, no save).
- * Used by admin UI to show match detail before "Add to leaderboard".
- */
 async function getMatchScorecardPreview(matchId, matchName = null) {
   try {
-    const scorecard = await getMatchScorecard(matchId);
+    const scorecard = await cricketdata.getMatchScorecard(matchId);
     if (!scorecard || !scorecard.data) {
       return {
         success: false,
-        error: 'No scorecard data available for this match ID. Use a match ID from Cricbuzz.com (in the URL: .../live-cricket-scores/12345/...) or load schedule when IPL/live matches are available.'
+        error: 'No scorecard for this match. Select a completed IPL 2025 match from the schedule.'
       };
     }
     const apiPlayerStats = parsePlayerStats(scorecard);
     const soldPlayers = await getAllSoldPlayers();
     const leaguePlayers = [];
     for (const apiStats of apiPlayerStats) {
-      const matchedPlayer = soldPlayers.find(sp =>
-        matchPlayerName(apiStats.playerName, sp.playerName)
-      );
+      const matchedPlayer = soldPlayers.find(sp => matchPlayerName(apiStats.playerName, sp.playerName));
       if (matchedPlayer) {
-        const fantasyPoints = calculateFantasyPoints(apiStats, matchedPlayer.position);
         leaguePlayers.push({
           playerId: matchedPlayer.playerId,
           playerName: matchedPlayer.playerName,
@@ -382,7 +269,7 @@ async function getMatchScorecardPreview(matchId, matchName = null) {
           runsConceded: apiStats.runsConceded || 0,
           catches: apiStats.catches || 0,
           stumpings: apiStats.stumpings || 0,
-          fantasyPoints
+          fantasyPoints: calculateFantasyPoints(apiStats, matchedPlayer.position)
         });
       }
     }
@@ -405,44 +292,20 @@ async function getMatchScorecardPreview(matchId, matchName = null) {
       leaguePlayers
     };
   } catch (err) {
-    console.error(`❌ getMatchScorecardPreview ${matchId}:`, err.message);
+    console.error('❌ getMatchScorecardPreview:', err.message);
     return { success: false, error: err.message };
   }
 }
 
-/**
- * Clear processed matches cache (for testing)
- */
 function clearProcessedCache() {
   processedMatches.clear();
   console.log('🗑️  Cleared processed matches cache');
 }
 
-/**
- * Test specific match by ID (for testing any match, not just IPL)
- */
 async function testSpecificMatch(matchId) {
-  console.log(`\n🧪 TEST MODE: Processing match ${matchId}`);
-  
-  try {
-    // Create a mock match object
-    const testMatch = {
-      id: matchId,
-      name: `Test Match ${matchId}`,
-      matchEnded: true, // Pretend it's completed for testing
-      status: 'Testing'
-    };
-    
-    // Remove from processed cache so we can reprocess
-    processedMatches.delete(matchId);
-    
-    // Process the match
-    await processMatch(testMatch);
-    
-    console.log(`✅ Test processing complete for match ${matchId}`);
-  } catch (err) {
-    console.error(`❌ Error testing match ${matchId}:`, err.message);
-  }
+  console.log(`🧪 Test: adding match ${matchId} to leaderboard`);
+  processedMatches.delete(matchId);
+  await processMatch({ id: matchId, name: `Match ${matchId}`, matchEnded: true, status: 'Completed' });
 }
 
 module.exports = {

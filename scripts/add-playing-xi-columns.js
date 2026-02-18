@@ -9,7 +9,7 @@
 const path = require('path');
 const ExcelJS = require('exceljs');
 
-const WORKBOOK_PATH = path.join(__dirname, '..', 'Fantasy_Points_T20WC_2025_26.xlsx');
+const WORKBOOK_PATH = process.env.FANTASY_WORKBOOK_PATH || path.join(__dirname, '..', 'Fantasy_Points_T20WC_2025_26.xlsx');
 
 function getCellValue(cell) {
   if (!cell || !cell.value) return null;
@@ -32,7 +32,7 @@ async function main() {
     for (let c = 1; c <= 50; c++) {
       const val = getCellValue(headerRow.getCell(c)) ?? headerRow.getCell(c).value;
       const str = val != null ? String(val).trim() : '';
-      if (str.match(/^Round\d+$/)) roundColIndices.push(c);
+      if (str.match(/^Round\d+$/) || str === 'Semi-Final' || str === 'Final') roundColIndices.push(c);
       if (str === '' && roundColIndices.length > 0) break;
     }
     if (roundColIndices.length === 0) continue;

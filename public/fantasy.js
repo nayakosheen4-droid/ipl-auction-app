@@ -544,9 +544,8 @@ function updateAutoStatsUI(status) {
         if (toggleBtn) { toggleBtn.textContent = 'Enable'; toggleBtn.className = 'btn btn-secondary'; }
     }
 
-    const provider = status.apiProvider || 'unknown';
-    const providerName = provider === 'rapidapi' ? 'RapidAPI Cricbuzz' : 'CricketData.org';
-    apiKeyStatus.textContent = status.apiKeyConfigured ? `API: ✓ ${providerName}` : `API: ✗ ${providerName} (Not Set)`;
+    const providerName = status.apiProvider || 'Cricketdata.org';
+    apiKeyStatus.textContent = status.apiKeyConfigured ? `API: ✓ ${providerName}` : `API: ✗ ${providerName} (set CRICKETDATA_API_KEY)`;
     apiKeyStatus.style.color = '';
 }
 
@@ -640,7 +639,7 @@ async function loadSchedule() {
             data.matches = [];
         }
 
-        const placeholderNoMatches = '<p class="schedule-placeholder">No matches in schedule. Try another season or set IPL_SERIES_ID_2025 / IPL2025_MATCH_IDS.</p>';
+        const placeholderNoMatches = '<p class="schedule-placeholder">No IPL 2025 matches. Ensure Cricketdata.org API key (CRICKETDATA_API_KEY) is set and the series has matches.</p>';
 
         if (data.success && data.matches && data.matches.length > 0) {
             const matchesHtml = data.matches.map(m => `
@@ -685,23 +684,13 @@ async function selectMatch(matchId, matchName) {
         c.classList.toggle('selected', c.dataset.matchId === matchId);
     });
 
-    document.getElementById('matchDetailEmpty').classList.add('hidden');
+        document.getElementById('matchDetailEmpty').classList.add('hidden');
     const content = document.getElementById('matchDetailContent');
     content.classList.remove('hidden');
     document.getElementById('matchDetailTitle').textContent = selectedMatchName;
 
     const tbodyAll = document.querySelector('#allPlayersTable tbody');
     const tbodyLeague = document.querySelector('#leaguePlayersTable tbody');
-
-    // Placeholder schedule IDs (e.g. ipl2025-1) have no scorecard — show friendly message
-    const isPlaceholder = /^ipl2025-\d+$/.test(String(matchId));
-    if (isPlaceholder) {
-        const msg = 'This is a schedule placeholder. Scorecard and fantasy points are available for live or completed matches — use match IDs from Cricbuzz.com (in the URL: .../live-cricket-scores/12345/...).';
-        tbodyAll.innerHTML = '<tr><td colspan="9"><span class="scorecard-placeholder">' + escapeHtml(msg) + '</span></td></tr>';
-        tbodyLeague.innerHTML = '<tr><td colspan="7">—</td></tr>';
-        document.getElementById('addToLeaderboardBtn').disabled = true;
-        return;
-    }
 
     tbodyAll.innerHTML = '<tr><td colspan="9">Loading...</td></tr>';
     tbodyLeague.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';

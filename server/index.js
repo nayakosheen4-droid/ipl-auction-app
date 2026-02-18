@@ -2059,14 +2059,12 @@ app.get('/api/fantasy/team/:teamId/gameweek/:gameweek', async (req, res) => {
 
 // Get auto-stats service status
 app.get('/api/autostats/status', (req, res) => {
-  const cricketApi = require('./cricketApi');
-  const apiStatus = cricketApi.getApiKeyStatus();
-  
+  const cricketdata = require('./cricketdataService');
   res.json({
     enabled: autoStatsEnabled,
-    apiKeyConfigured: apiStatus.configured,
-    apiProvider: apiStatus.provider,
-    recommendedProvider: apiStatus.recommended
+    apiKeyConfigured: cricketdata.hasValidKey(),
+    apiProvider: 'cricketdata.org',
+    recommendedProvider: 'cricketdata.org'
   });
 });
 
@@ -2180,12 +2178,11 @@ app.post('/api/autostats/test-match', async (req, res) => {
   }
 });
 
-// Get schedule for a season (schedule-first: list of matches from schedule)
+// Get schedule for IPL 2025 (cricketdata.org)
 app.get('/api/autostats/schedule', async (req, res) => {
   try {
-    const cricketApi = require('./cricketApi');
-    const season = req.query.season || '2025';
-    const schedule = await cricketApi.getSchedule(season);
+    const cricketdata = require('./cricketdataService');
+    const schedule = await cricketdata.getIPL2025Schedule();
     const matches = (schedule.data || []).map(m => ({
       id: m.id,
       name: m.name,
@@ -2200,7 +2197,7 @@ app.get('/api/autostats/schedule', async (req, res) => {
     }));
     res.json({
       success: true,
-      season,
+      season: '2025',
       count: matches.length,
       matches
     });
@@ -2209,34 +2206,32 @@ app.get('/api/autostats/schedule', async (req, res) => {
   }
 });
 
-// Get matches list: schedule-first (by season), then fallback to live/recent. On error still return fallback so "Load schedule" always shows something.
+// Get matches list for IPL 2025 (cricketdata.org)
 app.get('/api/autostats/matches', async (req, res) => {
   const season = (req.query.season || '2025').replace(/\D/g, '') || '2025';
-  const useScheduleFirst = req.query.schedule !== 'false';
   let matches = [];
-
   try {
-    const cricketApi = require('./cricketApi');
-    const matchesData = await cricketApi.getMatchesForListing({ season, useScheduleFirst });
-    matches = (matchesData.data || []).map(m => ({
+    const cricketdata = require('./cricketdataService');
+    const schedule = await cricketdata.getIPL2025Schedule();
+    matches = (schedule.data || []).map(m => ({
       id: m.id,
       name: m.name,
       series: m.series || m.seriesName,
       status: m.status,
       matchType: m.matchType,
-      matchEnded: m.matchEnded
+      matchEnded: m.matchEnded,
+      date: m.date,
+      team1: m.team1,
+      team2: m.team2,
+      venue: m.venue
     }));
   } catch (err) {
-    console.error('getMatchesForListing error:', err.message);
-    if (season === '2025') {
-      matches = Array.from({ length: 74 }, (_, i) => ({ id: `ipl2025-${i + 1}`, name: `IPL 2025 - Match ${i + 1}`, series: 'IPL 2025', status: 'Scheduled', matchType: 't20', matchEnded: false }));
-    }
+    console.error('getIPL2025Schedule error:', err.message);
   }
-
   res.json({
     success: true,
     count: matches.length,
-    season: useScheduleFirst ? season : null,
+    season: season === '2025' ? '2025' : null,
     matches
   });
 });
@@ -2245,15 +2240,13 @@ app.get('/api/autostats/matches', async (req, res) => {
 initializeExcel().then(async () => {
   await loadTeamStateFromExcel();
   
-  // Start auto-stats service if any cricket API key is configured
-  const hasCricketKey = !!(process.env.CRICKET_API_KEY || process.env.RAPIDAPI_KEY);
-  if (hasCricketKey) {
-    console.log('🏏 Cricket API key found - enabling auto-stats service (schedule-first flow)');
+  const cricketdata = require('./cricketdataService');
+  if (cricketdata.hasValidKey()) {
+    console.log('🏏 Cricketdata.org API key set - auto-stats enabled for IPL 2025');
     autoStatsEnabled = true;
     autoStatsService.startAutoStatsService();
   } else {
-    console.log('⚠️  No cricket API key set - auto-stats disabled');
-    console.log('   Set CRICKET_API_KEY or RAPIDAPI_KEY (and CRICKET_API_PROVIDER=rapidapi) for automatic stats');
+    console.log('⚠️  Set CRICKETDATA_API_KEY for IPL 2025 schedule and scorecards');
   }
   
   const PORT = process.env.PORT || 3000;
