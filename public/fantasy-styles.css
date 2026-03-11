@@ -1,19 +1,19 @@
 /* Fantasy League Specific Styles */
 
 .fantasy-nav {
-    background: var(--ipl-panel);
+    background: linear-gradient(135deg, var(--ipl-primary) 0%, var(--ipl-primary-dark) 100%);
     padding: 15px 40px;
     display: flex;
     gap: 15px;
-    box-shadow: 0 2px 8px rgba(29, 61, 141, 0.1);
-    border-bottom: 2px solid var(--ipl-gold);
+    box-shadow: 0 2px 12px rgba(29, 61, 141, 0.2);
+    border-bottom: 3px solid var(--ipl-gold);
 }
 
 .fantasy-nav-btn {
     padding: 12px 24px;
-    border: 2px solid var(--ipl-primary-light);
-    background: white;
-    color: var(--ipl-primary);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
@@ -21,20 +21,20 @@
 }
 
 .fantasy-nav-btn:hover {
-    border-color: var(--ipl-primary);
-    color: var(--ipl-primary);
-    background: #e8eef5;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--ipl-gold);
+    color: #fff;
 }
 
 .fantasy-nav-btn.active {
-    background: var(--ipl-primary);
-    color: white;
-    border-color: var(--ipl-primary);
+    background: var(--ipl-gold);
+    color: var(--ipl-bg-dark);
+    border-color: var(--ipl-gold);
 }
 
 .fantasy-content {
     padding: 30px 40px;
-    background: #e8eef5;
+    background: #f5f5f5;
     min-height: calc(100vh - 200px);
 }
 
