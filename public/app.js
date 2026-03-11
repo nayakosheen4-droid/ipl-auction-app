@@ -11,6 +11,7 @@ let availablePlayers = [];
 let allTeams = [];
 let leftPanelView = 'players'; // 'players' or 'teams'
 let onlineTeams = []; // Track which teams are currently online
+let auctionState = null; // Latest auction state from server (used by markOut, validateMarkOut, etc.)
 
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
@@ -455,6 +456,7 @@ function updateNominationInfo(state) {
 
 // Update auction state
 function updateAuctionState(state) {
+    auctionState = state; // Keep latest state for markOut / validateMarkOut
     // Update nomination info
     updateNominationInfo(state);
     
@@ -745,6 +747,14 @@ async function validateBid() {
 // Mark out
 async function markOut() {
     try {
+        if (!auctionState) {
+            showToast('Waiting for auction state...', 'error');
+            return;
+        }
+        if (!auctionState.auctionActive) {
+            showToast('No active auction', 'error');
+            return;
+        }
         // Check if already marked out - if so, mark back in
         const isOut = auctionState.teamsOut.includes(currentTeam.id);
         
@@ -789,6 +799,9 @@ async function markOut() {
 // Validate if team can mark out
 async function validateMarkOut() {
     try {
+        if (!auctionState || !auctionState.currentPlayer) {
+            return { canMarkOut: true };
+        }
         const response = await fetch(`${API_BASE}/api/team/${currentTeam.id}/players`);
         const data = await response.json();
         

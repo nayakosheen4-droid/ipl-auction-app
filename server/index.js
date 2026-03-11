@@ -34,6 +34,7 @@ app.use(express.static(path.join(__dirname, '../public'), {
 
 // Constants
 const DATA_PATH = path.join(__dirname, '../data/auction_data.xlsx');
+const AUCTION_STATE_PATH = path.join(__dirname, '../data/auction_state.json');
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin2024';
 const TEAMS = [
   { id: 1, name: 'Mumbai Indians', shorthand: 'MI', password: 'mi2026', budget: 100, color: '#004BA0', rtmUsed: false },
@@ -253,6 +254,7 @@ async function performFullReset() {
       teams: JSON.parse(JSON.stringify(TEAMS))
     };
     
+    saveAuctionStateToFile(); // Persist cleared state so deploy doesn't restore old progress
     console.log('✅ Full auction reset completed successfully');
     console.log('   - All sold players cleared');
     console.log('   - All team budgets reset to ₹100 Cr');
@@ -809,6 +811,79 @@ async function loadTeamStateFromExcel() {
   }
 }
 
+// Persist auction state to disk so it survives deploys/restarts. Only admin full-reset clears it.
+function saveAuctionStateToFile() {
+  try {
+    const dataDir = path.join(__dirname, '../data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    const payload = {
+      currentPlayer: auctionState.currentPlayer,
+      currentBid: auctionState.currentBid,
+      currentBidder: auctionState.currentBidder,
+      teamsOut: auctionState.teamsOut,
+      auctionActive: auctionState.auctionActive,
+      rtmPhase: auctionState.rtmPhase,
+      rtmEligibleTeam: auctionState.rtmEligibleTeam,
+      pendingWinner: auctionState.pendingWinner,
+      pendingPrice: auctionState.pendingPrice,
+      timerActive: false,
+      timeRemaining: 0,
+      rtmTimerActive: false,
+      rtmTimeRemaining: 0,
+      nominationOrder: auctionState.nominationOrder,
+      currentTurnIndex: auctionState.currentTurnIndex,
+      currentTurnTeam: auctionState.currentTurnTeam,
+      nominationDirection: auctionState.nominationDirection,
+      teams: auctionState.teams
+    };
+    fs.writeFileSync(AUCTION_STATE_PATH, JSON.stringify(payload, null, 2), 'utf8');
+  } catch (err) {
+    console.error('❌ Error saving auction state:', err.message);
+  }
+}
+
+// Load auction state from disk (nomination order, current turn, active auction, etc.). Team budgets/RTM come from Excel.
+function loadAuctionStateFromFile() {
+  try {
+    if (!fs.existsSync(AUCTION_STATE_PATH)) {
+      return false;
+    }
+    const raw = fs.readFileSync(AUCTION_STATE_PATH, 'utf8');
+    const loaded = JSON.parse(raw);
+    if (!loaded || typeof loaded !== 'object') {
+      return false;
+    }
+    // Restore in-memory state (loadTeamStateFromExcel will overwrite team budgets/rtmUsed from Excel)
+    auctionState.currentPlayer = loaded.currentPlayer || null;
+    auctionState.currentBid = loaded.currentBid != null ? loaded.currentBid : 0;
+    auctionState.currentBidder = loaded.currentBidder || null;
+    auctionState.teamsOut = Array.isArray(loaded.teamsOut) ? loaded.teamsOut : [];
+    auctionState.auctionActive = !!loaded.auctionActive;
+    auctionState.rtmPhase = !!loaded.rtmPhase;
+    auctionState.rtmEligibleTeam = loaded.rtmEligibleTeam ?? null;
+    auctionState.pendingWinner = loaded.pendingWinner ?? null;
+    auctionState.pendingPrice = loaded.pendingPrice ?? null;
+    auctionState.timerActive = false;
+    auctionState.timeRemaining = 0;
+    auctionState.rtmTimerActive = false;
+    auctionState.rtmTimeRemaining = 0;
+    auctionState.nominationOrder = Array.isArray(loaded.nominationOrder) ? loaded.nominationOrder : [];
+    auctionState.currentTurnIndex = typeof loaded.currentTurnIndex === 'number' ? loaded.currentTurnIndex : 0;
+    auctionState.currentTurnTeam = loaded.currentTurnTeam ?? null;
+    auctionState.nominationDirection = loaded.nominationDirection === 'reverse' ? 'reverse' : 'forward';
+    if (Array.isArray(loaded.teams) && loaded.teams.length > 0) {
+      auctionState.teams = loaded.teams;
+    }
+    console.log('✅ Auction state restored from file (nomination order, turn, active auction preserved)');
+    return true;
+  } catch (err) {
+    console.error('❌ Error loading auction state file:', err.message);
+    return false;
+  }
+}
+
 // Broadcast to all connected clients
 function broadcast(data) {
   const message = JSON.stringify(data);
@@ -1075,6 +1150,7 @@ async function completeAuction(winningTeam, finalPrice, isRTM) {
       teams: auctionState.teams,
       state: auctionState // Include full state with updated turn
     });
+    saveAuctionStateToFile();
   } catch (err) {
     console.error(`❌ Error completing auction:`, err);
     throw err;
@@ -1142,6 +1218,7 @@ wss.on('connection', (ws) => {
             type: 'state',
             state: auctionState
           });
+          saveAuctionStateToFile();
         }
       } else if (data.type === 'admin_full_reset') {
         // Admin full reset - clear everything
@@ -1172,7 +1249,7 @@ wss.on('connection', (ws) => {
               type: 'team_out',
               state: auctionState
             });
-            
+            saveAuctionStateToFile();
             // Check if only one team remains and start timer
             checkAndStartTimer();
           }
@@ -1192,6 +1269,7 @@ wss.on('connection', (ws) => {
               type: 'team_unmarked',
               state: auctionState
             });
+            saveAuctionStateToFile();
           }
         }
       } else if (data.type === 'mark_back_in') {
@@ -1213,6 +1291,7 @@ wss.on('connection', (ws) => {
               teamId: data.teamId,
               teamName: teamName
             });
+            saveAuctionStateToFile();
           }
         }
       }
@@ -1455,7 +1534,7 @@ app.post('/api/auction/initialize', (req, res) => {
       state: auctionState,
       message: 'Nomination order has been set!'
     });
-    
+    saveAuctionStateToFile();
     res.json({ 
       success: true, 
       nominationOrder: auctionState.nominationOrder,
@@ -1546,6 +1625,7 @@ app.post('/api/auction/nominate', async (req, res) => {
     };
 
     broadcast({ type: 'auction_start', state: auctionState });
+    saveAuctionStateToFile();
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -1588,6 +1668,7 @@ app.post('/api/auction/bid', async (req, res) => {
     auctionState.currentBidder = teamId;
 
     broadcast({ type: 'bid_update', state: auctionState });
+    saveAuctionStateToFile();
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -1615,7 +1696,7 @@ app.post('/api/auction/out', async (req, res) => {
     }
 
     broadcast({ type: 'team_out', state: auctionState });
-    
+    saveAuctionStateToFile();
     // Check if only one team remains and start timer
     checkAndStartTimer();
 
@@ -1704,6 +1785,7 @@ app.post('/api/auction/reset', (req, res) => {
     teams: JSON.parse(JSON.stringify(TEAMS))
   };
   broadcast({ type: 'reset', state: auctionState });
+  saveAuctionStateToFile();
   res.json({ success: true });
 });
 
@@ -1764,6 +1846,7 @@ app.post('/api/admin/complete-auction', async (req, res) => {
 
     console.log(`✅ Admin awarding ${auctionState.currentPlayer.name} to ${team.name} at ₹${finalPrice} Cr`);
     await completeAuction(team, finalPrice, false);
+    saveAuctionStateToFile();
     res.json({ success: true });
   } catch (err) {
     console.error('❌ Admin complete auction error:', err);
@@ -2238,7 +2321,8 @@ app.get('/api/autostats/matches', async (req, res) => {
 
 // Initialize and start server
 initializeExcel().then(async () => {
-  await loadTeamStateFromExcel();
+  loadAuctionStateFromFile(); // Restore nomination order, turn, active auction (survives deploys)
+  await loadTeamStateFromExcel(); // Refresh team budgets and RTM from Excel
   
   const cricketdata = require('./cricketdataService');
   if (cricketdata.hasValidKey()) {
