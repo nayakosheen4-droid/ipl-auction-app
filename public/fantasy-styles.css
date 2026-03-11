@@ -1,18 +1,19 @@
 /* Fantasy League Specific Styles */
 
 .fantasy-nav {
-    background: white;
+    background: var(--ipl-panel);
     padding: 15px 40px;
     display: flex;
     gap: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(29, 61, 141, 0.1);
+    border-bottom: 2px solid var(--ipl-gold);
 }
 
 .fantasy-nav-btn {
     padding: 12px 24px;
-    border: 2px solid #e0e0e0;
+    border: 2px solid var(--ipl-primary-light);
     background: white;
-    color: #666;
+    color: var(--ipl-primary);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 500;
@@ -20,19 +21,20 @@
 }
 
 .fantasy-nav-btn:hover {
-    border-color: #667eea;
-    color: #667eea;
+    border-color: var(--ipl-primary);
+    color: var(--ipl-primary);
+    background: #e8eef5;
 }
 
 .fantasy-nav-btn.active {
-    background: #667eea;
+    background: var(--ipl-primary);
     color: white;
-    border-color: #667eea;
+    border-color: var(--ipl-primary);
 }
 
 .fantasy-content {
     padding: 30px 40px;
-    background: #f5f5f5;
+    background: #e8eef5;
     min-height: calc(100vh - 200px);
 }
 
@@ -49,13 +51,13 @@
 }
 
 .view-header h2 {
-    color: #333;
+    color: var(--ipl-primary);
     font-size: 1.8rem;
 }
 
 .gw-selector {
     padding: 10px 15px;
-    border: 2px solid #667eea;
+    border: 2px solid var(--ipl-primary-light);
     border-radius: 8px;
     font-size: 1rem;
     font-weight: 500;
@@ -84,7 +86,7 @@
 }
 
 .leaderboard-team.rank-1 {
-    border-left: 5px solid #FFD700;
+    border-left: 5px solid var(--ipl-gold);
 }
 
 .leaderboard-team.rank-2 {
@@ -118,7 +120,7 @@
 .leaderboard-points {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #667eea;
+    color: var(--ipl-primary);
 }
 
 .leaderboard-players {
@@ -139,28 +141,29 @@
 
 .leaderboard-player-name {
     font-weight: 500;
-    color: #333;
+    color: var(--ipl-text);
     margin-bottom: 3px;
 }
 
 .leaderboard-player-stats {
-    color: #666;
+    color: var(--ipl-text-muted);
     font-size: 0.8rem;
 }
 
 .leaderboard-player-points {
-    color: #667eea;
+    color: var(--ipl-primary);
     font-weight: bold;
 }
 
 /* My Team Performance */
 .team-total-points {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--ipl-primary) 0%, var(--ipl-primary-light) 100%);
     color: white;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     margin-bottom: 30px;
+    border: 2px solid var(--ipl-gold);
 }
 
 .points-label {
@@ -201,11 +204,11 @@
 .player-perf-name {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #333;
+    color: var(--ipl-text);
 }
 
 .player-perf-position {
-    background: #667eea;
+    background: var(--ipl-primary);
     color: white;
     padding: 4px 12px;
     border-radius: 15px;
@@ -235,14 +238,14 @@
 
 .stat-label {
     font-size: 0.75rem;
-    color: #666;
+    color: var(--ipl-text-muted);
     display: block;
 }
 
 .stat-value {
     font-size: 1.1rem;
     font-weight: bold;
-    color: #333;
+    color: var(--ipl-text);
 }
 
 /* Admin Fantasy View */
@@ -259,15 +262,15 @@
     gap: 8px;
 }
 
-.admin-gw-row label { margin: 0; color: #666; font-size: 0.9rem; }
-.admin-gw-input { width: 60px; padding: 8px 10px; border: 2px solid #e0e0e0; border-radius: 6px; }
+.admin-gw-row label { margin: 0; color: var(--ipl-text-muted); font-size: 0.9rem; }
+.admin-gw-input { width: 60px; padding: 8px 10px; border: 2px solid var(--ipl-primary-light); border-radius: 6px; }
 .admin-autostats-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.admin-autostats-row .status-text { color: #666; font-size: 0.85rem; }
+.admin-autostats-row .status-text { color: var(--ipl-text-muted); font-size: 0.85rem; }
 .admin-autostats-row .status-badge.status-disabled { background: #e0e0e0; color: #555; }
 .admin-autostats-row .status-badge.status-enabled { background: #28a745; color: white; }
 .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
@@ -291,7 +294,7 @@
 .admin-schedule-panel h3 {
     margin: 0 0 16px 0;
     font-size: 1.2rem;
-    color: #333;
+    color: var(--ipl-primary);
 }
 
 .admin-schedule-controls {
@@ -357,14 +360,14 @@
 }
 
 .schedule-match-card:hover {
-    background: #e8ecff;
-    border-color: #667eea;
+    background: #e8eef5;
+    border-color: var(--ipl-primary-light);
 }
 
 .schedule-match-card.selected {
-    background: #667eea;
+    background: var(--ipl-primary);
     color: white;
-    border-color: #667eea;
+    border-color: var(--ipl-primary);
 }
 
 .schedule-match-card .match-card-name {
@@ -375,7 +378,7 @@
 
 .schedule-match-card .match-card-meta {
     font-size: 0.8rem;
-    color: #666;
+    color: var(--ipl-text-muted);
     margin-top: 4px;
 }
 
@@ -400,7 +403,7 @@
 .match-detail-content .match-detail-title {
     margin: 0 0 20px 0;
     font-size: 1.25rem;
-    color: #333;
+    color: var(--ipl-text);
 }
 
 .match-detail-tables {
@@ -460,7 +463,7 @@
 }
 
 .add-hint {
-    color: #666;
+    color: var(--ipl-text-muted);
     font-size: 0.85rem;
 }
 
@@ -494,14 +497,15 @@
 }
 
 .admin-card h3 {
-    color: #333;
+    color: var(--ipl-primary);
     margin-bottom: 20px;
     font-size: 1.3rem;
 }
 
 .auto-stats-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--ipl-primary) 0%, var(--ipl-primary-light) 100%);
     color: white;
+    border: 2px solid var(--ipl-gold);
 }
 
 .auto-stats-card h3 {
@@ -554,7 +558,7 @@
 .form-group label {
     display: block;
     font-weight: 500;
-    color: #666;
+    color: var(--ipl-text-muted);
     margin-bottom: 5px;
     font-size: 0.9rem;
 }
@@ -571,7 +575,7 @@
 .form-group input:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--ipl-primary-light);
 }
 
 .stats-grid {
@@ -591,7 +595,7 @@
 }
 
 .points-preview strong {
-    color: #667eea;
+    color: var(--ipl-primary);
 }
 
 .points-preview span {
@@ -625,7 +629,7 @@
 
 .empty-state h3 {
     margin-bottom: 10px;
-    color: #666;
+    color: var(--ipl-text-muted);
 }
 
 /* Mobile Responsive */

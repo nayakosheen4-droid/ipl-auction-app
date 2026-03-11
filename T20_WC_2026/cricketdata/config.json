@@ -1,0 +1,6 @@
+{
+  "seriesId": "0cdf6736-ad9b-4e95-a647-5ee3a99c5510",
+  "apiKey": "YOUR_API_KEY",
+  "baseUrl": "https://api.cricapi.com/v1",
+  "comment": "CricAPI: series_info?apikey=...&offset=0&id=<seriesId> → data.matchList; match_info?id=...&apikey=... → data (no player scorecard). Set CRICKETDATA_API_KEY in env to avoid committing key."
+}

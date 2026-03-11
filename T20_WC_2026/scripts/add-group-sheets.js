@@ -53,6 +53,8 @@ const FANTASY_TO_AUCTION_OVERRIDES = {
     'PVD Chameera': 'Dushmantha Chameera',
     'PHKD Mendis': 'Kamindu Mendis',
     'PWH de Silva': 'Wanindu Hasaranga',
+    'D Madushanka': 'Dilshan Madhushanka',
+    'Dilshan Madushanka': 'Dilshan Madhushanka',
   },
   PAK: {
     'Agha Salman': 'Salman Agha',
@@ -71,7 +73,14 @@ const FANTASY_TO_AUCTION_OVERRIDES = {
 
 /** Group substitutions: injured/replaced player (auction name) -> replacement (display name and points lookup). Only the group sheets use this; key = "Group N", value = { "Auction Name": "Replacement Name" }. */
 const GROUP_SUBSTITUTIONS = {
-  'Group 5': { 'Harshit Rana': 'Mohammed Siraj' },
+  'Group 1': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 2': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 3': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 4': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 5': { 'Harshit Rana': 'Mohammed Siraj', 'Michael Bracewell': 'Cole McConchie', 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 6': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 7': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 8': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
 };
 
 /** Fixed round structure: 7 rounds + Semi-Final + Final. Round numbers 8 and 9 in Fantasy Points map to Semi-Final and Final. */
@@ -345,9 +354,10 @@ async function main() {
   for (const subs of Object.values(GROUP_SUBSTITUTIONS)) {
     for (const replacementName of Object.values(subs)) substitutionReplacements.add(replacementName);
   }
+  const REPLACEMENT_COUNTRY = { 'Mohammed Siraj': 'IND', 'Cole McConchie': 'NZ', 'Dilshan Madhushanka': 'SL' };
   for (const rep of substitutionReplacements) {
     if (!auctionList.some((ap) => ap.name === rep)) {
-      const code = rep === 'Mohammed Siraj' ? 'IND' : '';
+      const code = REPLACEMENT_COUNTRY[rep] || '';
       auctionList = auctionList.concat([{ name: rep, countryCode: code }]);
     }
   }

@@ -20,7 +20,7 @@ const COUNTRY_TO_CODE = {
 };
 
 const FANTASY_TO_AUCTION_OVERRIDES = {
-  SL: { 'BKG Mendis': 'Kusal Mendis', 'PVD Chameera': 'Dushmantha Chameera', 'PHKD Mendis': 'Kamindu Mendis', 'PWH de Silva': 'Wanindu Hasaranga' },
+  SL: { 'BKG Mendis': 'Kusal Mendis', 'PVD Chameera': 'Dushmantha Chameera', 'PHKD Mendis': 'Kamindu Mendis', 'PWH de Silva': 'Wanindu Hasaranga', 'D Madushanka': 'Dilshan Madhushanka', 'Dilshan Madushanka': 'Dilshan Madhushanka' },
   PAK: { 'Agha Salman': 'Salman Agha' },
   SA: { 'Q de Kock': 'Quinton de Kock' },
   IND: { 'CV Varun': 'Varun Chakaravarthy' },
@@ -28,7 +28,14 @@ const FANTASY_TO_AUCTION_OVERRIDES = {
 };
 
 const GROUP_SUBSTITUTIONS = {
-  'Group 5': { 'Harshit Rana': 'Mohammed Siraj' },
+  'Group 1': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 2': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 3': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 4': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 5': { 'Harshit Rana': 'Mohammed Siraj', 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 6': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 7': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
+  'Group 8': { 'Matheesha Pathirana': 'Dilshan Madhushanka' },
 };
 
 function getCellValue(cell) {
@@ -106,8 +113,9 @@ function findAllAuctionPlayersWithCountry(playersByGroup) {
   }
   const subs = new Set();
   for (const s of Object.values(GROUP_SUBSTITUTIONS)) for (const v of Object.values(s)) subs.add(v);
+  const REPLACEMENT_COUNTRY = { 'Mohammed Siraj': 'IND', 'Dilshan Madhushanka': 'SL' };
   for (const rep of subs) {
-    if (!list.some((ap) => ap.name === rep)) list.push({ name: rep, countryCode: rep === 'Mohammed Siraj' ? 'IND' : '' });
+    if (!list.some((ap) => ap.name === rep)) list.push({ name: rep, countryCode: REPLACEMENT_COUNTRY[rep] || '' });
   }
   return list;
 }
@@ -195,13 +203,11 @@ async function main() {
       const displayName = String(getCellValue(row.getCell(1)) ?? row.getCell(1).value ?? '').trim();
       const info = groupMap[displayName];
       if (!info) continue;
-      const { lookupName, countryCode } = info;
-      const isNZ = countryCode === 'NZ';
+      const { lookupName } = info;
 
       for (const { col, roundNum } of roundCols) {
-        const storedRound = isNZ ? (roundNum === 1 ? null : roundNum - 1) : roundNum;
-        const pts = storedRound != null && pointsByAuctionPlayerRound[lookupName] && pointsByAuctionPlayerRound[lookupName][storedRound] !== undefined
-          ? pointsByAuctionPlayerRound[lookupName][storedRound]
+        const pts = pointsByAuctionPlayerRound[lookupName] && pointsByAuctionPlayerRound[lookupName][roundNum] !== undefined
+          ? pointsByAuctionPlayerRound[lookupName][roundNum]
           : '';
         row.getCell(col).value = pts;
       }

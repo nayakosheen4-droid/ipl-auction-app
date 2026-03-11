@@ -1,0 +1,921 @@
+{
+  "2026-02-07|India|United States of America": {
+    "potm": "Suryakumar Yadav",
+    "dots": {
+      "SN Netravalkar": 6,
+      "Ali Khan": 7,
+      "SC van Schalkwyk": 12,
+      "Mohammad Mohsin": 13,
+      "SS Ranjane": 6,
+      "Harmeet Singh": 11,
+      "Arshdeep Singh": 13,
+      "Mohammed Siraj": 13,
+      "CV Varun": 10,
+      "AR Patel": 10,
+      "HH Pandya": 8
+    }
+  },
+  "2026-02-07|Scotland|West Indies": {
+    "potm": "Shimron Hetmyer",
+    "dots": {
+      "B McMullen": 2,
+      "BJ Currie": 13,
+      "MRJ Watt": 8,
+      "SM Sharif": 7,
+      "O Davidson": 5,
+      "MA Leask": 8,
+      "MW Forde": 5,
+      "JO Holder": 9,
+      "R Shepherd": 7,
+      "S Joseph": 11,
+      "G Motie": 7,
+      "AJ Hosein": 1
+    }
+  },
+  "2026-02-07|Netherlands|Pakistan": {
+    "potm": "Faheem Ashraf",
+    "dots": {
+      "Shaheen Shah Afridi": 8,
+      "Salman Mirza": 14,
+      "Mohammad Nawaz(3)": 6,
+      "Shadab Khan": 6,
+      "Abrar Ahmed": 8,
+      "Saim Ayub": 2,
+      "A Dutt": 11,
+      "LV van Beek": 11,
+      "K Klein": 7,
+      "RE van der Merwe": 5,
+      "PA van Meekeren": 12,
+      "BFW de Leede": 2
+    }
+  },
+  "2026-02-08|Afghanistan|New Zealand": {
+    "potm": "Tim Seifert",
+    "dots": {
+      "MJ Henry": 11,
+      "JA Duffy": 8,
+      "LH Ferguson": 6,
+      "JDS Neesham": 3,
+      "MJ Santner": 6,
+      "GD Phillips": 0,
+      "R Ravindra": 2,
+      "Fazalhaq Farooqi": 5,
+      "Mujeeb Ur Rahman": 11,
+      "Azmatullah Omarzai": 7,
+      "Rashid Khan": 5,
+      "Ziaur Rahman": 4,
+      "Mohammad Nabi": 2
+    }
+  },
+  "2026-02-08|England|Nepal": {
+    "potm": "Will Jacks",
+    "dots": {
+      "Karan KC": 6,
+      "S Malla": 5,
+      "DS Airee": 7,
+      "NK Yadav": 8,
+      "S Lamichhane": 11,
+      "K Bhurtel": 9,
+      "L Wood": 8,
+      "JC Archer": 9,
+      "LA Dawson": 10,
+      "WG Jacks": 3,
+      "AU Rashid": 3,
+      "SM Curran": 8
+    }
+  },
+  "2026-02-08|Ireland|Sri Lanka": {
+    "potm": "Kamindu Mendis",
+    "dots": {
+      "MJ Humphreys": 4,
+      "MR Adair": 8,
+      "BJ McCarthy": 8,
+      "GH Dockrell": 9,
+      "GJ Delany": 6,
+      "HT Tector": 2,
+      "PVD Chameera": 8,
+      "M Theekshana": 10,
+      "M Pathirana": 6,
+      "DN Wellalage": 9,
+      "PW Hasaranga": 7,
+      "MD Shanaka": 3
+    }
+  },
+  "2026-02-09|Oman|Zimbabwe": {
+    "potm": "Blessing Muzarabani",
+    "dots": {
+      "R Ngarava": 16,
+      "B Muzarabani": 15,
+      "B Evans": 12,
+      "Sikandar Raza": 8,
+      "BJ Bennett": 6,
+      "WP Masakadza": 5,
+      "Shah Faisal": 8,
+      "Shakeel Ahmed": 2,
+      "Sufyan Mehmood": 9,
+      "Nadeem Khan": 7,
+      "Wasim Ali": 2,
+      "J Ramanandi": 0,
+      "K Sonavale": 0
+    }
+  },
+  "2026-02-09|Canada|South Africa": {
+    "potm": "Lungi Ngidi",
+    "dots": {
+      "Kaleem Sana": 6,
+      "D Heyliger": 3,
+      "Saad Bin Zafar": 3,
+      "DS Bajwa": 4,
+      "Jaskaran Singh": 8,
+      "AP Patel": 8,
+      "L Ngidi": 14,
+      "M Jansen": 12,
+      "K Rabada": 9,
+      "C Bosch": 8,
+      "KA Maharaj": 6
+    }
+  },
+  "2026-02-09|Italy|Scotland": {
+    "potm": "Michael Leask",
+    "dots": {
+      "Ali Hasan": 11,
+      "G Stewart": 6,
+      "TJ Draca": 3,
+      "JT Smuts": 8,
+      "BAD Manenti": 7,
+      "HJ Manenti": 1,
+      "CJPF Kalugamage": 2,
+      "MA Leask": 14,
+      "BJ Currie": 6,
+      "BTJ Wheal": 5,
+      "MRJ Watt": 11,
+      "O Davidson": 4,
+      "B McMullen": 1
+    }
+  },
+  "2026-02-10|New Zealand|United Arab Emirates": {
+    "potm": "Tim Seifert",
+    "dots": {
+      "MJ Henry": 10,
+      "JA Duffy": 6,
+      "LH Ferguson": 8,
+      "MJ Santner": 7,
+      "R Ravindra": 7,
+      "JDS Neesham": 2,
+      "GD Phillips": 3,
+      "Haider Ali": 8,
+      "Muhammad Rohid": 1,
+      "Junaid Siddique": 6,
+      "D Parashar": 0,
+      "Muhammad Arfan": 0
+    }
+  },
+  "2026-02-10|Namibia|Netherlands": {
+    "potm": "Bas de Leede",
+    "dots": {
+      "A Dutt": 6,
+      "LV van Beek": 10,
+      "FJ Klaassen": 8,
+      "CN Ackermann": 6,
+      "ZB Lion-Cachet": 3,
+      "T van der Gugten": 3,
+      "BFW de Leede": 5,
+      "RE van der Merwe": 3,
+      "BM Scholtz": 10,
+      "R Trumpelmann": 7,
+      "JJ Smit": 7,
+      "M Heingo": 5,
+      "WP Myburgh": 2,
+      "MG Erasmus": 1,
+      "JN Loftie-Eaton": 1
+    }
+  },
+  "2026-02-10|Pakistan|United States of America": {
+    "potm": "Sahibzada Farhan",
+    "dots": {
+      "SN Netravalkar": 12,
+      "Ehsan Adil": 4,
+      "SC van Schalkwyk": 11,
+      "Milind Kumar": 3,
+      "Mohammad Mohsin": 11,
+      "Harmeet Singh": 3,
+      "Shaheen Shah Afridi": 8,
+      "Saim Ayub": 3,
+      "Abrar Ahmed": 9,
+      "Mohammad Nawaz(3)": 7,
+      "Shadab Khan": 6,
+      "Usman Tariq": 9
+    }
+  },
+  "2026-02-11|England|West Indies": {
+    "potm": "Sherfane Rutherford",
+    "dots": {
+      "JC Archer": 9,
+      "SM Curran": 7,
+      "WG Jacks": 4,
+      "J Overton": 12,
+      "AU Rashid": 11,
+      "LA Dawson": 6,
+      "AJ Hosein": 8,
+      "JO Holder": 2,
+      "R Shepherd": 3,
+      "S Joseph": 7,
+      "RL Chase": 9,
+      "G Motie": 6
+    }
+  },
+  "2026-02-11|Afghanistan|South Africa": {
+    "potm": "Lungi Ngidi",
+    "dots": {
+      "Fazalhaq Farooqi": 12,
+      "Mujeeb Ur Rahman": 7,
+      "Azmatullah Omarzai": 7,
+      "Mohammad Nabi": 1,
+      "Rashid Khan": 9,
+      "Noor Ahmad": 4,
+      "L Ngidi": 13,
+      "M Jansen": 7,
+      "K Rabada": 8,
+      "GF Linde": 5,
+      "KA Maharaj": 7,
+      "AK Markram": 0
+    }
+  },
+  "2026-02-11|Australia|Ireland": {
+    "potm": "Nathan Ellis",
+    "dots": {
+      "MJ Humphreys": 9,
+      "MR Adair": 9,
+      "BJ McCarthy": 3,
+      "GJ Delany": 4,
+      "GH Dockrell": 7,
+      "HT Tector": 3,
+      "XC Bartlett": 4,
+      "MP Kuhnemann": 14,
+      "NT Ellis": 15,
+      "A Zampa": 13,
+      "C Connolly": 4
+    }
+  },
+  "2026-02-12|India|Namibia": {
+    "potm": "Hardik Pandya",
+    "dots": {
+      "R Trumpelmann": 7,
+      "B Shikongo": 4,
+      "JJ Smit": 6,
+      "M Heingo": 0,
+      "MG Erasmus": 15,
+      "BM Scholtz": 7,
+      "HH Pandya": 12,
+      "Arshdeep Singh": 4,
+      "S Dube": 7,
+      "JJ Bumrah": 13,
+      "CV Varun": 6,
+      "AR Patel": 11
+    }
+  },
+  "2026-02-12|Oman|Sri Lanka": {
+    "potm": "Pavan Rathnayake",
+    "dots": {
+      "Shah Faisal": 15,
+      "Jay Odedra": 2,
+      "Wasim Ali": 4,
+      "Sufyan Mehmood": 1,
+      "Nadeem Khan": 4,
+      "J Ramanandi": 4,
+      "PVD Chameera": 6,
+      "M Theekshana": 14,
+      "M Pathirana": 10,
+      "DN Wellalage": 11,
+      "MD Shanaka": 3,
+      "MADI Hemantha": 7,
+      "PHKD Mendis": 5
+    }
+  },
+  "2026-02-12|Italy|Nepal": {
+    "potm": "Crishan Kalugamage",
+    "dots": {
+      "BAD Manenti": 18,
+      "Ali Hasan": 2,
+      "JT Smuts": 7,
+      "G Stewart": 1,
+      "CJPF Kalugamage": 11,
+      "Jaspreet Singh": 4,
+      "Karan KC": 7,
+      "DS Airee": 7,
+      "LN Rajbanshi": 1,
+      "S Lamichhane": 8,
+      "NK Yadav": 2,
+      "K Bhurtel": 2
+    }
+  },
+  "2026-02-13|Netherlands|United States of America": {
+    "potm": "Harmeet Singh",
+    "dots": {
+      "A Dutt": 2,
+      "LV van Beek": 9,
+      "K Klein": 9,
+      "FJ Klaassen": 7,
+      "RE van der Merwe": 0,
+      "BFW de Leede": 6,
+      "Ali Khan": 6,
+      "NP Kenjige": 7,
+      "Harmeet Singh": 10,
+      "SC van Schalkwyk": 7,
+      "Mohammad Mohsin": 5,
+      "SS Ranjane": 2
+    }
+  },
+  "2026-02-13|Australia|Zimbabwe": {
+    "potm": "Blessing Muzarabani",
+    "dots": {
+      "BJ Dwarshuis": 8,
+      "MP Stoinis": 9,
+      "GJ Maxwell": 1,
+      "MP Kuhnemann": 5,
+      "NT Ellis": 9,
+      "A Zampa": 6,
+      "C Green": 4,
+      "Sikandar Raza": 3,
+      "B Muzarabani": 13,
+      "B Evans": 9,
+      "D Myers": 2,
+      "AG Cremer": 2,
+      "WP Masakadza": 6,
+      "RP Burl": 1
+    }
+  },
+  "2026-02-13|Canada|United Arab Emirates": {
+    "potm": "Junaid Siddique",
+    "dots": {
+      "Haider Ali": 8,
+      "Junaid Siddique": 11,
+      "Muhammad Arfan": 5,
+      "Muhammad Jawadullah": 10,
+      "Muhammad Farooq": 2,
+      "H Kaushik": 3,
+      "Kaleem Sana": 8,
+      "D Heyliger": 11,
+      "Jaskaran Singh": 9,
+      "Saad Bin Zafar": 12,
+      "AP Patel": 8,
+      "DS Bajwa": 5
+    }
+  },
+  "2026-02-14|Ireland|Oman": {
+    "potm": "Lorcan Tucker",
+    "dots": {
+      "Shakeel Ahmed": 9,
+      "Shah Faisal": 2,
+      "Nadeem Khan": 10,
+      "Aamir Kaleem": 4,
+      "Sufyan Mehmood": 1,
+      "J Ramanandi": 0,
+      "Mohammad Nadeem": 4,
+      "MJ Humphreys": 9,
+      "MR Adair": 4,
+      "BJ McCarthy": 8,
+      "GJ Delany": 7,
+      "JB Little": 13,
+      "HT Tector": 0,
+      "GH Dockrell": 2
+    }
+  },
+  "2026-02-14|New Zealand|South Africa": {
+    "potm": "Marco Jansen",
+    "dots": {
+      "L Ngidi": 8,
+      "K Rabada": 10,
+      "M Jansen": 9,
+      "KA Maharaj": 6,
+      "C Bosch": 8,
+      "AK Markram": 1,
+      "MJ Henry": 8,
+      "LH Ferguson": 7,
+      "JA Duffy": 4,
+      "MJ Santner": 3,
+      "JDS Neesham": 3,
+      "R Ravindra": 2
+    }
+  },
+  "2026-02-14|England|Scotland": {
+    "potm": "Tom Banton",
+    "dots": {
+      "JC Archer": 14,
+      "J Overton": 11,
+      "SM Curran": 7,
+      "AU Rashid": 9,
+      "LA Dawson": 7,
+      "B McMullen": 9,
+      "BJ Currie": 7,
+      "BTJ Wheal": 10,
+      "MA Leask": 4,
+      "MRJ Watt": 3,
+      "O Davidson": 4
+    }
+  },
+  "2026-02-15|Namibia|United States of America": {
+    "potm": "Sanjay Krishnamurthi",
+    "dots": {
+      "R Trumpelmann": 7,
+      "JJ Smit": 3,
+      "M Heingo": 3,
+      "BM Scholtz": 6,
+      "WP Myburgh": 7,
+      "MG Erasmus": 5,
+      "JN Loftie-Eaton": 2,
+      "Ali Khan": 7,
+      "Milind Kumar": 5,
+      "SN Netravalkar": 5,
+      "SC van Schalkwyk": 8,
+      "Mohammad Mohsin": 2,
+      "Harmeet Singh": 3,
+      "SS Ranjane": 2
+    }
+  },
+  "2026-02-15|India|Pakistan": {
+    "potm": "Ishan Kishan",
+    "dots": {
+      "Salman Agha": 6,
+      "Shaheen Shah Afridi": 3,
+      "Saim Ayub": 11,
+      "Abrar Ahmed": 5,
+      "Shadab Khan": 0,
+      "Mohammad Nawaz(3)": 8,
+      "Usman Tariq": 10,
+      "HH Pandya": 13,
+      "JJ Bumrah": 5,
+      "AR Patel": 13,
+      "CV Varun": 8,
+      "Kuldeep Yadav": 8,
+      "NT Tilak Varma": 5,
+      "RK Singh": 3
+    }
+  },
+  "2026-02-15|Nepal|West Indies": {
+    "potm": "Jason Holder",
+    "dots": {
+      "AJ Hosein": 9,
+      "MW Forde": 18,
+      "JO Holder": 11,
+      "S Joseph": 10,
+      "G Motie": 4,
+      "RL Chase": 4,
+      "Karan KC": 6,
+      "Sompal Kami": 5,
+      "NK Yadav": 8,
+      "S Lamichhane": 4,
+      "DS Airee": 8,
+      "K Bhurtel": 3
+    }
+  },
+  "2026-02-16|England|Italy": {
+    "potm": "Will Jacks",
+    "dots": {
+      "JT Smuts": 5,
+      "Ali Hasan": 8,
+      "G Stewart": 7,
+      "CJPF Kalugamage": 7,
+      "BAD Manenti": 6,
+      "Jaspreet Singh": 0,
+      "JC Archer": 14,
+      "J Overton": 18,
+      "WG Jacks": 3,
+      "AU Rashid": 7,
+      "LA Dawson": 5,
+      "SM Curran": 8
+    }
+  },
+  "2026-02-16|Afghanistan|United Arab Emirates": {
+    "potm": "Azmatullah Omarzai",
+    "dots": {
+      "Azmatullah Omarzai": 15,
+      "Mujeeb Ur Rahman": 12,
+      "Ziaur Rahman": 6,
+      "Rashid Khan": 13,
+      "Noor Ahmad": 5,
+      "Gulbadin Naib": 1,
+      "Junaid Siddique": 10,
+      "Haider Ali": 7,
+      "Muhammad Jawadullah": 7,
+      "Muhammad Arfan": 9,
+      "Simranjeet Singh": 5
+    }
+  },
+  "2026-02-16|Australia|Sri Lanka": {
+    "potm": "Pathum Nissanka",
+    "dots": {
+      "PVD Chameera": 9,
+      "M Theekshana": 12,
+      "M Pathirana": 2,
+      "MD Shanaka": 3,
+      "MADI Hemantha": 9,
+      "DN Wellalage": 5,
+      "PHKD Mendis": 3,
+      "XC Bartlett": 5,
+      "MP Stoinis": 9,
+      "NT Ellis": 4,
+      "C Connolly": 6,
+      "A Zampa": 6,
+      "GJ Maxwell": 3
+    }
+  },
+  "2026-02-17|Ireland|Zimbabwe": {
+    "potm": null,
+    "dots": {}
+  },
+  "2026-02-17|Nepal|Scotland": {
+    "potm": "Dipendra Singh Airee",
+    "dots": {
+      "DS Airee": 9,
+      "Sompal Kami": 10,
+      "NK Yadav": 8,
+      "S Lamichhane": 6,
+      "RK Paudel": 4,
+      "K Bhurtel": 5,
+      "B McMullen": 2,
+      "BJ Currie": 10,
+      "MRJ Watt": 3,
+      "BTJ Wheal": 9,
+      "O Davidson": 5,
+      "MA Leask": 8
+    }
+  },
+  "2026-02-17|Canada|New Zealand": {
+    "potm": "Glenn Phillips",
+    "dots": {
+      "MJ Henry": 11,
+      "JA Duffy": 10,
+      "KA Jamieson": 8,
+      "JDS Neesham": 9,
+      "CE McConchie": 2,
+      "GD Phillips": 0,
+      "Jaskaran Singh": 4,
+      "D Heyliger": 7,
+      "Saad Bin Zafar": 7,
+      "DS Bajwa": 2,
+      "AP Patel": 3,
+      "Shivam Sharma": 2
+    }
+  },
+  "2026-02-18|South Africa|United Arab Emirates": {
+    "potm": "Corbin Bosch",
+    "dots": {
+      "K Rabada": 11,
+      "KT Maphaka": 9,
+      "A Nortje": 7,
+      "GF Linde": 10,
+      "C Bosch": 16,
+      "D Parashar": 7,
+      "Junaid Siddique": 6,
+      "Haider Ali": 6,
+      "Muhammad Jawadullah": 6,
+      "Muhammad Arfan": 4,
+      "Muhammad Farooq": 3
+    }
+  },
+  "2026-02-18|India|Netherlands": {
+    "potm": "Shivam Dube",
+    "dots": {
+      "A Dutt": 16,
+      "LV van Beek": 6,
+      "CN Ackermann": 5,
+      "K Klein": 6,
+      "BFW de Leede": 6,
+      "RE van der Merwe": 1,
+      "Arshdeep Singh": 9,
+      "JJ Bumrah": 11,
+      "Washington Sundar": 3,
+      "CV Varun": 9,
+      "HH Pandya": 2,
+      "Abhishek Sharma": 1,
+      "S Dube": 5
+    }
+  },
+  "2026-02-18|Namibia|Pakistan": {
+    "potm": "Sahibzada Farhan",
+    "dots": {
+      "JJ Smit": 6,
+      "MG Erasmus": 8,
+      "R Trumpelmann": 9,
+      "JT Brassell": 7,
+      "WP Myburgh": 3,
+      "BM Scholtz": 4,
+      "Faheem Ashraf": 5,
+      "Salman Mirza": 8,
+      "Saim Ayub": 8,
+      "Mohammad Nawaz(3)": 13,
+      "Shadab Khan": 11,
+      "Usman Tariq": 12
+    }
+  },
+  "2026-02-19|Italy|West Indies": {
+    "potm": "Shai Hope",
+    "dots": {
+      "JT Smuts": 6,
+      "Ali Hasan": 9,
+      "TJ Draca": 5,
+      "G Stewart": 2,
+      "BAD Manenti": 9,
+      "CJPF Kalugamage": 9,
+      "AJ Hosein": 7,
+      "MW Forde": 16,
+      "JO Holder": 11,
+      "G Motie": 9,
+      "S Joseph": 11
+    }
+  },
+  "2026-02-19|Afghanistan|Canada": {
+    "potm": "Ibrahim Zadran",
+    "dots": {
+      "Kaleem Sana": 8,
+      "D Heyliger": 4,
+      "DS Bajwa": 6,
+      "Jaskaran Singh": 5,
+      "Saad Bin Zafar": 2,
+      "AP Patel": 6,
+      "Mujeeb Ur Rahman": 11,
+      "Azmatullah Omarzai": 7,
+      "Mohammad Nabi": 17,
+      "Abdollah Ahmadzai": 10,
+      "Rashid Khan": 14,
+      "Ziaur Rahman": 9
+    }
+  },
+  "2026-02-19|Sri Lanka|Zimbabwe": {
+    "potm": "Sikandar Raza",
+    "dots": {
+      "Sikandar Raza": 3,
+      "B Muzarabani": 9,
+      "WP Masakadza": 5,
+      "B Evans": 7,
+      "AG Cremer": 9,
+      "RP Burl": 4,
+      "D Madushanka": 7,
+      "Pramod Madushan": 5,
+      "M Theekshana": 7,
+      "MD Shanaka": 4,
+      "MADI Hemantha": 6,
+      "DN Wellalage": 7
+    }
+  },
+  "2026-02-20|Australia|Oman": {
+    "potm": "Adam Zampa",
+    "dots": {
+      "XC Bartlett": 13,
+      "MP Stoinis": 3,
+      "NT Ellis": 6,
+      "C Green": 6,
+      "A Zampa": 9,
+      "GJ Maxwell": 9,
+      "Shafiq Jan": 3,
+      "Jay Odedra": 2,
+      "Shakeel Ahmed": 9,
+      "Wasim Ali": 2,
+      "J Ramanandi": 0
+    }
+  },
+  "2026-02-21|New Zealand|Pakistan": {
+    "potm": null,
+    "dots": {}
+  },
+  "2026-02-22|India|South Africa": {
+    "potm": "David Miller",
+    "dots": {
+      "Arshdeep Singh": 11,
+      "JJ Bumrah": 12,
+      "CV Varun": 8,
+      "Washington Sundar": 1,
+      "HH Pandya": 6,
+      "S Dube": 3,
+      "AK Markram": 4,
+      "M Jansen": 12,
+      "K Rabada": 13,
+      "L Ngidi": 11,
+      "KA Maharaj": 5,
+      "C Bosch": 10
+    }
+  },
+  "2026-02-22|England|Sri Lanka": {
+    "potm": "Will Jacks",
+    "dots": {
+      "D Madushanka": 12,
+      "DN Wellalage": 11,
+      "M Theekshana": 9,
+      "MADI Hemantha": 4,
+      "PVD Chameera": 9,
+      "JC Archer": 11,
+      "WG Jacks": 16,
+      "LA Dawson": 9,
+      "AU Rashid": 13,
+      "J Overton": 5
+    }
+  },
+  "2026-02-23|West Indies|Zimbabwe": {
+    "potm": "Shimron Hetmyer",
+    "dots": {
+      "R Ngarava": 10,
+      "B Muzarabani": 9,
+      "B Evans": 7,
+      "AG Cremer": 6,
+      "Sikandar Raza": 4,
+      "D Myers": 0,
+      "AJ Hosein": 17,
+      "MW Forde": 12,
+      "G Motie": 12,
+      "S Joseph": 7,
+      "JO Holder": 10
+    }
+  },
+  "2026-02-24|England|Pakistan": {
+    "potm": "Harry Brook",
+    "dots": {
+      "JC Archer": 10,
+      "J Overton": 8,
+      "LA Dawson": 12,
+      "SM Curran": 3,
+      "AU Rashid": 11,
+      "WG Jacks": 2,
+      "Shaheen Shah Afridi": 11,
+      "Salman Mirza": 12,
+      "Saim Ayub": 1,
+      "Mohammad Nawaz(3)": 6,
+      "Shadab Khan": 4,
+      "Usman Tariq": 5
+    }
+  },
+  "2026-02-25|New Zealand|Sri Lanka": {
+    "potm": "Rachin Ravindra",
+    "dots": {
+      "D Madushanka": 5,
+      "DN Wellalage": 9,
+      "M Theekshana": 11,
+      "PVD Chameera": 11,
+      "MADI Hemantha": 3,
+      "KIC Asalanka": 6,
+      "MJ Henry": 10,
+      "CE McConchie": 8,
+      "MJ Santner": 11,
+      "LH Ferguson": 4,
+      "IS Sodhi": 2,
+      "R Ravindra": 11,
+      "GD Phillips": 9
+    }
+  },
+  "2026-02-26|India|Zimbabwe": {
+    "potm": "Hardik Pandya",
+    "dots": {
+      "R Ngarava": 5,
+      "B Muzarabani": 5,
+      "TT Maposa": 2,
+      "B Evans": 7,
+      "Sikandar Raza": 4,
+      "BJ Bennett": 1,
+      "RP Burl": 2,
+      "Arshdeep Singh": 12,
+      "HH Pandya": 8,
+      "JJ Bumrah": 8,
+      "CV Varun": 9,
+      "AR Patel": 7,
+      "S Dube": 2
+    }
+  },
+  "2026-02-26|South Africa|West Indies": {
+    "potm": "Aiden Markram",
+    "dots": {
+      "KA Maharaj": 7,
+      "M Jansen": 12,
+      "K Rabada": 11,
+      "L Ngidi": 12,
+      "C Bosch": 11,
+      "MW Forde": 6,
+      "R Shepherd": 5,
+      "JO Holder": 4,
+      "S Joseph": 4,
+      "G Motie": 1,
+      "RL Chase": 6
+    }
+  },
+  "2026-02-27|England|New Zealand": {
+    "potm": "Will Jacks",
+    "dots": {
+      "JC Archer": 10,
+      "LA Dawson": 7,
+      "SM Curran": 2,
+      "AU Rashid": 12,
+      "WG Jacks": 9,
+      "JG Bethell": 1,
+      "Rehan Ahmed": 3,
+      "MJ Henry": 9,
+      "LH Ferguson": 7,
+      "MJ Santner": 11,
+      "CE McConchie": 1,
+      "GD Phillips": 7,
+      "R Ravindra": 11,
+      "IS Sodhi": 5
+    }
+  },
+  "2026-02-28|Pakistan|Sri Lanka": {
+    "potm": "Sahibzada Farhan",
+    "dots": {
+      "D Madushanka": 11,
+      "PVD Chameera": 4,
+      "M Theekshana": 8,
+      "MD Shanaka": 8,
+      "DN Wellalage": 4,
+      "J Liyanage": 0,
+      "Shaheen Shah Afridi": 11,
+      "Naseem Shah": 8,
+      "Abrar Ahmed": 11,
+      "Usman Tariq": 3,
+      "Mohammad Nawaz(3)": 2,
+      "Shadab Khan": 2
+    }
+  },
+  "2026-03-01|India|West Indies": {
+    "potm": "Sanju Samson",
+    "dots": {
+      "Arshdeep Singh": 8,
+      "HH Pandya": 11,
+      "AR Patel": 9,
+      "JJ Bumrah": 7,
+      "CV Varun": 5,
+      "AJ Hosein": 6,
+      "MW Forde": 7,
+      "JO Holder": 7,
+      "G Motie": 3,
+      "R Shepherd": 2,
+      "S Joseph": 8,
+      "RL Chase": 3
+    }
+  },
+  "2026-03-01|South Africa|Zimbabwe": {
+    "potm": "Sikandar Raza",
+    "dots": {
+      "GF Linde": 6,
+      "KT Maphaka": 16,
+      "L Ngidi": 12,
+      "A Nortje": 11,
+      "C Bosch": 6,
+      "AK Markram": 3,
+      "Sikandar Raza": 8,
+      "B Muzarabani": 9,
+      "B Evans": 10,
+      "AG Cremer": 1,
+      "WP Masakadza": 4,
+      "RP Burl": 4,
+      "BJ Bennett": 0
+    }
+  },
+  "2026-03-04|New Zealand|South Africa": {
+    "potm": "Finn Allen",
+    "dots": {
+      "MJ Henry": 11,
+      "CE McConchie": 3,
+      "LH Ferguson": 11,
+      "JDS Neesham": 4,
+      "MJ Santner": 9,
+      "R Ravindra": 7,
+      "M Jansen": 3,
+      "K Rabada": 6,
+      "L Ngidi": 4,
+      "C Bosch": 2,
+      "KA Maharaj": 5
+    }
+  },
+  "2026-03-05|England|India": {
+    "potm": "Sanju Samson",
+    "dots": {
+      "JC Archer": 9,
+      "WG Jacks": 8,
+      "J Overton": 3,
+      "SM Curran": 4,
+      "AU Rashid": 9,
+      "LA Dawson": 0,
+      "Arshdeep Singh": 8,
+      "HH Pandya": 9,
+      "JJ Bumrah": 8,
+      "CV Varun": 3,
+      "AR Patel": 6,
+      "S Dube": 0
+    }
+  },
+  "2026-03-08|India|New Zealand": {
+    "potm": "Jasprit Bumrah",
+    "dots": {
+      "MJ Henry": 6,
+      "GD Phillips": 2,
+      "JA Duffy": 2,
+      "LH Ferguson": 1,
+      "MJ Santner": 7,
+      "R Ravindra": 3,
+      "JDS Neesham": 8,
+      "Arshdeep Singh": 12,
+      "HH Pandya": 6,
+      "AR Patel": 8,
+      "JJ Bumrah": 12,
+      "CV Varun": 5,
+      "Abhishek Sharma": 1
+    }
+  }
+}

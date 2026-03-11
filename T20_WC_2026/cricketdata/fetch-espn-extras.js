@@ -112,8 +112,18 @@ async function main() {
     const id = m.id || m.matchId;
     if (!id) continue;
     const nameStr = m.name || '';
-    const numMatch = nameStr.match(/(\d+)\w*\s+Match/);
-    if (numMatch) matchNumberMap[id] = parseInt(numMatch[1], 10);
+    let numMatch = nameStr.match(/(\d+)\w*\s+Match/);
+    if (numMatch) {
+      matchNumberMap[id] = parseInt(numMatch[1], 10);
+    } else {
+      const semiMatch = nameStr.match(/(\d+)\w*\s+Semi-Final/i);
+      if (semiMatch) {
+        const semiNum = parseInt(semiMatch[1], 10);
+        matchNumberMap[id] = 52 + semiNum;
+      } else if (/,\s*Final\s*,/i.test(nameStr)) {
+        matchNumberMap[id] = 55;
+      }
+    }
   }
 
   let fetched = 0;

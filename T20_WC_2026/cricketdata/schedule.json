@@ -1,0 +1,1652 @@
+[
+  {
+    "id": "b96818f3-9ac7-49a2-a0ee-009137800456",
+    "name": "South Africa vs United Arab Emirates, 34th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 6 wkts",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-02-18",
+    "dateTimeGMT": "2026-02-18T05:30:00",
+    "teams": [
+      "South Africa",
+      "United Arab Emirates"
+    ],
+    "teamInfo": [
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      },
+      {
+        "name": "United Arab Emirates",
+        "shortname": "UAE",
+        "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "ef22b05f-6d11-4147-b884-027f9ebc6e44",
+    "name": "Ireland vs Oman, 22nd Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Ireland won by 96 runs",
+    "venue": "Sinhalese Sports Club, Colombo",
+    "date": "2026-02-14",
+    "dateTimeGMT": "2026-02-14T05:30:00",
+    "teams": [
+      "Ireland",
+      "Oman"
+    ],
+    "teamInfo": [
+      {
+        "name": "Ireland",
+        "shortname": "IRE",
+        "img": "https://g.cricapi.com/iapi/33-637926315578500224.png?w=48"
+      },
+      {
+        "name": "Oman",
+        "shortname": "OMAN",
+        "img": "https://g.cricapi.com/iapi/64-637877083212505394.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "7b52fba2-74fa-4d62-bc62-06c475d04540",
+    "name": "India vs Zimbabwe, 48th Match, Super 8 Group 1 (X1 v X2), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 72 runs",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-26",
+    "dateTimeGMT": "2026-02-26T13:30:00",
+    "teams": [
+      "India",
+      "Zimbabwe"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "ddb91eb5-a89a-4fc9-bd36-0bc02346bb39",
+    "name": "India vs South Africa, 43rd Match, Super 8 Group 1 (X1 v X4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 76 runs",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-22",
+    "dateTimeGMT": "2026-02-22T13:30:00",
+    "teams": [
+      "India",
+      "South Africa"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "e2b37e1e-a01a-492a-8bea-0c1dc67c56e0",
+    "name": "United States of America vs Namibia, 26th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "United States of America won by 31 runs",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-15",
+    "dateTimeGMT": "2026-02-15T09:30:00",
+    "teams": [
+      "United States of America",
+      "Namibia"
+    ],
+    "teamInfo": [
+      {
+        "name": "Namibia",
+        "shortname": "NAM",
+        "img": "https://g.cricapi.com/iapi/53-637877082656229722.webp?w=48"
+      },
+      {
+        "name": "United States of America",
+        "shortname": "US",
+        "img": "https://g.cricapi.com/iapi/93-637877085206398451.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "67ed31aa-c844-4022-a1c0-0d7b7b64dc88",
+    "name": "Ireland vs Zimbabwe, 32nd Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Match abandoned due to rain (no toss)",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-17",
+    "dateTimeGMT": "2026-02-17T09:30:00",
+    "teams": [
+      "Ireland",
+      "Zimbabwe"
+    ],
+    "teamInfo": [
+      {
+        "name": "Ireland",
+        "shortname": "IRE",
+        "img": "https://g.cricapi.com/iapi/33-637926315578500224.png?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": false,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "e26911e8-20c6-4b3d-ab34-16dd4d2aa3df",
+    "name": "New Zealand vs South Africa, 24th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 7 wkts",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-14",
+    "dateTimeGMT": "2026-02-14T13:30:00",
+    "teams": [
+      "New Zealand",
+      "South Africa"
+    ],
+    "teamInfo": [
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      },
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "f3809aca-2628-4ab5-b79a-1d95cbc06c94",
+    "name": "Afghanistan vs Canada, 39th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Afghanistan won by 82 runs",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-19",
+    "dateTimeGMT": "2026-02-19T13:30:00",
+    "teams": [
+      "Afghanistan",
+      "Canada"
+    ],
+    "teamInfo": [
+      {
+        "name": "Afghanistan",
+        "shortname": "AFG",
+        "img": "https://g.cricapi.com/iapi/1-637877075587179422.webp?w=48"
+      },
+      {
+        "name": "Canada",
+        "shortname": "CAN",
+        "img": "https://g.cricapi.com/iapi/14-637877085850526611.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "c177a4ce-6d19-4264-b552-1fcd3af6506a",
+    "name": "New Zealand vs Pakistan, 41st Match, Super 8 Group 2 (Y2 v Y3), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Match abandoned without a ball bowled",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-21",
+    "dateTimeGMT": "2026-02-21T13:30:00",
+    "teams": [
+      "New Zealand",
+      "Pakistan"
+    ],
+    "teamInfo": [
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      },
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": false,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "88c1c713-57f3-41bb-86c6-24cf6aefb431",
+    "name": "New Zealand vs United Arab Emirates, 11th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "New Zealand won by 10 wkts",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-10",
+    "dateTimeGMT": "2026-02-10T09:30:00",
+    "teams": [
+      "New Zealand",
+      "United Arab Emirates"
+    ],
+    "teamInfo": [
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      },
+      {
+        "name": "United Arab Emirates",
+        "shortname": "UAE",
+        "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "fa691e19-d79f-47bc-af3e-2c9db52c76f7",
+    "name": "England vs Italy, 29th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 24 runs",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-02-16",
+    "dateTimeGMT": "2026-02-16T09:30:00",
+    "teams": [
+      "England",
+      "Italy"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "Italy",
+        "shortname": "ITA",
+        "img": "https://g.cricapi.com/iapi/617-637877089742553367.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "efafa9f9-fc3c-41bf-9d2f-3692307294a5",
+    "name": "England vs Sri Lanka, 42nd Match, Super 8 Group 2 (Y1 v Y4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 51 runs",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-22",
+    "dateTimeGMT": "2026-02-22T09:30:00",
+    "teams": [
+      "England",
+      "Sri Lanka"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "7e2900cc-65b3-4322-8f40-36b4aad1b75d",
+    "name": "England vs West Indies, 15th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "West Indies won by 30 runs",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-11",
+    "dateTimeGMT": "2026-02-11T13:30:00",
+    "teams": [
+      "England",
+      "West Indies"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "2414b201-5d51-4dd0-a265-3798a5a7ed4b",
+    "name": "South Africa vs Afghanistan, 13th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Match tied and 1st Super over tied (SA won 2nd Super Over)",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-11",
+    "dateTimeGMT": "2026-02-11T05:30:00",
+    "teams": [
+      "South Africa",
+      "Afghanistan"
+    ],
+    "teamInfo": [
+      {
+        "name": "Afghanistan",
+        "shortname": "AFG",
+        "img": "https://g.cricapi.com/iapi/1-637877075587179422.webp?w=48"
+      },
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "b8833e89-6997-4075-ad6a-426b9968e2ef",
+    "name": "India vs New Zealand, Final, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 96 runs",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-03-08",
+    "dateTimeGMT": "2026-03-08T13:30:00",
+    "teams": [
+      "India",
+      "New Zealand"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "9d41d733-4874-49df-87aa-445fbff82462",
+    "name": "India vs Netherlands, 36th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 17 runs",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-18",
+    "dateTimeGMT": "2026-02-18T13:30:00",
+    "teams": [
+      "India",
+      "Netherlands"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "Netherlands",
+        "shortname": "NED",
+        "img": "https://g.cricapi.com/iapi/55-637877084465746618.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "e678bb1a-25ea-4444-ac87-4d7247702312",
+    "name": "Zimbabwe vs Oman, 8th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Zimbabwe won by 8 wkts",
+    "venue": "Sinhalese Sports Club, Colombo",
+    "date": "2026-02-09",
+    "dateTimeGMT": "2026-02-09T09:30:00",
+    "teams": [
+      "Zimbabwe",
+      "Oman"
+    ],
+    "teamInfo": [
+      {
+        "name": "Oman",
+        "shortname": "OMAN",
+        "img": "https://g.cricapi.com/iapi/64-637877083212505394.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "9a0aab3a-475e-4715-95c1-53f66fdd6f3c",
+    "name": "Netherlands vs Namibia, 10th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Netherlands won by 7 wkts",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-02-10",
+    "dateTimeGMT": "2026-02-10T05:30:00",
+    "teams": [
+      "Netherlands",
+      "Namibia"
+    ],
+    "teamInfo": [
+      {
+        "name": "Namibia",
+        "shortname": "NAM",
+        "img": "https://g.cricapi.com/iapi/53-637877082656229722.webp?w=48"
+      },
+      {
+        "name": "Netherlands",
+        "shortname": "NED",
+        "img": "https://g.cricapi.com/iapi/55-637877084465746618.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "2a973679-05f7-497f-8609-5567966f0bb1",
+    "name": "Afghanistan vs United Arab Emirates, 28th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Afghanistan won by 5 wkts",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-02-16",
+    "dateTimeGMT": "2026-02-16T05:30:00",
+    "teams": [
+      "Afghanistan",
+      "United Arab Emirates"
+    ],
+    "teamInfo": [
+      {
+        "name": "Afghanistan",
+        "shortname": "AFG",
+        "img": "https://g.cricapi.com/iapi/1-637877075587179422.webp?w=48"
+      },
+      {
+        "name": "United Arab Emirates",
+        "shortname": "UAE",
+        "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "ae421629-648d-4db0-8289-5f2b950c3982",
+    "name": "Pakistan vs Sri Lanka, 50th Match, Super 8 Group 2 (Y3 v Y4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Pakistan won by 5 runs",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-28",
+    "dateTimeGMT": "2026-02-28T13:30:00",
+    "teams": [
+      "Pakistan",
+      "Sri Lanka"
+    ],
+    "teamInfo": [
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "b722b11b-08bb-4e9c-8b98-63f6361709d3",
+    "name": "United States of America vs Netherlands, 21st Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "United States of America won by 93 runs",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-13",
+    "dateTimeGMT": "2026-02-13T13:30:00",
+    "teams": [
+      "United States of America",
+      "Netherlands"
+    ],
+    "teamInfo": [
+      {
+        "name": "Netherlands",
+        "shortname": "NED",
+        "img": "https://g.cricapi.com/iapi/55-637877084465746618.webp?w=48"
+      },
+      {
+        "name": "United States of America",
+        "shortname": "US",
+        "img": "https://g.cricapi.com/iapi/93-637877085206398451.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "57dc2ff1-8453-4f41-bb90-662615f6f5bc",
+    "name": "Sri Lanka vs Zimbabwe, 38th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Zimbabwe won by 6 wkts",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-19",
+    "dateTimeGMT": "2026-02-19T09:30:00",
+    "teams": [
+      "Sri Lanka",
+      "Zimbabwe"
+    ],
+    "teamInfo": [
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "9148b8df-145f-4319-b33f-6674b69cdbb3",
+    "name": "Australia vs Zimbabwe, 19th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Zimbabwe won by 23 runs",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-13",
+    "dateTimeGMT": "2026-02-13T05:30:00",
+    "teams": [
+      "Australia",
+      "Zimbabwe"
+    ],
+    "teamInfo": [
+      {
+        "name": "Australia",
+        "shortname": "AUS",
+        "img": "https://g.cricapi.com/iapi/6-637877070670541994.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "937c08ca-c439-4ad0-9f17-6c6f6875076e",
+    "name": "India vs England, 2nd Semi-Final, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 7 runs",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-03-05",
+    "dateTimeGMT": "2026-03-05T13:30:00",
+    "teams": [
+      "India",
+      "England"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "eaf4198b-331d-4629-b6b6-6d90e4b5449d",
+    "name": "Zimbabwe vs West Indies, 44th Match, Super 8 Group 1 (X2 v X3), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "West Indies won by 107 runs",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-23",
+    "dateTimeGMT": "2026-02-23T13:30:00",
+    "teams": [
+      "Zimbabwe",
+      "West Indies"
+    ],
+    "teamInfo": [
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "beda8365-659e-4d5d-832b-740a2b38db6f",
+    "name": "India vs United States of America, 3rd Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 29 runs",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-07",
+    "dateTimeGMT": "2026-02-07T13:30:00",
+    "teams": [
+      "India",
+      "United States of America"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "United States of America",
+        "shortname": "US",
+        "img": "https://g.cricapi.com/iapi/93-637877085206398451.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "a955bf29-3073-4e81-93d5-7ebbbfab6ff4",
+    "name": "New Zealand vs Afghanistan, 4th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "New Zealand won by 5 wkts",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-08",
+    "dateTimeGMT": "2026-02-08T05:30:00",
+    "teams": [
+      "New Zealand",
+      "Afghanistan"
+    ],
+    "teamInfo": [
+      {
+        "name": "Afghanistan",
+        "shortname": "AFG",
+        "img": "https://g.cricapi.com/iapi/1-637877075587179422.webp?w=48"
+      },
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "25583b68-14dd-432b-bd0b-8b4fe722f406",
+    "name": "India vs West Indies, 52nd Match, Super 8 Group 1 (X1 v X3), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 5 wkts",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-03-01",
+    "dateTimeGMT": "2026-03-01T13:30:00",
+    "teams": [
+      "India",
+      "West Indies"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "2fca1f5c-f967-466d-adad-9250bc2ac0fd",
+    "name": "Australia vs Ireland, 14th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Australia won by 67 runs",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-11",
+    "dateTimeGMT": "2026-02-11T09:30:00",
+    "teams": [
+      "Australia",
+      "Ireland"
+    ],
+    "teamInfo": [
+      {
+        "name": "Australia",
+        "shortname": "AUS",
+        "img": "https://g.cricapi.com/iapi/6-637877070670541994.webp?w=48"
+      },
+      {
+        "name": "Ireland",
+        "shortname": "IRE",
+        "img": "https://g.cricapi.com/iapi/33-637926315578500224.png?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "ef43cd98-9ab2-4f6a-8ddd-93500a654676",
+    "name": "Scotland vs Nepal, 33rd Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Nepal won by 7 wkts",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-17",
+    "dateTimeGMT": "2026-02-17T13:30:00",
+    "teams": [
+      "Scotland",
+      "Nepal"
+    ],
+    "teamInfo": [
+      {
+        "name": "Nepal",
+        "shortname": "NEP",
+        "img": "https://g.cricapi.com/iapi/54-637877084789981539.webp?w=48"
+      },
+      {
+        "name": "Scotland",
+        "shortname": "SCO",
+        "img": "https://g.cricapi.com/iapi/79-637877081763746652.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "e1f2855f-088b-4a0b-92fe-966ce8eb087c",
+    "name": "India vs Pakistan, 27th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 61 runs",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-15",
+    "dateTimeGMT": "2026-02-15T13:30:00",
+    "teams": [
+      "India",
+      "Pakistan"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "6bf488cb-99d4-4f62-acf8-a0830cc03daf",
+    "name": "West Indies vs Scotland, 2nd Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "West Indies won by 35 runs",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-02-07",
+    "dateTimeGMT": "2026-02-07T09:30:00",
+    "teams": [
+      "West Indies",
+      "Scotland"
+    ],
+    "teamInfo": [
+      {
+        "name": "Scotland",
+        "shortname": "SCO",
+        "img": "https://g.cricapi.com/iapi/79-637877081763746652.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "d97bd726-63b9-4ab2-af02-a2c9a41ac430",
+    "name": "India vs Namibia, 18th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "India won by 93 runs",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-02-12",
+    "dateTimeGMT": "2026-02-12T13:30:00",
+    "teams": [
+      "India",
+      "Namibia"
+    ],
+    "teamInfo": [
+      {
+        "name": "India",
+        "shortname": "IND",
+        "img": "https://g.cricapi.com/iapi/31-637877061080567215.webp?w=48"
+      },
+      {
+        "name": "Namibia",
+        "shortname": "NAM",
+        "img": "https://g.cricapi.com/iapi/53-637877082656229722.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "5f724cad-8948-4b2b-a7ef-a7818b9c0de2",
+    "name": "New Zealand vs Sri Lanka, 46th Match, Super 8 Group 2 (Y2 v Y4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "New Zealand won by 61 runs",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-25",
+    "dateTimeGMT": "2026-02-25T13:30:00",
+    "teams": [
+      "New Zealand",
+      "Sri Lanka"
+    ],
+    "teamInfo": [
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "7940dc24-5f9f-416b-ba76-a86e441bd445",
+    "name": "England vs Nepal, 5th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 4 runs",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-08",
+    "dateTimeGMT": "2026-02-08T09:30:00",
+    "teams": [
+      "England",
+      "Nepal"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "Nepal",
+        "shortname": "NEP",
+        "img": "https://g.cricapi.com/iapi/54-637877084789981539.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "93a6b950-678e-4706-9642-aae4bb5f7718",
+    "name": "England vs New Zealand, 49th Match, Super 8 Group 2 (Y1 v Y2), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 4 wkts",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-27",
+    "dateTimeGMT": "2026-02-27T13:30:00",
+    "teams": [
+      "England",
+      "New Zealand"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "1ac1a28d-e266-4f13-a0eb-ab6b47fb5a1e",
+    "name": "England vs Pakistan, 45th Match, Super 8 Group 2 (Y1 v Y3), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 2 wkts",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-24",
+    "dateTimeGMT": "2026-02-24T13:30:00",
+    "teams": [
+      "England",
+      "Pakistan"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "4871d8a6-5f46-4196-ad29-c08959250215",
+    "name": "West Indies vs Nepal, 25th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "West Indies won by 9 wkts",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-15",
+    "dateTimeGMT": "2026-02-15T05:30:00",
+    "teams": [
+      "West Indies",
+      "Nepal"
+    ],
+    "teamInfo": [
+      {
+        "name": "Nepal",
+        "shortname": "NEP",
+        "img": "https://g.cricapi.com/iapi/54-637877084789981539.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "01223c83-6312-48e8-86a4-c43072309fdd",
+    "name": "Australia vs Sri Lanka, 30th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Sri Lanka won by 8 wkts",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-16",
+    "dateTimeGMT": "2026-02-16T13:30:00",
+    "teams": [
+      "Australia",
+      "Sri Lanka"
+    ],
+    "teamInfo": [
+      {
+        "name": "Australia",
+        "shortname": "AUS",
+        "img": "https://g.cricapi.com/iapi/6-637877070670541994.webp?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "c5f71b43-fc32-479e-afbe-c7eb96003c4e",
+    "name": "South Africa vs New Zealand, 1st Semi-Final, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "New Zealand won by 9 wkts",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-03-04",
+    "dateTimeGMT": "2026-03-04T13:30:00",
+    "teams": [
+      "South Africa",
+      "New Zealand"
+    ],
+    "teamInfo": [
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      },
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "4a53d5ac-7139-41d3-986b-cd44e259c346",
+    "name": "South Africa vs Canada, 9th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 57 runs",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-09",
+    "dateTimeGMT": "2026-02-09T13:30:00",
+    "teams": [
+      "South Africa",
+      "Canada"
+    ],
+    "teamInfo": [
+      {
+        "name": "Canada",
+        "shortname": "CAN",
+        "img": "https://g.cricapi.com/iapi/14-637877085850526611.webp?w=48"
+      },
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "d21c6e37-a490-4a48-a2c6-d8905f1d2c35",
+    "name": "Zimbabwe vs South Africa, 51st Match, Super 8 Group 1 (X2 v X4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 5 wkts",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-03-01",
+    "dateTimeGMT": "2026-03-01T09:30:00",
+    "teams": [
+      "Zimbabwe",
+      "South Africa"
+    ],
+    "teamInfo": [
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      },
+      {
+        "name": "Zimbabwe",
+        "shortname": "ZIM",
+        "img": "https://g.cricapi.com/iapi/575-637877079629985215.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "93073062-bfab-46ad-bf3a-de096971a326",
+    "name": "West Indies vs South Africa, 47th Match, Super 8 Group 1 (X3 v X4), ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "South Africa won by 9 wkts",
+    "venue": "Narendra Modi Stadium, Ahmedabad",
+    "date": "2026-02-26",
+    "dateTimeGMT": "2026-02-26T09:30:00",
+    "teams": [
+      "West Indies",
+      "South Africa"
+    ],
+    "teamInfo": [
+      {
+        "name": "South Africa",
+        "shortname": "RSA",
+        "img": "https://g.cricapi.com/iapi/82-637877071839088912.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "89411b3d-0916-462f-8499-deaca66ae124",
+    "name": "Pakistan vs Netherlands, 1st Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Pakistan won by 3 wkts",
+    "venue": "Sinhalese Sports Club, Colombo",
+    "date": "2026-02-07",
+    "dateTimeGMT": "2026-02-07T05:30:00",
+    "teams": [
+      "Pakistan",
+      "Netherlands"
+    ],
+    "teamInfo": [
+      {
+        "name": "Netherlands",
+        "shortname": "NED",
+        "img": "https://g.cricapi.com/iapi/55-637877084465746618.webp?w=48"
+      },
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "a9f5fabf-ccd5-4c79-9d27-e2ae78e805e5",
+    "name": "Scotland vs Italy, 7th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Scotland won by 73 runs",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-02-09",
+    "dateTimeGMT": "2026-02-09T05:30:00",
+    "teams": [
+      "Scotland",
+      "Italy"
+    ],
+    "teamInfo": [
+      {
+        "name": "Italy",
+        "shortname": "ITA",
+        "img": "https://g.cricapi.com/iapi/617-637877089742553367.webp?w=48"
+      },
+      {
+        "name": "Scotland",
+        "shortname": "SCO",
+        "img": "https://g.cricapi.com/iapi/79-637877081763746652.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "faed5055-548c-4f70-b37a-e382288a6627",
+    "name": "England vs Scotland, 23rd Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "England won by 5 wkts",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-02-14",
+    "dateTimeGMT": "2026-02-14T09:30:00",
+    "teams": [
+      "England",
+      "Scotland"
+    ],
+    "teamInfo": [
+      {
+        "name": "England",
+        "shortname": "ENG",
+        "img": "https://g.cricapi.com/iapi/23-637877072894080569.webp?w=48"
+      },
+      {
+        "name": "Scotland",
+        "shortname": "SCO",
+        "img": "https://g.cricapi.com/iapi/79-637877081763746652.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "92e6526d-f2bd-4c3b-b528-e3fbc881ce49",
+    "name": "Canada vs United Arab Emirates, 20th Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "United Arab Emirates won by 5 wkts",
+    "venue": "Arun Jaitley Stadium, Delhi",
+    "date": "2026-02-13",
+    "dateTimeGMT": "2026-02-13T09:30:00",
+    "teams": [
+      "Canada",
+      "United Arab Emirates"
+    ],
+    "teamInfo": [
+      {
+        "name": "Canada",
+        "shortname": "CAN",
+        "img": "https://g.cricapi.com/iapi/14-637877085850526611.webp?w=48"
+      },
+      {
+        "name": "United Arab Emirates",
+        "shortname": "UAE",
+        "img": "https://g.cricapi.com/iapi/92-637877081068315608.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "f809ecee-5c17-4b33-809f-e5fbac1656f6",
+    "name": "Pakistan vs United States of America, 12th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Pakistan won by 32 runs",
+    "venue": "Sinhalese Sports Club, Colombo",
+    "date": "2026-02-10",
+    "dateTimeGMT": "2026-02-10T13:30:00",
+    "teams": [
+      "Pakistan",
+      "United States of America"
+    ],
+    "teamInfo": [
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      },
+      {
+        "name": "United States of America",
+        "shortname": "US",
+        "img": "https://g.cricapi.com/iapi/93-637877085206398451.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "12982418-fac9-4344-8cbd-ead8322e5c08",
+    "name": "Sri Lanka vs Oman, 16th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Sri Lanka won by 105 runs",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-12",
+    "dateTimeGMT": "2026-02-12T05:30:00",
+    "teams": [
+      "Sri Lanka",
+      "Oman"
+    ],
+    "teamInfo": [
+      {
+        "name": "Oman",
+        "shortname": "OMAN",
+        "img": "https://g.cricapi.com/iapi/64-637877083212505394.webp?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "235b353d-f8bc-4e55-9f46-ec7a7ffaa826",
+    "name": "Sri Lanka vs Ireland, 6th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Sri Lanka won by 20 runs",
+    "venue": "R.Premadasa Stadium, Colombo",
+    "date": "2026-02-08",
+    "dateTimeGMT": "2026-02-08T13:30:00",
+    "teams": [
+      "Sri Lanka",
+      "Ireland"
+    ],
+    "teamInfo": [
+      {
+        "name": "Ireland",
+        "shortname": "IRE",
+        "img": "https://g.cricapi.com/iapi/33-637926315578500224.png?w=48"
+      },
+      {
+        "name": "Sri Lanka",
+        "shortname": "SL",
+        "img": "https://g.cricapi.com/iapi/4191-638101639309122979.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "33fd8598-901e-4267-aaeb-ee97809e3b84",
+    "name": "New Zealand vs Canada, 31st Match, Group D, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "New Zealand won by 8 wkts",
+    "venue": "MA Chidambaram Stadium, Chennai",
+    "date": "2026-02-17",
+    "dateTimeGMT": "2026-02-17T05:30:00",
+    "teams": [
+      "New Zealand",
+      "Canada"
+    ],
+    "teamInfo": [
+      {
+        "name": "Canada",
+        "shortname": "CAN",
+        "img": "https://g.cricapi.com/iapi/14-637877085850526611.webp?w=48"
+      },
+      {
+        "name": "New Zealand",
+        "shortname": "NZ",
+        "img": "https://g.cricapi.com/iapi/57-637877076980737903.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "2db2166d-419b-4743-b4e6-efccc88b4bac",
+    "name": "West Indies vs Italy, 37th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "West Indies won by 42 runs",
+    "venue": "Eden Gardens, Kolkata",
+    "date": "2026-02-19",
+    "dateTimeGMT": "2026-02-19T05:30:00",
+    "teams": [
+      "West Indies",
+      "Italy"
+    ],
+    "teamInfo": [
+      {
+        "name": "Italy",
+        "shortname": "ITA",
+        "img": "https://g.cricapi.com/iapi/617-637877089742553367.webp?w=48"
+      },
+      {
+        "name": "West Indies",
+        "shortname": "WI",
+        "img": "https://g.cricapi.com/iapi/100-637877077978319234.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "355055b9-e54e-405e-be4e-f43cfdffe781",
+    "name": "Pakistan vs Namibia, 35th Match, Group A, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Pakistan won by 102 runs",
+    "venue": "Sinhalese Sports Club, Colombo",
+    "date": "2026-02-18",
+    "dateTimeGMT": "2026-02-18T09:30:00",
+    "teams": [
+      "Pakistan",
+      "Namibia"
+    ],
+    "teamInfo": [
+      {
+        "name": "Namibia",
+        "shortname": "NAM",
+        "img": "https://g.cricapi.com/iapi/53-637877082656229722.webp?w=48"
+      },
+      {
+        "name": "Pakistan",
+        "shortname": "PAK",
+        "img": "https://g.cricapi.com/iapi/66-637877075103236690.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "3b319cc3-421e-4c66-b988-f664e770493b",
+    "name": "Australia vs Oman, 40th Match, Group B, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Australia won by 9 wkts",
+    "venue": "Pallekele International Cricket Stadium, Pallekele",
+    "date": "2026-02-20",
+    "dateTimeGMT": "2026-02-20T13:30:00",
+    "teams": [
+      "Australia",
+      "Oman"
+    ],
+    "teamInfo": [
+      {
+        "name": "Australia",
+        "shortname": "AUS",
+        "img": "https://g.cricapi.com/iapi/6-637877070670541994.webp?w=48"
+      },
+      {
+        "name": "Oman",
+        "shortname": "OMAN",
+        "img": "https://g.cricapi.com/iapi/64-637877083212505394.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  },
+  {
+    "id": "b403191f-ae3d-4614-83c8-fded8801d716",
+    "name": "Nepal vs Italy, 17th Match, Group C, ICC Men's T20 World Cup 2026",
+    "matchType": "t20",
+    "status": "Italy won by 10 wkts",
+    "venue": "Wankhede Stadium, Mumbai",
+    "date": "2026-02-12",
+    "dateTimeGMT": "2026-02-12T09:30:00",
+    "teams": [
+      "Nepal",
+      "Italy"
+    ],
+    "teamInfo": [
+      {
+        "name": "Italy",
+        "shortname": "ITA",
+        "img": "https://g.cricapi.com/iapi/617-637877089742553367.webp?w=48"
+      },
+      {
+        "name": "Nepal",
+        "shortname": "NEP",
+        "img": "https://g.cricapi.com/iapi/54-637877084789981539.webp?w=48"
+      }
+    ],
+    "fantasyEnabled": true,
+    "bbbEnabled": false,
+    "hasSquad": true,
+    "matchStarted": true,
+    "matchEnded": true
+  }
+]

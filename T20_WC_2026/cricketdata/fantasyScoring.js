@@ -95,7 +95,7 @@ function strikeRateBreakdown(batting, player) {
   if (!bat || bat.balls < 10) return { strikeRate: null, ptsSR: 0 };
   const sr = bat.runs === 0 ? 0 : Math.round((bat.runs / bat.balls) * 10000) / 100;
   let pts = 0;
-  if (sr > 170) pts = 6; else if (sr >= 150) pts = 4; else if (sr >= 130) pts = 2; else if (sr >= 60 && sr <= 70) pts = -2; else if (sr >= 50 && sr < 60) pts = -4; else if (sr < 50) pts = -6;
+  if (sr > 170) pts = 6; else if (sr > 150) pts = 4; else if (sr >= 130) pts = 2; else if (sr >= 60 && sr <= 70) pts = -2; else if (sr >= 50 && sr < 60) pts = -4; else if (sr < 50) pts = -6;
   return { strikeRate: sr, ptsSR: pts };
 }
 

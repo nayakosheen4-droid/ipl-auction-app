@@ -102,7 +102,9 @@ function normalizeMatch(raw) {
         const runsConceded = parseInt(b.r, 10) || 0;
         const overs = parseFloat(b.o, 10) || 0;
         const maidens = parseInt(b.m, 10) || 0;
-        const ballsBowled = Math.round(overs * 6);
+        const wholeOvers = Math.floor(overs);
+        const partialBalls = Math.round((overs - wholeOvers) * 10);
+        const ballsBowled = wholeOvers * 6 + partialBalls;
         const nonMaidenOvers = Math.max(0, Math.floor(overs) - maidens);
         const overRuns = Array(maidens).fill(0);
         if (nonMaidenOvers > 0) {
@@ -125,7 +127,7 @@ function normalizeMatch(raw) {
         allNames.add(name);
         const fieldingTeam = teams.length === 2 ? teams.find((t) => t && t !== battingTeam) : null;
         if (fieldingTeam) { if (!teamToPlayers[fieldingTeam]) teamToPlayers[fieldingTeam] = new Set(); teamToPlayers[fieldingTeam].add(name); }
-        const catches = parseInt(c.catch, 10) || 0;
+        const catches = (parseInt(c.catch, 10) || 0) + (parseInt(c.bowled, 10) || 0) + (parseInt(c.cb, 10) || 0);
         const stumpings = parseInt(c.stumped, 10) || 0;
         const runouts = parseInt(c.runout, 10) || 0;
         if (!fielding[name]) fielding[name] = { catches: 0, stumpings: 0, directRunOut: 0, runOutAssist: 0 };
@@ -133,6 +135,8 @@ function normalizeMatch(raw) {
         fielding[name].stumpings += stumpings;
         fielding[name].directRunOut += runouts;
       }
+
+      // CricAPI catching section already includes cb (caught-and-bowled); do not also add from dismissal text or we double-count.
     }
 
     const teamsList = teams.length ? teams : Array.from(Object.keys(teamToPlayers));
@@ -217,7 +221,9 @@ function normalizeMatch(raw) {
       const wickets = parseInt(b.wickets, 10) || 0;
       const runsConceded = parseInt(b.runs, 10) || parseInt(b.runs_conceded, 10) || 0;
       const overs = parseFloat(b.overs, 10) || parseFloat(b.overs_bowled, 10) || 0;
-      const ballsBowled = Math.round(overs * 6) || parseInt(b.balls, 10) || 0;
+      const wholeOv = Math.floor(overs);
+      const partBalls = Math.round((overs - wholeOv) * 10);
+      const ballsBowled = (wholeOv * 6 + partBalls) || parseInt(b.balls, 10) || 0;
       const dots = parseInt(b.dot_balls, 10) || parseInt(b.dots, 10) || 0;
       const maidens = parseInt(b.maidens, 10) || 0;
       const lbwBowled = parseInt(b.lbw_bowled, 10) || 0;

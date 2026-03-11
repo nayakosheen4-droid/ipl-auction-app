@@ -1,0 +1,63 @@
+{
+  "data": {
+    "id": "0b12f428-98ab-4009-831d-493d325bc555",
+    "name": "Sunrisers Hyderabad vs Kolkata Knight Riders, 25th Match",
+    "matchType": "t20",
+    "status": "Sunrisers Hyderabad won by 7 wkts",
+    "venue": "Brabourne Stadium, Mumbai",
+    "date": "2022-04-15",
+    "teams": ["Sunrisers Hyderabad", "Kolkata Knight Riders"],
+    "scorecard": [
+      {
+        "inning": "Kolkata Knight Riders Inning 1",
+        "batting": [
+          {"batsman": {"name": "Venkatesh Iyer"}, "r": 6, "b": 13, "4s": 1, "6s": 0, "dismissal": "bowled", "dismissal-text": "b T Natarajan"},
+          {"batsman": {"name": "Aaron Finch"}, "r": 7, "b": 5, "4s": 0, "6s": 1, "dismissal": "catch", "dismissal-text": "c Pooran b Marco Jansen"},
+          {"batsman": {"name": "Shreyas Iyer"}, "r": 28, "b": 25, "4s": 3, "6s": 0, "dismissal": "bowled", "dismissal-text": "b Umran Malik"},
+          {"batsman": {"name": "Sunil Narine"}, "r": 6, "b": 2, "4s": 0, "6s": 1, "dismissal": "catch", "dismissal-text": "c Shashank Singh b T Natarajan"},
+          {"batsman": {"name": "Nitish Rana"}, "r": 54, "b": 36, "4s": 6, "6s": 2, "dismissal": "catch", "dismissal-text": "c Pooran b T Natarajan"},
+          {"batsman": {"name": "Sheldon Jackson"}, "r": 7, "b": 7, "4s": 0, "6s": 1, "dismissal": "catch", "dismissal-text": "c T Natarajan b Umran Malik"},
+          {"batsman": {"name": "Andre Russell"}, "r": 49, "b": 25, "4s": 4, "6s": 4, "dismissal-text": "not out"},
+          {"batsman": {"name": "Pat Cummins"}, "r": 3, "b": 3, "4s": 0, "6s": 0, "dismissal": "catch", "dismissal-text": "c Marco Jansen b Bhuvneshwar"},
+          {"batsman": {"name": "Aman Hakim Khan"}, "r": 5, "b": 3, "4s": 1, "6s": 0, "dismissal": "bowled", "dismissal-text": "b J Suchith"},
+          {"batsman": {"name": "Umesh Yadav"}, "r": 1, "b": 1, "4s": 0, "6s": 0, "dismissal-text": "not out"}
+        ],
+        "bowling": [
+          {"bowler": {"name": "Bhuvneshwar Kumar"}, "o": 4, "m": 0, "r": 37, "w": 1},
+          {"bowler": {"name": "Marco Jansen"}, "o": 4, "m": 0, "r": 26, "w": 1},
+          {"bowler": {"name": "T Natarajan"}, "o": 4, "m": 0, "r": 37, "w": 3},
+          {"bowler": {"name": "Umran Malik"}, "o": 4, "m": 0, "r": 27, "w": 2},
+          {"bowler": {"name": "Shashank Singh"}, "o": 1, "m": 0, "r": 10, "w": 0},
+          {"bowler": {"name": "Jagadeesha Suchith"}, "o": 3, "m": 0, "r": 32, "w": 1}
+        ],
+        "catching": [
+          {"catcher": {"name": "Nicholas Pooran"}, "catch": 2, "stumped": 0, "runout": 0},
+          {"catcher": {"name": "Shashank Singh"}, "catch": 1, "stumped": 0, "runout": 0},
+          {"catcher": {"name": "T Natarajan"}, "catch": 1, "stumped": 0, "runout": 0},
+          {"catcher": {"name": "Marco Jansen"}, "catch": 1, "stumped": 0, "runout": 0}
+        ]
+      },
+      {
+        "inning": "Sunrisers Hyderabad Inning 1",
+        "batting": [
+          {"batsman": {"name": "Abhishek Sharma"}, "r": 3, "b": 10, "4s": 0, "6s": 0, "dismissal": "bowled", "dismissal-text": "b Cummins"},
+          {"batsman": {"name": "Kane Williamson"}, "r": 17, "b": 16, "4s": 3, "6s": 0, "dismissal": "bowled", "dismissal-text": "b Russell"},
+          {"batsman": {"name": "Rahul Tripathi"}, "r": 71, "b": 37, "4s": 4, "6s": 6, "dismissal": "catch", "dismissal-text": "c Venkatesh Iyer b Russell"},
+          {"batsman": {"name": "Aiden Markram"}, "r": 68, "b": 36, "4s": 6, "6s": 4, "dismissal-text": "not out"},
+          {"batsman": {"name": "Nicholas Pooran"}, "r": 5, "b": 8, "4s": 0, "6s": 0, "dismissal-text": "not out"}
+        ],
+        "bowling": [
+          {"bowler": {"name": "Umesh Yadav"}, "o": 4, "m": 0, "r": 31, "w": 0},
+          {"bowler": {"name": "Pat Cummins"}, "o": 3.5, "m": 0, "r": 40, "w": 1},
+          {"bowler": {"name": "Andre Russell"}, "o": 2, "m": 0, "r": 20, "w": 2},
+          {"bowler": {"name": "Aman Hakim Khan"}, "o": 1, "m": 0, "r": 13, "w": 0},
+          {"bowler": {"name": "Varun Chakaravarthy"}, "o": 3, "m": 0, "r": 45, "w": 0},
+          {"bowler": {"name": "Sunil Narine"}, "o": 4, "m": 0, "r": 23, "w": 0}
+        ],
+        "catching": [
+          {"catcher": {"name": "Venkatesh Iyer"}, "catch": 1, "stumped": 0, "runout": 0}
+        ]
+      }
+    ]
+  }
+}

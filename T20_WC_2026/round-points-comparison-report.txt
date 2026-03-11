@@ -1,0 +1,968 @@
+=== POINTS COMPARISON: Auction (Player Points NEW) vs Fantasy (from_api) ===
+
+--- DIFFERENCES (same player & round, different points) ---
+
+  Mujeeb Ur Rahman (AFG) Round 1:  Auction=91  Fantasy=107  (diff +16)
+  Rashid Khan (AFG) Round 1:  Auction=55  Fantasy=63  (diff +8)
+  Nathan Ellis (AUS) Round 1:  Auction=219  Fantasy=247  (diff +28)
+  Xavier Bartlett (AUS) Round 1:  Auction=53  Fantasy=25  (diff -28)
+  Luke Wood (ENG) Round 1:  Auction=56  Fantasy=64  (diff +8)
+  Philip Salt (ENG) Round 1:  Auction=13  Fantasy=5  (diff -8)
+  Will Jacks (ENG) Round 1:  Auction=164  Fantasy=172  (diff +8)
+  Shivam Dube (IND) Round 1:  Auction=116  Fantasy=10  (diff -106)
+  James Neesham (NZ) Round 1:  Auction=11  Fantasy=5  (diff -6)
+  Lockie Ferguson (NZ) Round 1:  Auction=83  Fantasy=96  (diff +13)
+  Matt Henry (NZ) Round 1:  Auction=45  Fantasy=47  (diff +2)
+  Rachin Ravindra (NZ) Round 1:  Auction=34  Fantasy=36  (diff +2)
+  Tim Seifert (NZ) Round 1:  Auction=243  Fantasy=193  (diff -50)
+  Abrar Ahmed (PAK) Round 1:  Auction=84  Fantasy=92  (diff +8)
+  David Miller (SA) Round 1:  Auction=75  Fantasy=73  (diff -2)
+  Kagiso Rabada (SA) Round 1:  Auction=65  Fantasy=77  (diff +12)
+  Keshav Maharaj (SA) Round 1:  Auction=10  Fantasy=12  (diff +2)
+  Dasun Shanaka (SL) Round 1:  Auction=23  Fantasy=25  (diff +2)
+  Dunith Wellalage (SL) Round 1:  Auction=53  Fantasy=55  (diff +2)
+  Kamindu Mendis (SL) Round 1:  Auction=50  Fantasy=144  (diff +94)
+  Maheesh Theekshana (SL) Round 1:  Auction=120  Fantasy=128  (diff +8)
+  Matheesha Pathirana (SL) Round 1:  Auction=78  Fantasy=86  (diff +8)
+  Wanindu Hasaranga (SL) Round 1:  Auction=0  Fantasy=124  (diff +124)
+  Romario Shepherd (WI) Round 1:  Auction=211  Fantasy=235  (diff +24)
+  Noor Ahmad (AFG) Round 2:  Auction=0  Fantasy=31  (diff +31)
+  Cameron Green (AUS) Round 2:  Auction=36  Fantasy=38  (diff +2)
+  Matthew Kuhnemann (AUS) Round 2:  Auction=7  Fantasy=9  (diff +2)
+  Xavier Bartlett (AUS) Round 2:  Auction=0  Fantasy=12  (diff +12)
+  Adil Rashid (ENG) Round 2:  Auction=87  Fantasy=89  (diff +2)
+  Jofra Archer (ENG) Round 2:  Auction=47  Fantasy=49  (diff +2)
+  Jos Buttler (ENG) Round 2:  Auction=43  Fantasy=41  (diff -2)
+  Philip Salt (ENG) Round 2:  Auction=80  Fantasy=72  (diff -8)
+  Sam Curran (ENG) Round 2:  Auction=116  Fantasy=118  (diff +2)
+  Arshdeep Singh (IND) Round 2:  Auction=34  Fantasy=36  (diff +2)
+  Axar Patel (IND) Round 2:  Auction=91  Fantasy=105  (diff +14)
+  Jasprit Bumrah (IND) Round 2:  Auction=67  Fantasy=75  (diff +8)
+  Varun Chakaravarthy (IND) Round 2:  Auction=127  Fantasy=143  (diff +16)
+  Daryl Mitchell (NZ) Round 2:  Auction=0  Fantasy=12  (diff +12)
+  Abrar Ahmed (PAK) Round 2:  Auction=51  Fantasy=59  (diff +8)
+  Mohammad Nawaz (PAK) Round 2:  Auction=54  Fantasy=52  (diff -2)
+  Shadab Khan (PAK) Round 2:  Auction=134  Fantasy=142  (diff +8)
+  Usman Tariq (PAK) Round 2:  Auction=117  Fantasy=125  (diff +8)
+  Kagiso Rabada (SA) Round 2:  Auction=47  Fantasy=52  (diff +5)
+  Keshav Maharaj (SA) Round 2:  Auction=49  Fantasy=43  (diff -6)
+  Lungi Ngidi (SA) Round 2:  Auction=179  Fantasy=187  (diff +8)
+  Quinton de Kock (SA) Round 2:  Auction=117  Fantasy=123  (diff +6)
+  Dushmantha Chameera (SL) Round 2:  Auction=86  Fantasy=94  (diff +8)
+  Kamindu Mendis (SL) Round 2:  Auction=0  Fantasy=78  (diff +78)
+  Kusal Mendis (SL) Round 2:  Auction=129  Fantasy=135  (diff +6)
+  Gudakesh Motie (WI) Round 2:  Auction=112  Fantasy=128  (diff +16)
+  Jason Holder (WI) Round 2:  Auction=89  Fantasy=83  (diff -6)
+  Shamar Joseph (WI) Round 2:  Auction=47  Fantasy=53  (diff +6)
+  Azmatullah Omarzai (AFG) Round 3:  Auction=337  Fantasy=295  (diff -42)
+  Noor Ahmad (AFG) Round 3:  Auction=0  Fantasy=5  (diff +5)
+  Rahmanullah Gurbaz (AFG) Round 3:  Auction=36  Fantasy=42  (diff +6)
+  Rashid Khan (AFG) Round 3:  Auction=55  Fantasy=49  (diff -6)
+  Nathan Ellis (AUS) Round 3:  Auction=12  Fantasy=14  (diff +2)
+  Xavier Bartlett (AUS) Round 3:  Auction=5  Fantasy=7  (diff +2)
+  Adil Rashid (ENG) Round 3:  Auction=123  Fantasy=131  (diff +8)
+  Harry Brook (ENG) Round 3:  Auction=14  Fantasy=8  (diff -6)
+  Jos Buttler (ENG) Round 3:  Auction=13  Fantasy=19  (diff +6)
+  Philip Salt (ENG) Round 3:  Auction=14  Fantasy=6  (diff -8)
+  Axar Patel (IND) Round 3:  Auction=83  Fantasy=93  (diff +10)
+  Hardik Pandya (IND) Round 3:  Auction=95  Fantasy=117  (diff +22)
+  Lockie Ferguson (NZ) Round 3:  Auction=47  Fantasy=55  (diff +8)
+  Abrar Ahmed (PAK) Round 3:  Auction=1  Fantasy=3  (diff +2)
+  Mohammad Nawaz (PAK) Round 3:  Auction=26  Fantasy=22  (diff -4)
+  Saim Ayub (PAK) Round 3:  Auction=155  Fantasy=167  (diff +12)
+  Usman Tariq (PAK) Round 3:  Auction=44  Fantasy=46  (diff +2)
+  Keshav Maharaj (SA) Round 3:  Auction=48  Fantasy=56  (diff +8)
+  Tristan Stubbs (SA) Round 3:  Auction=0  Fantasy=12  (diff +12)
+  Kamindu Mendis (SL) Round 3:  Auction=0  Fantasy=45  (diff +45)
+  Kusal Mendis (SL) Round 3:  Auction=125  Fantasy=131  (diff +6)
+  Akeal Hosein (WI) Round 3:  Auction=51  Fantasy=59  (diff +8)
+  Matthew Forde (WI) Round 3:  Auction=82  Fantasy=94  (diff +12)
+  Roston Chase (WI) Round 3:  Auction=50  Fantasy=58  (diff +8)
+  Rovman Powell (WI) Round 3:  Auction=0  Fantasy=12  (diff +12)
+  Ibrahim Zadran (AFG) Round 4:  Auction=281  Fantasy=231  (diff -50)
+  Mujeeb Ur Rahman (AFG) Round 4:  Auction=65  Fantasy=73  (diff +8)
+  Rashid Khan (AFG) Round 4:  Auction=92  Fantasy=100  (diff +8)
+  Adam Zampa (AUS) Round 4:  Auction=217  Fantasy=233  (diff +16)
+  Glenn Maxwell (AUS) Round 4:  Auction=95  Fantasy=103  (diff +8)
+  Nathan Ellis (AUS) Round 4:  Auction=48  Fantasy=58  (diff +10)
+  Xavier Bartlett (AUS) Round 4:  Auction=103  Fantasy=123  (diff +20)
+  Jamie Overton (ENG) Round 4:  Auction=163  Fantasy=183  (diff +20)
+  Abhishek Sharma (IND) Round 4:  Auction=3  Fantasy=5  (diff +2)
+  Jasprit Bumrah (IND) Round 4:  Auction=57  Fantasy=65  (diff +8)
+  Varun Chakaravarthy (IND) Round 4:  Auction=137  Fantasy=157  (diff +20)
+  Matt Henry (NZ) Round 4:  Auction=45  Fantasy=47  (diff +2)
+  Saim Ayub (PAK) Round 4:  Auction=52  Fantasy=58  (diff +6)
+  Salman Agha (PAK) Round 4:  Auction=80  Fantasy=74  (diff -6)
+  Usman Tariq (PAK) Round 4:  Auction=166  Fantasy=194  (diff +28)
+  Anrich Nortje (SA) Round 4:  Auction=71  Fantasy=73  (diff +2)
+  Jason Smith (SA) Round 4:  Auction=15  Fantasy=14  (diff -1)
+  Dunith Wellalage (SL) Round 4:  Auction=70  Fantasy=78  (diff +8)
+  Dushan Hemantha (SL) Round 4:  Auction=68  Fantasy=70  (diff +2)
+  Kamindu Mendis (SL) Round 4:  Auction=0  Fantasy=15  (diff +15)
+  Kusal Mendis (SL) Round 4:  Auction=18  Fantasy=16  (diff -2)
+  Gudakesh Motie (WI) Round 4:  Auction=83  Fantasy=91  (diff +8)
+  Matthew Forde (WI) Round 4:  Auction=156  Fantasy=164  (diff +8)
+  Adil Rashid (ENG) Round 5:  Auction=92  Fantasy=100  (diff +8)
+  Harry Brook (ENG) Round 5:  Auction=36  Fantasy=30  (diff -6)
+  Jofra Archer (ENG) Round 5:  Auction=75  Fantasy=77  (diff +2)
+  Liam Dawson (ENG) Round 5:  Auction=85  Fantasy=101  (diff +16)
+  Will Jacks (ENG) Round 5:  Auction=209  Fantasy=215  (diff +6)
+  Arshdeep Singh (IND) Round 5:  Auction=76  Fantasy=78  (diff +2)
+  Jasprit Bumrah (IND) Round 5:  Auction=122  Fantasy=140  (diff +18)
+  Dilshan Madushanka (SL) Round 5:  Auction=84  Fantasy=86  (diff +2)
+  Kamindu Mendis (SL) Round 5:  Auction=0  Fantasy=27  (diff +27)
+  Kusal Mendis (SL) Round 5:  Auction=27  Fantasy=12  (diff -15)
+  Akeal Hosein (WI) Round 5:  Auction=131  Fantasy=153  (diff +22)
+  Gudakesh Motie (WI) Round 5:  Auction=168  Fantasy=210  (diff +42)
+  Jason Holder (WI) Round 5:  Auction=69  Fantasy=77  (diff +8)
+  Rovman Powell (WI) Round 5:  Auction=117  Fantasy=115  (diff -2)
+  Jacob Bethell (ENG) Round 6:  Auction=30  Fantasy=24  (diff -6)
+  Jamie Overton (ENG) Round 6:  Auction=102  Fantasy=116  (diff +14)
+  Jos Buttler (ENG) Round 6:  Auction=12  Fantasy=18  (diff +6)
+  Arshdeep Singh (IND) Round 6:  Auction=128  Fantasy=136  (diff +8)
+  Hardik Pandya (IND) Round 6:  Auction=158  Fantasy=160  (diff +2)
+  Jasprit Bumrah (IND) Round 6:  Auction=12  Fantasy=14  (diff +2)
+  Matt Henry (NZ) Round 6:  Auction=88  Fantasy=108  (diff +20)
+  Mohammad Nawaz (PAK) Round 6:  Auction=84  Fantasy=94  (diff +10)
+  Shaheen Afridi (PAK) Round 6:  Auction=153  Fantasy=161  (diff +8)
+  Corbin Bosch (SA) Round 6:  Auction=81  Fantasy=87  (diff +6)
+  Dewald Brevis (SA) Round 6:  Auction=0  Fantasy=12  (diff +12)
+  Lungi Ngidi (SA) Round 6:  Auction=118  Fantasy=126  (diff +8)
+  Quinton de Kock (SA) Round 6:  Auction=135  Fantasy=129  (diff -6)
+  Dunith Wellalage (SL) Round 6:  Auction=100  Fantasy=108  (diff +8)
+  Dushan Hemantha (SL) Round 6:  Auction=14  Fantasy=16  (diff +2)
+  Dushmantha Chameera (SL) Round 6:  Auction=120  Fantasy=128  (diff +8)
+  Kamindu Mendis (SL) Round 6:  Auction=0  Fantasy=65  (diff +65)
+  Kusal Mendis (SL) Round 6:  Auction=65  Fantasy=15  (diff -50)
+  Maheesh Theekshana (SL) Round 6:  Auction=118  Fantasy=134  (diff +16)
+  Gudakesh Motie (WI) Round 6:  Auction=-1  Fantasy=1  (diff +2)
+  Romario Shepherd (WI) Round 6:  Auction=103  Fantasy=105  (diff +2)
+  Shamar Joseph (WI) Round 6:  Auction=2  Fantasy=4  (diff +2)
+  Adil Rashid (ENG) Round 7:  Auction=76  Fantasy=78  (diff +2)
+  Jofra Archer (ENG) Round 7:  Auction=14  Fantasy=26  (diff +12)
+  Rehan Ahmed (ENG) Round 7:  Auction=110  Fantasy=118  (diff +8)
+  Will Jacks (ENG) Round 7:  Auction=207  Fantasy=215  (diff +8)
+  Sanju Samson (IND) Round 7:  Auction=207  Fantasy=257  (diff +50)
+  Varun Chakaravarthy (IND) Round 7:  Auction=45  Fantasy=53  (diff +8)
+  Lockie Ferguson (NZ) Round 7:  Auction=41  Fantasy=43  (diff +2)
+  Abrar Ahmed (PAK) Round 7:  Auction=137  Fantasy=165  (diff +28)
+  Mohammad Nawaz (PAK) Round 7:  Auction=48  Fantasy=58  (diff +10)
+  Sahibzada Farhan (PAK) Round 7:  Auction=190  Fantasy=240  (diff +50)
+  Saim Ayub (PAK) Round 7:  Auction=8  Fantasy=12  (diff +4)
+  Shaheen Afridi (PAK) Round 7:  Auction=47  Fantasy=49  (diff +2)
+  Corbin Bosch (SA) Round 7:  Auction=84  Fantasy=100  (diff +16)
+  Kwena Maphaka (SA) Round 7:  Auction=92  Fantasy=100  (diff +8)
+  Dushmantha Chameera (SL) Round 7:  Auction=40  Fantasy=50  (diff +10)
+  Kamil Mishara (SL) Round 7:  Auction=68  Fantasy=74  (diff +6)
+  Kamindu Mendis (SL) Round 7:  Auction=0  Fantasy=7  (diff +7)
+  Akeal Hosein (WI) Round 7:  Auction=36  Fantasy=38  (diff +2)
+
+Total differences: 154
+
+--- ONLY IN AUCTION ---
+
+  Anrich Nortje (SA) Round 1  pts=0
+  Charith Asalanka (SL) Round 1  pts=0
+  Josh Hazlewood (AUS) Round 1  pts=0
+  Naseem Shah (PAK) Round 1  pts=0
+  Sanju Samson (IND) Round 1  pts=0
+  Anrich Nortje (SA) Round 2  pts=0
+  Charith Asalanka (SL) Round 2  pts=0
+  Josh Hazlewood (AUS) Round 2  pts=0
+  Naseem Shah (PAK) Round 2  pts=0
+  Anrich Nortje (SA) Round 3  pts=0
+  Charith Asalanka (SL) Round 3  pts=0
+  Naseem Shah (PAK) Round 3  pts=0
+  Sanju Samson (IND) Round 3  pts=0
+  Steven Smith (AUS) Round 3  pts=0
+  Axar Patel (IND) Round 4  pts=0
+  Charith Asalanka (SL) Round 4  pts=0
+  Marco Jansen (SA) Round 4  pts=0
+  Naseem Shah (PAK) Round 4  pts=0
+  Sanju Samson (IND) Round 4  pts=0
+  Steven Smith (AUS) Round 4  pts=0
+  Anrich Nortje (SA) Round 5  pts=0
+  Axar Patel (IND) Round 5  pts=0
+  Charith Asalanka (SL) Round 5  pts=0
+  Marcus Stoinis (AUS) Round 5  pts=0
+  Naseem Shah (PAK) Round 5  pts=0
+  Nathan Ellis (AUS) Round 5  pts=0
+  Sanju Samson (IND) Round 5  pts=0
+  Sediqullah Atal (AFG) Round 5  pts=0
+  Steven Smith (AUS) Round 5  pts=0
+  Tim Seifert (NZ) Round 5  pts=0
+  Xavier Bartlett (AUS) Round 5  pts=0
+  Anrich Nortje (SA) Round 6  pts=0
+  Marcus Stoinis (AUS) Round 6  pts=0
+  Naseem Shah (PAK) Round 6  pts=0
+  Nathan Ellis (AUS) Round 6  pts=0
+  Sediqullah Atal (AFG) Round 6  pts=0
+  Steven Smith (AUS) Round 6  pts=0
+  Tristan Stubbs (SA) Round 6  pts=0
+  Xavier Bartlett (AUS) Round 6  pts=0
+  Brandon King (WI) Round 7  pts=0
+  Marco Jansen (SA) Round 7  pts=0
+  Marcus Stoinis (AUS) Round 7  pts=0
+  Nathan Ellis (AUS) Round 7  pts=0
+  Sediqullah Atal (AFG) Round 7  pts=0
+  Steven Smith (AUS) Round 7  pts=0
+  Xavier Bartlett (AUS) Round 7  pts=0
+  Fakhar Zaman (PAK) Round 1  pts=0
+  Quentin Sampson (WI) Round 1  pts=0
+  Fakhar Zaman (PAK) Round 2  pts=0
+  Matthew Forde (WI) Round 2  pts=0
+  Quentin Sampson (WI) Round 2  pts=0
+  Arshdeep Singh (IND) Round 3  pts=0
+  Fakhar Zaman (PAK) Round 3  pts=0
+  Fazalhaq Farooqi (AFG) Round 3  pts=0
+  Matt Renshaw (AUS) Round 3  pts=0
+  Quentin Sampson (WI) Round 3  pts=0
+  Daryl Mitchell (NZ) Round 4  pts=0
+  Fakhar Zaman (PAK) Round 4  pts=0
+  Fazalhaq Farooqi (AFG) Round 4  pts=0
+  Matt Renshaw (AUS) Round 4  pts=0
+  Quentin Sampson (WI) Round 4  pts=0
+  Daryl Mitchell (NZ) Round 5  pts=0
+  Fakhar Zaman (PAK) Round 5  pts=0
+  Fazalhaq Farooqi (AFG) Round 5  pts=0
+  Jacob Duffy (NZ) Round 5  pts=0
+  Matt Renshaw (AUS) Round 5  pts=0
+  Quentin Sampson (WI) Round 5  pts=0
+  Sahibzada Farhan (PAK) Round 5  pts=0
+  Fazalhaq Farooqi (AFG) Round 6  pts=0
+  Jacob Duffy (NZ) Round 6  pts=0
+  Matt Renshaw (AUS) Round 6  pts=0
+  Quentin Sampson (WI) Round 6  pts=0
+  Rinku Singh (IND) Round 6  pts=0
+  Fazalhaq Farooqi (AFG) Round 7  pts=0
+  Jacob Duffy (NZ) Round 7  pts=0
+  Matt Renshaw (AUS) Round 7  pts=0
+  Quentin Sampson (WI) Round 7  pts=0
+  Rinku Singh (IND) Round 7  pts=0
+  Ish Sodhi (NZ) Round 1  pts=0
+  Jasprit Bumrah (IND) Round 1  pts=0
+  Tim David (AUS) Round 1  pts=0
+  Ish Sodhi (NZ) Round 2  pts=0
+  Ish Sodhi (NZ) Round 3  pts=0
+  David Miller (SA) Round 4  pts=0
+  Ish Sodhi (NZ) Round 4  pts=0
+  Tim David (AUS) Round 4  pts=0
+  Azmatullah Omarzai (AFG) Round 5  pts=0
+  Gulbadin Naib (AFG) Round 5  pts=0
+  Ibrahim Zadran (AFG) Round 5  pts=0
+  Ish Sodhi (NZ) Round 5  pts=0
+  Matt Henry (NZ) Round 5  pts=0
+  Rashid Khan (AFG) Round 5  pts=0
+  Tim David (AUS) Round 5  pts=0
+  Akeal Hosein (WI) Round 6  pts=0
+  Azmatullah Omarzai (AFG) Round 6  pts=0
+  David Miller (SA) Round 6  pts=0
+  Gulbadin Naib (AFG) Round 6  pts=0
+  Ibrahim Zadran (AFG) Round 6  pts=0
+  Rashid Khan (AFG) Round 6  pts=0
+  Tim David (AUS) Round 6  pts=0
+  Azmatullah Omarzai (AFG) Round 7  pts=0
+  Gulbadin Naib (AFG) Round 7  pts=0
+  Ibrahim Zadran (AFG) Round 7  pts=0
+  Rashid Khan (AFG) Round 7  pts=0
+  Tim David (AUS) Round 7  pts=0
+  Jason Smith (SA) Round 1  pts=0
+  Jayden Seales (WI) Round 1  pts=0
+  Johnson Charles (WI) Round 1  pts=0
+  Josh Tongue (ENG) Round 1  pts=0
+  Kuldeep Yadav (IND) Round 1  pts=0
+  Kusal Perera (SL) Round 1  pts=0
+  Mitchell Marsh (AUS) Round 1  pts=0
+  Usman Tariq (PAK) Round 1  pts=0
+  Jason Smith (SA) Round 2  pts=0
+  Jayden Seales (WI) Round 2  pts=0
+  Johnson Charles (WI) Round 2  pts=0
+  Josh Tongue (ENG) Round 2  pts=0
+  Kuldeep Yadav (IND) Round 2  pts=0
+  Kusal Perera (SL) Round 2  pts=0
+  Mitchell Marsh (AUS) Round 2  pts=0
+  Jason Smith (SA) Round 3  pts=0
+  Jayden Seales (WI) Round 3  pts=0
+  Johnson Charles (WI) Round 3  pts=0
+  Josh Tongue (ENG) Round 3  pts=0
+  Matthew Kuhnemann (AUS) Round 3  pts=0
+  Jayden Seales (WI) Round 4  pts=0
+  Johnson Charles (WI) Round 4  pts=0
+  Josh Tongue (ENG) Round 4  pts=0
+  Kuldeep Yadav (IND) Round 4  pts=0
+  Matthew Kuhnemann (AUS) Round 4  pts=0
+  Mitchell Santner (NZ) Round 4  pts=0
+  Faheem Ashraf (PAK) Round 5  pts=0
+  Jason Smith (SA) Round 5  pts=0
+  Jayden Seales (WI) Round 5  pts=0
+  Johnson Charles (WI) Round 5  pts=0
+  Josh Tongue (ENG) Round 5  pts=0
+  Kuldeep Yadav (IND) Round 5  pts=0
+  Kusal Perera (SL) Round 5  pts=0
+  Matthew Kuhnemann (AUS) Round 5  pts=0
+  Mitchell Marsh (AUS) Round 5  pts=0
+  Mitchell Santner (NZ) Round 5  pts=0
+  Usman Tariq (PAK) Round 5  pts=0
+  Faheem Ashraf (PAK) Round 6  pts=0
+  Jason Smith (SA) Round 6  pts=0
+  Jayden Seales (WI) Round 6  pts=0
+  Johnson Charles (WI) Round 6  pts=0
+  Josh Tongue (ENG) Round 6  pts=0
+  Kuldeep Yadav (IND) Round 6  pts=0
+  Kusal Perera (SL) Round 6  pts=0
+  Matthew Kuhnemann (AUS) Round 6  pts=0
+  Mitchell Marsh (AUS) Round 6  pts=0
+  Faheem Ashraf (PAK) Round 7  pts=0
+  Jason Smith (SA) Round 7  pts=0
+  Jayden Seales (WI) Round 7  pts=0
+  Johnson Charles (WI) Round 7  pts=0
+  Josh Tongue (ENG) Round 7  pts=0
+  Kuldeep Yadav (IND) Round 7  pts=0
+  Kusal Perera (SL) Round 7  pts=0
+  Matthew Kuhnemann (AUS) Round 7  pts=0
+  Mitchell Marsh (AUS) Round 7  pts=0
+  Ben Dwarshuis (AUS) Round 1  pts=0
+  Jamie Overton (ENG) Round 1  pts=0
+  Kwena Maphaka (SA) Round 1  pts=0
+  Michael Bracewell (NZ) Round 1  pts=0
+  Corbin Bosch (SA) Round 2  pts=0
+  Kwena Maphaka (SA) Round 2  pts=0
+  Mark Chapman (NZ) Round 2  pts=0
+  Michael Bracewell (NZ) Round 2  pts=0
+  Mohammed Siraj (IND) Round 2  pts=0
+  Ben Dwarshuis (AUS) Round 3  pts=0
+  Kwena Maphaka (SA) Round 3  pts=0
+  Michael Bracewell (NZ) Round 3  pts=0
+  Mohammed Siraj (IND) Round 3  pts=0
+  Sherfane Rutherford (WI) Round 3  pts=0
+  Ben Dwarshuis (AUS) Round 4  pts=0
+  Mark Chapman (NZ) Round 4  pts=0
+  Mohammed Siraj (IND) Round 4  pts=0
+  Ben Dwarshuis (AUS) Round 5  pts=0
+  Cole McConchie (NZ) Round 5  pts=0
+  Glenn Maxwell (AUS) Round 5  pts=0
+  Kwena Maphaka (SA) Round 5  pts=0
+  Mark Chapman (NZ) Round 5  pts=0
+  Mohammed Siraj (IND) Round 5  pts=0
+  Rahmanullah Gurbaz (AFG) Round 5  pts=0
+  Travis Head (AUS) Round 5  pts=0
+  Ben Dwarshuis (AUS) Round 6  pts=0
+  Glenn Maxwell (AUS) Round 6  pts=0
+  Kwena Maphaka (SA) Round 6  pts=0
+  Mohammed Siraj (IND) Round 6  pts=0
+  Rahmanullah Gurbaz (AFG) Round 6  pts=0
+  Travis Head (AUS) Round 6  pts=0
+  Ben Dwarshuis (AUS) Round 7  pts=0
+  Glenn Maxwell (AUS) Round 7  pts=0
+  Jamie Overton (ENG) Round 7  pts=0
+  Mohammed Siraj (IND) Round 7  pts=0
+  Rahmanullah Gurbaz (AFG) Round 7  pts=0
+  Travis Head (AUS) Round 7  pts=0
+  Noor Ahmad (AFG) Round 1  pts=0
+  Abhishek Sharma (IND) Round 2  pts=0
+  Wanindu Hasaranga (SL) Round 2  pts=0
+  Kamil Mishara (SL) Round 3  pts=0
+  Romario Shepherd (WI) Round 3  pts=0
+  Babar Azam (PAK) Round 4  pts=0
+  Kamil Mishara (SL) Round 4  pts=0
+  Keshav Maharaj (SA) Round 4  pts=0
+  Lockie Ferguson (NZ) Round 4  pts=0
+  Lungi Ngidi (SA) Round 4  pts=0
+  Noor Ahmad (AFG) Round 4  pts=0
+  Romario Shepherd (WI) Round 4  pts=0
+  Adam Zampa (AUS) Round 5  pts=0
+  Babar Azam (PAK) Round 5  pts=0
+  James Neesham (NZ) Round 5  pts=0
+  Lockie Ferguson (NZ) Round 5  pts=0
+  Mohammad Nabi (AFG) Round 5  pts=0
+  Mohammad Nawaz (PAK) Round 5  pts=0
+  Noor Ahmad (AFG) Round 5  pts=0
+  Adam Zampa (AUS) Round 6  pts=0
+  James Neesham (NZ) Round 6  pts=0
+  Kamil Mishara (SL) Round 6  pts=0
+  Mohammad Nabi (AFG) Round 6  pts=0
+  Noor Ahmad (AFG) Round 6  pts=0
+  Adam Zampa (AUS) Round 7  pts=0
+  Babar Azam (PAK) Round 7  pts=0
+  Dushan Hemantha (SL) Round 7  pts=0
+  James Neesham (NZ) Round 7  pts=0
+  Keshav Maharaj (SA) Round 7  pts=0
+  Mohammad Nabi (AFG) Round 7  pts=0
+  Noor Ahmad (AFG) Round 7  pts=0
+  Ben Duckett (ENG) Round 1  pts=0
+  George Linde (SA) Round 1  pts=0
+  Kyle Jamieson (NZ) Round 1  pts=0
+  Ben Duckett (ENG) Round 2  pts=0
+  Kyle Jamieson (NZ) Round 2  pts=0
+  Ben Duckett (ENG) Round 3  pts=0
+  George Linde (SA) Round 3  pts=0
+  Kyle Jamieson (NZ) Round 3  pts=0
+  Ben Duckett (ENG) Round 4  pts=0
+  Dushmantha Chameera (SL) Round 4  pts=0
+  Ben Duckett (ENG) Round 5  pts=0
+  Finn Allen (NZ) Round 5  pts=0
+  George Linde (SA) Round 5  pts=0
+  Glenn Phillips (NZ) Round 5  pts=0
+  Josh Inglis (AUS) Round 5  pts=0
+  Kyle Jamieson (NZ) Round 5  pts=0
+  Rachin Ravindra (NZ) Round 5  pts=0
+  Saim Ayub (PAK) Round 5  pts=0
+  Salman Agha (PAK) Round 5  pts=0
+  Shadab Khan (PAK) Round 5  pts=0
+  Ben Duckett (ENG) Round 6  pts=0
+  George Linde (SA) Round 6  pts=0
+  Josh Inglis (AUS) Round 6  pts=0
+  Kyle Jamieson (NZ) Round 6  pts=0
+  Ben Duckett (ENG) Round 7  pts=0
+  Josh Inglis (AUS) Round 7  pts=0
+  Kagiso Rabada (SA) Round 7  pts=0
+  Kusal Mendis (SL) Round 7  pts=13
+  Kyle Jamieson (NZ) Round 7  pts=0
+  Devon Conway (NZ) Round 1  pts=0
+  Rehan Ahmed (ENG) Round 1  pts=0
+  Roston Chase (WI) Round 1  pts=0
+  Cooper Connolly (AUS) Round 2  pts=0
+  Devon Conway (NZ) Round 2  pts=0
+  Luke Wood (ENG) Round 2  pts=0
+  Rehan Ahmed (ENG) Round 2  pts=0
+  Devon Conway (NZ) Round 3  pts=0
+  Luke Wood (ENG) Round 3  pts=0
+  Rehan Ahmed (ENG) Round 3  pts=0
+  Abrar Ahmed (PAK) Round 4  pts=0
+  Cooper Connolly (AUS) Round 4  pts=0
+  Devon Conway (NZ) Round 4  pts=0
+  Luke Wood (ENG) Round 4  pts=0
+  Rehan Ahmed (ENG) Round 4  pts=0
+  Shaheen Afridi (PAK) Round 4  pts=0
+  Abrar Ahmed (PAK) Round 5  pts=0
+  Cameron Green (AUS) Round 5  pts=0
+  Cooper Connolly (AUS) Round 5  pts=0
+  Darwish Rasooli (AFG) Round 5  pts=0
+  Devon Conway (NZ) Round 5  pts=0
+  Luke Wood (ENG) Round 5  pts=0
+  Mujeeb Ur Rahman (AFG) Round 5  pts=0
+  Rehan Ahmed (ENG) Round 5  pts=0
+  Roston Chase (WI) Round 5  pts=0
+  Shaheen Afridi (PAK) Round 5  pts=0
+  Abrar Ahmed (PAK) Round 6  pts=0
+  Cameron Green (AUS) Round 6  pts=0
+  Cooper Connolly (AUS) Round 6  pts=0
+  Darwish Rasooli (AFG) Round 6  pts=0
+  Devon Conway (NZ) Round 6  pts=0
+  Luke Wood (ENG) Round 6  pts=0
+  Mujeeb Ur Rahman (AFG) Round 6  pts=0
+  Rehan Ahmed (ENG) Round 6  pts=0
+  Cameron Green (AUS) Round 7  pts=0
+  Cooper Connolly (AUS) Round 7  pts=0
+  Darwish Rasooli (AFG) Round 7  pts=0
+  Devon Conway (NZ) Round 7  pts=0
+  Luke Wood (ENG) Round 7  pts=0
+  Mujeeb Ur Rahman (AFG) Round 7  pts=0
+
+Total only in Auction: 297
+
+--- ONLY IN FANTASY ---
+
+  Aamir Kaleem (OMN) Round 1  pts=13
+  Aamir Kaleem (OMN) Round 2  pts=14
+  Aamir Kaleem (OMN) Round 3  pts=150
+  Aamir Kaleem (OMN) Round 4  pts=2
+  Aarif Sheikh (NEP) Round 1  pts=20
+  Aarif Sheikh (NEP) Round 2  pts=47
+  Aarif Sheikh (NEP) Round 3  pts=6
+  Aasif Sheikh (NEP) Round 1  pts=23
+  Aasif Sheikh (NEP) Round 2  pts=32
+  Aasif Sheikh (NEP) Round 3  pts=23
+  Aasif Sheikh (NEP) Round 4  pts=61
+  Abdullah Ahmadzai (AFG) Round 4  pts=30
+  Abhishek Sharma (IND) Round 8  pts=21
+  Adil Rashid (ENG) Round 8  pts=71
+  Aiden Markram (SA) Round 8  pts=32
+  Alexander Volschenk (NAM) Round 4  pts=34
+  Ali Hasan (ITA) Round 1  pts=49
+  Ali Hasan (ITA) Round 2  pts=32
+  Ali Hasan (ITA) Round 3  pts=42
+  Ali Hasan (ITA) Round 4  pts=43
+  Ali Khan (USA) Round 1  pts=43
+  Ali Khan (USA) Round 3  pts=10
+  Ali Khan (USA) Round 4  pts=39
+  Alishan Sharafu (UAE) Round 1  pts=99
+  Alishan Sharafu (UAE) Round 2  pts=19
+  Alishan Sharafu (UAE) Round 3  pts=72
+  Alishan Sharafu (UAE) Round 4  pts=79
+  Andries Gous (USA) Round 1  pts=28
+  Andries Gous (USA) Round 2  pts=45
+  Ansh Patel (CAN) Round 1  pts=106
+  Ansh Patel (CAN) Round 2  pts=12
+  Ansh Patel (CAN) Round 3  pts=3
+  Ansh Patel (CAN) Round 4  pts=12
+  Anthony Mosca (ITA) Round 1  pts=27
+  Anthony Mosca (ITA) Round 2  pts=136
+  Anthony Mosca (ITA) Round 3  pts=10
+  Anthony Mosca (ITA) Round 4  pts=51
+  Arshdeep Singh (IND) Round 8  pts=36
+  Aryan Dutt (NED) Round 1  pts=96
+  Aryan Dutt (NED) Round 2  pts=54
+  Aryan Dutt (NED) Round 3  pts=17
+  Aryan Dutt (NED) Round 4  pts=118
+  Aryansh Sharma (UAE) Round 1  pts=20
+  Aryansh Sharma (UAE) Round 2  pts=138
+  Aryansh Sharma (UAE) Round 3  pts=2
+  Aryansh Sharma (UAE) Round 4  pts=27
+  Ashish Odedara (OMN) Round 3  pts=13
+  Axar Patel (IND) Round 8  pts=74
+  Barry McCarthy (IRE) Round 1  pts=74
+  Barry McCarthy (IRE) Round 2  pts=3
+  Barry McCarthy (IRE) Round 3  pts=70
+  Bas de Leede (NED) Round 1  pts=56
+  Bas de Leede (NED) Round 2  pts=275
+  Bas de Leede (NED) Round 3  pts=139
+  Bas de Leede (NED) Round 4  pts=69
+  Ben Manenti (ITA) Round 1  pts=99
+  Ben Manenti (ITA) Round 2  pts=88
+  Ben Manenti (ITA) Round 3  pts=174
+  Ben Manenti (ITA) Round 4  pts=117
+  Ben Shikongo (NAM) Round 2  pts=40
+  Benjamin Calitz (IRE) Round 1  pts=8
+  Benjamin Calitz (IRE) Round 2  pts=14
+  Bernard Scholtz (NAM) Round 1  pts=46
+  Bernard Scholtz (NAM) Round 2  pts=47
+  Bernard Scholtz (NAM) Round 3  pts=10
+  Bernard Scholtz (NAM) Round 4  pts=9
+  Blessing Muzarabani (ZIM) Round 1  pts=197
+  Blessing Muzarabani (ZIM) Round 2  pts=217
+  Blessing Muzarabani (ZIM) Round 4  pts=73
+  Blessing Muzarabani (ZIM) Round 5  pts=71
+  Blessing Muzarabani (ZIM) Round 6  pts=37
+  Blessing Muzarabani (ZIM) Round 7  pts=43
+  Brad Currie (SCO) Round 1  pts=83
+  Brad Currie (SCO) Round 2  pts=42
+  Brad Currie (SCO) Round 3  pts=45
+  Brad Currie (SCO) Round 4  pts=14
+  Brad Evans (ZIM) Round 1  pts=132
+  Brad Evans (ZIM) Round 2  pts=137
+  Brad Evans (ZIM) Round 4  pts=67
+  Brad Evans (ZIM) Round 5  pts=128
+  Brad Evans (ZIM) Round 6  pts=6
+  Brad Evans (ZIM) Round 7  pts=58
+  Brad Wheal (SCO) Round 2  pts=37
+  Brad Wheal (SCO) Round 3  pts=64
+  Brad Wheal (SCO) Round 4  pts=19
+  Brandon McMullen (SCO) Round 1  pts=38
+  Brandon McMullen (SCO) Round 2  pts=96
+  Brandon McMullen (SCO) Round 3  pts=51
+  Brandon McMullen (SCO) Round 4  pts=47
+  Brendan Taylor (ZIM) Round 1  pts=79
+  Brian Bennett (ZIM) Round 1  pts=100
+  Brian Bennett (ZIM) Round 2  pts=104
+  Brian Bennett (ZIM) Round 4  pts=109
+  Brian Bennett (ZIM) Round 5  pts=29
+  Brian Bennett (ZIM) Round 6  pts=186
+  Brian Bennett (ZIM) Round 7  pts=29
+  Clive Madande (ZIM) Round 7  pts=48
+  Cole McConchie (NZ) Round 8  pts=67
+  Colin Ackermann (NED) Round 1  pts=42
+  Colin Ackermann (NED) Round 2  pts=50
+  Colin Ackermann (NED) Round 3  pts=10
+  Colin Ackermann (NED) Round 4  pts=48
+  Corbin Bosch (SA) Round 8  pts=2
+  Crishan Kalugamage (ITA) Round 1  pts=7
+  Crishan Kalugamage (ITA) Round 2  pts=181
+  Crishan Kalugamage (ITA) Round 3  pts=77
+  Crishan Kalugamage (ITA) Round 4  pts=101
+  Curtis Campher (IRE) Round 1  pts=21
+  Curtis Campher (IRE) Round 2  pts=12
+  Curtis Campher (IRE) Round 3  pts=24
+  Daryl Mitchell (NZ) Round 8  pts=20
+  David Miller (SA) Round 8  pts=10
+  Dewald Brevis (SA) Round 8  pts=66
+  Dhruv Parashar (UAE) Round 1  pts=4
+  Dhruv Parashar (UAE) Round 4  pts=30
+  Dilon Heyliger (CAN) Round 1  pts=19
+  Dilon Heyliger (CAN) Round 2  pts=27
+  Dilon Heyliger (CAN) Round 3  pts=53
+  Dilon Heyliger (CAN) Round 4  pts=47
+  Dilpreet Bajwa (CAN) Round 1  pts=52
+  Dilpreet Bajwa (CAN) Round 2  pts=28
+  Dilpreet Bajwa (CAN) Round 3  pts=56
+  Dilpreet Bajwa (CAN) Round 4  pts=37
+  Dion Myers (ZIM) Round 1  pts=18
+  Dion Myers (ZIM) Round 2  pts=6
+  Dion Myers (ZIM) Round 5  pts=66
+  Dion Myers (ZIM) Round 6  pts=10
+  Dion Myers (ZIM) Round 7  pts=25
+  Dipendra Singh Airee (NEP) Round 1  pts=169
+  Dipendra Singh Airee (NEP) Round 2  pts=30
+  Dipendra Singh Airee (NEP) Round 3  pts=112
+  Dipendra Singh Airee (NEP) Round 4  pts=161
+  Dushan Hemantha (SL) Round 2  pts=37
+  Dylan Leicher (NAM) Round 1  pts=10
+  Dylan Leicher (NAM) Round 2  pts=12
+  Dylan Leicher (NAM) Round 3  pts=4
+  Ehsan Adil (USA) Round 2  pts=3
+  Finn Allen (NZ) Round 8  pts=272
+  Fred Klaassen (NED) Round 2  pts=42
+  Fred Klaassen (NED) Round 3  pts=58
+  Gareth Delany (IRE) Round 1  pts=42
+  Gareth Delany (IRE) Round 2  pts=31
+  Gareth Delany (IRE) Round 3  pts=127
+  George Dockrell (IRE) Round 1  pts=128
+  George Dockrell (IRE) Round 2  pts=120
+  George Dockrell (IRE) Round 3  pts=105
+  George Munsey (SCO) Round 1  pts=43
+  George Munsey (SCO) Round 2  pts=204
+  George Munsey (SCO) Round 3  pts=12
+  George Munsey (SCO) Round 4  pts=51
+  Gerhard Erasmus (NAM) Round 1  pts=53
+  Gerhard Erasmus (NAM) Round 2  pts=221
+  Gerhard Erasmus (NAM) Round 3  pts=73
+  Gerhard Erasmus (NAM) Round 4  pts=69
+  Gian Meade (ITA) Round 1  pts=10
+  Gian Meade (ITA) Round 2  pts=28
+  Gian Meade (ITA) Round 3  pts=10
+  Gian Meade (ITA) Round 4  pts=16
+  Graeme Cremer (ZIM) Round 2  pts=14
+  Graeme Cremer (ZIM) Round 4  pts=103
+  Graeme Cremer (ZIM) Round 5  pts=40
+  Graeme Cremer (ZIM) Round 7  pts=-1
+  Grant Stewart (ITA) Round 1  pts=40
+  Grant Stewart (ITA) Round 2  pts=11
+  Grant Stewart (ITA) Round 3  pts=158
+  Grant Stewart (ITA) Round 4  pts=22
+  Gulsan Jha (NEP) Round 1  pts=5
+  Gulsan Jha (NEP) Round 2  pts=7
+  Gulsan Jha (NEP) Round 3  pts=21
+  Gulsan Jha (NEP) Round 4  pts=46
+  Haider Ali (UAE) Round 1  pts=14
+  Haider Ali (UAE) Round 2  pts=20
+  Haider Ali (UAE) Round 3  pts=32
+  Haider Ali (UAE) Round 4  pts=54
+  Hammad Mirza (OMN) Round 1  pts=2
+  Hammad Mirza (OMN) Round 2  pts=17
+  Hammad Mirza (OMN) Round 3  pts=84
+  Hammad Mirza (OMN) Round 4  pts=30
+  Hardik Pandya (IND) Round 8  pts=134
+  Harmeet Singh (USA) Round 1  pts=77
+  Harmeet Singh (USA) Round 2  pts=45
+  Harmeet Singh (USA) Round 3  pts=221
+  Harmeet Singh (USA) Round 4  pts=7
+  Harry Brook (ENG) Round 8  pts=27
+  Harry Manenti (ITA) Round 1  pts=86
+  Harry Manenti (ITA) Round 2  pts=32
+  Harry Manenti (ITA) Round 3  pts=34
+  Harry Manenti (ITA) Round 4  pts=26
+  Harry Tector (IRE) Round 1  pts=54
+  Harry Tector (IRE) Round 2  pts=37
+  Harry Tector (IRE) Round 3  pts=38
+  Harsh Thaker (CAN) Round 1  pts=69
+  Harsh Thaker (CAN) Round 2  pts=88
+  Harsh Thaker (CAN) Round 3  pts=7
+  Harsh Thaker (CAN) Round 4  pts=64
+  Harshit Kaushik (UAE) Round 1  pts=6
+  Harshit Kaushik (UAE) Round 2  pts=16
+  Harshit Kaushik (UAE) Round 3  pts=10
+  Harshit Kaushik (UAE) Round 4  pts=12
+  Ishan Kishan (IND) Round 8  pts=81
+  JJ Smit (NAM) Round 1  pts=51
+  JJ Smit (NAM) Round 2  pts=42
+  JJ Smit (NAM) Round 3  pts=76
+  JJ Smit (NAM) Round 4  pts=17
+  JJ Smuts (ITA) Round 1  pts=90
+  JJ Smuts (ITA) Round 2  pts=45
+  JJ Smuts (ITA) Round 3  pts=47
+  JJ Smuts (ITA) Round 4  pts=56
+  Jack Brassell (NAM) Round 4  pts=68
+  Jacob Bethell (ENG) Round 8  pts=205
+  James Neesham (NZ) Round 8  pts=40
+  Jamie Overton (ENG) Round 8  pts=5
+  Jan Frylinck (NAM) Round 1  pts=56
+  Jan Frylinck (NAM) Round 2  pts=46
+  Jan Frylinck (NAM) Round 3  pts=33
+  Jan Frylinck (NAM) Round 4  pts=17
+  Jan Nicol Loftie-Eaton (NAM) Round 1  pts=91
+  Jan Nicol Loftie-Eaton (NAM) Round 2  pts=21
+  Jan Nicol Loftie-Eaton (NAM) Round 3  pts=66
+  Jan Nicol Loftie-Eaton (NAM) Round 4  pts=13
+  Janith Liyanage (SL) Round 7  pts=21
+  Jaskaran Singh (CAN) Round 1  pts=6
+  Jaskaran Singh (CAN) Round 2  pts=41
+  Jaskaran Singh (CAN) Round 3  pts=2
+  Jaskaran Singh (CAN) Round 4  pts=106
+  Jaspreet Singh (ITA) Round 2  pts=38
+  Jaspreet Singh (ITA) Round 3  pts=30
+  Jasprit Bumrah (IND) Round 8  pts=42
+  Jatinder Singh (OMN) Round 1  pts=13
+  Jatinder Singh (OMN) Round 2  pts=5
+  Jatinder Singh (OMN) Round 3  pts=15
+  Jatinder Singh (OMN) Round 4  pts=33
+  Jay Odedra (OMN) Round 2  pts=50
+  Jay Odedra (OMN) Round 4  pts=12
+  Jiten Ramanandi (OMN) Round 1  pts=5
+  Jiten Ramanandi (OMN) Round 2  pts=82
+  Jiten Ramanandi (OMN) Round 3  pts=1
+  Jiten Ramanandi (OMN) Round 4  pts=5
+  Jofra Archer (ENG) Round 8  pts=90
+  Jos Buttler (ENG) Round 8  pts=81
+  Joshua Little (IRE) Round 3  pts=133
+  Junaid Siddique (UAE) Round 1  pts=6
+  Junaid Siddique (UAE) Round 2  pts=231
+  Junaid Siddique (UAE) Round 3  pts=95
+  Junaid Siddique (UAE) Round 4  pts=8
+  Justin Mosca (ITA) Round 1  pts=10
+  Justin Mosca (ITA) Round 2  pts=120
+  Justin Mosca (ITA) Round 3  pts=79
+  Justin Mosca (ITA) Round 4  pts=6
+  Kagiso Rabada (SA) Round 8  pts=56
+  Kaleem Sana (CAN) Round 1  pts=19
+  Kaleem Sana (CAN) Round 2  pts=50
+  Kaleem Sana (CAN) Round 4  pts=12
+  Karan KC (NEP) Round 1  pts=19
+  Karan KC (NEP) Round 2  pts=41
+  Karan KC (NEP) Round 3  pts=13
+  Karan Sonavale (OMN) Round 1  pts=4
+  Karan Sonavale (OMN) Round 4  pts=24
+  Keshav Maharaj (SA) Round 8  pts=8
+  Khawaja Nafay (PAK) Round 4  pts=13
+  Khawaja Nafay (PAK) Round 7  pts=6
+  Kushal Bhurtel (NEP) Round 1  pts=72
+  Kushal Bhurtel (NEP) Round 2  pts=11
+  Kushal Bhurtel (NEP) Round 3  pts=16
+  Kushal Bhurtel (NEP) Round 4  pts=114
+  Kyle Klein (NED) Round 1  pts=51
+  Kyle Klein (NED) Round 3  pts=61
+  Kyle Klein (NED) Round 4  pts=40
+  Lalit Rajbanshi (NEP) Round 2  pts=5
+  Liam Dawson (ENG) Round 8  pts=4
+  Lockie Ferguson (NZ) Round 8  pts=69
+  Logan van Beek (NED) Round 1  pts=41
+  Logan van Beek (NED) Round 2  pts=80
+  Logan van Beek (NED) Round 3  pts=47
+  Logan van Beek (NED) Round 4  pts=106
+  Lokesh Bam (NEP) Round 1  pts=89
+  Lokesh Bam (NEP) Round 2  pts=7
+  Lokesh Bam (NEP) Round 3  pts=25
+  Lorcan Tucker (IRE) Round 1  pts=33
+  Lorcan Tucker (IRE) Round 2  pts=46
+  Lorcan Tucker (IRE) Round 3  pts=242
+  Louren Steenkamp (NAM) Round 1  pts=14
+  Louren Steenkamp (NAM) Round 2  pts=65
+  Louren Steenkamp (NAM) Round 3  pts=110
+  Louren Steenkamp (NAM) Round 4  pts=45
+  Lungi Ngidi (SA) Round 8  pts=6
+  Malan Kruger (NAM) Round 2  pts=9
+  Marco Jansen (SA) Round 8  pts=108
+  Marcus Campopiano (ITA) Round 2  pts=12
+  Marcus Campopiano (ITA) Round 3  pts=6
+  Mark Adair (IRE) Round 1  pts=64
+  Mark Adair (IRE) Round 2  pts=103
+  Mark Adair (IRE) Round 3  pts=12
+  Mark Watt (SCO) Round 1  pts=35
+  Mark Watt (SCO) Round 2  pts=77
+  Mark Watt (SCO) Round 3  pts=3
+  Mark Watt (SCO) Round 4  pts=19
+  Matt Henry (NZ) Round 8  pts=91
+  Matthew Cross (SCO) Round 1  pts=19
+  Matthew Cross (SCO) Round 3  pts=24
+  Matthew Cross (SCO) Round 4  pts=12
+  Matthew Humphreys (IRE) Round 1  pts=6
+  Matthew Humphreys (IRE) Round 2  pts=62
+  Matthew Humphreys (IRE) Round 3  pts=111
+  Max Heingo (NAM) Round 1  pts=7
+  Max Heingo (NAM) Round 2  pts=4
+  Max Heingo (NAM) Round 3  pts=7
+  Max O'Dowd (NED) Round 3  pts=21
+  Max O'Dowd (NED) Round 4  pts=38
+  Max ODowd (NED) Round 1  pts=13
+  Max ODowd (NED) Round 2  pts=15
+  Mayank Kumar (UAE) Round 1  pts=43
+  Mayank Kumar (UAE) Round 2  pts=16
+  Michael Jones (SCO) Round 1  pts=21
+  Michael Jones (SCO) Round 2  pts=69
+  Michael Jones (SCO) Round 3  pts=71
+  Michael Jones (SCO) Round 4  pts=145
+  Michael Leask (SCO) Round 1  pts=56
+  Michael Leask (SCO) Round 2  pts=244
+  Michael Leask (SCO) Round 3  pts=39
+  Michael Leask (SCO) Round 4  pts=110
+  Michael Levitt (NED) Round 1  pts=58
+  Michael Levitt (NED) Round 2  pts=72
+  Michael Levitt (NED) Round 3  pts=7
+  Michael Levitt (NED) Round 4  pts=44
+  Milind Kumar (USA) Round 1  pts=88
+  Milind Kumar (USA) Round 2  pts=64
+  Milind Kumar (USA) Round 3  pts=23
+  Milind Kumar (USA) Round 4  pts=53
+  Mitchell Santner (NZ) Round 8  pts=23
+  Mohammad Mohsin (USA) Round 1  pts=73
+  Mohammad Mohsin (USA) Round 2  pts=47
+  Mohammad Mohsin (USA) Round 3  pts=104
+  Mohammad Mohsin (USA) Round 4  pts=14
+  Mohammad Nadeem (OMN) Round 2  pts=83
+  Mohammad Nadeem (OMN) Round 3  pts=3
+  Mohammad Nadeem (OMN) Round 4  pts=6
+  Monank Patel (USA) Round 1  pts=10
+  Monank Patel (USA) Round 2  pts=1
+  Monank Patel (USA) Round 3  pts=74
+  Monank Patel (USA) Round 4  pts=100
+  Muhammad Arfan (UAE) Round 1  pts=0
+  Muhammad Arfan (UAE) Round 2  pts=22
+  Muhammad Arfan (UAE) Round 3  pts=73
+  Muhammad Arfan (UAE) Round 4  pts=47
+  Muhammad Farooq (UAE) Round 2  pts=6
+  Muhammad Farooq (UAE) Round 4  pts=38
+  Muhammad Jawadullah (UAE) Round 2  pts=50
+  Muhammad Jawadullah (UAE) Round 3  pts=57
+  Muhammad Jawadullah (UAE) Round 4  pts=38
+  Muhammad Rohid Khan (UAE) Round 1  pts=-1
+  Muhammad Waseem (UAE) Round 1  pts=114
+  Muhammad Waseem (UAE) Round 2  pts=16
+  Muhammad Waseem (UAE) Round 3  pts=30
+  Muhammad Waseem (UAE) Round 4  pts=48
+  Nadeem Khan (OMN) Round 1  pts=41
+  Nadeem Khan (OMN) Round 2  pts=16
+  Nadeem Khan (OMN) Round 3  pts=14
+  Nandan Yadav (NEP) Round 1  pts=72
+  Nandan Yadav (NEP) Round 2  pts=6
+  Nandan Yadav (NEP) Round 3  pts=42
+  Nandan Yadav (NEP) Round 4  pts=88
+  Navneet Dhaliwal (CAN) Round 1  pts=112
+  Navneet Dhaliwal (CAN) Round 2  pts=66
+  Navneet Dhaliwal (CAN) Round 3  pts=20
+  Navneet Dhaliwal (CAN) Round 4  pts=2
+  Nicholas Kirton (CAN) Round 1  pts=20
+  Nicholas Kirton (CAN) Round 2  pts=36
+  Nicholas Kirton (CAN) Round 3  pts=6
+  Nicholas Kirton (CAN) Round 4  pts=22
+  Noah Croes (NED) Round 4  pts=59
+  Nosthush Kenjige (USA) Round 3  pts=59
+  Oliver Davidson (SCO) Round 1  pts=39
+  Oliver Davidson (SCO) Round 2  pts=32
+  Oliver Davidson (SCO) Round 3  pts=76
+  Oliver Davidson (SCO) Round 4  pts=10
+  Paul Stirling (IRE) Round 1  pts=16
+  Paul Stirling (IRE) Round 2  pts=13
+  Paul van Meekeren (NED) Round 1  pts=108
+  Philip Salt (ENG) Round 8  pts=13
+  Pramod Madushan (SL) Round 4  pts=5
+  Quinton de Kock (SA) Round 8  pts=24
+  Rachin Ravindra (NZ) Round 8  pts=92
+  Richard Ngarava (ZIM) Round 1  pts=132
+  Richard Ngarava (ZIM) Round 5  pts=83
+  Richard Ngarava (ZIM) Round 6  pts=41
+  Richie Berrington (SCO) Round 1  pts=80
+  Richie Berrington (SCO) Round 2  pts=45
+  Richie Berrington (SCO) Round 3  pts=93
+  Richie Berrington (SCO) Round 4  pts=20
+  Roelof van der Merwe (NED) Round 1  pts=65
+  Roelof van der Merwe (NED) Round 2  pts=13
+  Roelof van der Merwe (NED) Round 3  pts=18
+  Roelof van der Merwe (NED) Round 4  pts=21
+  Rohit Paudel (NEP) Round 1  pts=67
+  Rohit Paudel (NEP) Round 2  pts=43
+  Rohit Paudel (NEP) Round 3  pts=13
+  Rohit Paudel (NEP) Round 4  pts=60
+  Ross Adair (IRE) Round 1  pts=78
+  Ross Adair (IRE) Round 2  pts=35
+  Ross Adair (IRE) Round 3  pts=42
+  Ruben Trumpelmann (NAM) Round 1  pts=56
+  Ruben Trumpelmann (NAM) Round 2  pts=11
+  Ruben Trumpelmann (NAM) Round 3  pts=8
+  Ruben Trumpelmann (NAM) Round 4  pts=13
+  Ryan Burl (ZIM) Round 2  pts=114
+  Ryan Burl (ZIM) Round 4  pts=89
+  Ryan Burl (ZIM) Round 5  pts=10
+  Ryan Burl (ZIM) Round 6  pts=14
+  Ryan Burl (ZIM) Round 7  pts=31
+  Ryan Rickelton (SA) Round 8  pts=2
+  Saad Bin Zafar (CAN) Round 1  pts=16
+  Saad Bin Zafar (CAN) Round 2  pts=125
+  Saad Bin Zafar (CAN) Round 3  pts=53
+  Saad Bin Zafar (CAN) Round 4  pts=52
+  Safyaan Sharif (SCO) Round 1  pts=37
+  Saiteja Mukkamalla (USA) Round 1  pts=14
+  Saiteja Mukkamalla (USA) Round 3  pts=143
+  Saiteja Mukkamalla (USA) Round 4  pts=29
+  Salman Mirza (PAK) Round 1  pts=114
+  Salman Mirza (PAK) Round 4  pts=62
+  Salman Mirza (PAK) Round 6  pts=18
+  Sam Curran (ENG) Round 8  pts=28
+  Sandeep Lamichhane (NEP) Round 1  pts=63
+  Sandeep Lamichhane (NEP) Round 2  pts=15
+  Sandeep Lamichhane (NEP) Round 3  pts=2
+  Sandeep Lamichhane (NEP) Round 4  pts=10
+  Sanjay Krishnamurthi (USA) Round 1  pts=69
+  Sanjay Krishnamurthi (USA) Round 2  pts=10
+  Sanjay Krishnamurthi (USA) Round 3  pts=5
+  Sanjay Krishnamurthi (USA) Round 4  pts=188
+  Sanju Samson (IND) Round 8  pts=247
+  Saurabh Netravalkar (USA) Round 1  pts=12
+  Saurabh Netravalkar (USA) Round 2  pts=72
+  Saurabh Netravalkar (USA) Round 4  pts=41
+  Scott Edwards (NED) Round 1  pts=79
+  Scott Edwards (NED) Round 2  pts=64
+  Scott Edwards (NED) Round 3  pts=50
+  Scott Edwards (NED) Round 4  pts=29
+  Shadley van Schalkwyk (USA) Round 1  pts=148
+  Shadley van Schalkwyk (USA) Round 2  pts=146
+  Shadley van Schalkwyk (USA) Round 3  pts=121
+  Shadley van Schalkwyk (USA) Round 4  pts=80
+  Shafiq Jan (OMN) Round 4  pts=1
+  Shah Faisal (OMN) Round 1  pts=23
+  Shah Faisal (OMN) Round 2  pts=22
+  Shah Faisal (OMN) Round 3  pts=43
+  Shakeel Ahmed (OMN) Round 1  pts=4
+  Shakeel Ahmed (OMN) Round 3  pts=147
+  Shakeel Ahmed (OMN) Round 4  pts=54
+  Shayan Jahangir (USA) Round 2  pts=107
+  Shayan Jahangir (USA) Round 3  pts=42
+  Shayan Jahangir (USA) Round 4  pts=56
+  Sher Malla (NEP) Round 1  pts=43
+  Shivam Dube (IND) Round 8  pts=93
+  Shivam Sharma (CAN) Round 3  pts=10
+  Shreyas Movva (CAN) Round 1  pts=21
+  Shreyas Movva (CAN) Round 2  pts=33
+  Shreyas Movva (CAN) Round 4  pts=6
+  Shubham Ranjane (USA) Round 1  pts=81
+  Shubham Ranjane (USA) Round 2  pts=97
+  Shubham Ranjane (USA) Round 3  pts=96
+  Shubham Ranjane (USA) Round 4  pts=53
+  Sikandar Raza (ZIM) Round 1  pts=73
+  Sikandar Raza (ZIM) Round 2  pts=56
+  Sikandar Raza (ZIM) Round 4  pts=144
+  Sikandar Raza (ZIM) Round 5  pts=55
+  Sikandar Raza (ZIM) Round 6  pts=103
+  Sikandar Raza (ZIM) Round 7  pts=313
+  Simranjeet Singh (UAE) Round 3  pts=12
+  Sohaib Khan (UAE) Round 1  pts=17
+  Sohaib Khan (UAE) Round 2  pts=109
+  Sohaib Khan (UAE) Round 3  pts=138
+  Sohaib Khan (UAE) Round 4  pts=6
+  Sompal Kami (NEP) Round 3  pts=57
+  Sompal Kami (NEP) Round 4  pts=154
+  Sufyan Mehmood (OMN) Round 1  pts=114
+  Sufyan Mehmood (OMN) Round 2  pts=38
+  Sufyan Mehmood (OMN) Round 3  pts=13
+  Sundeep Jora (NEP) Round 4  pts=20
+  Suryakumar Yadav (IND) Round 8  pts=21
+  Syed Haider (UAE) Round 3  pts=29
+  Syed Haider (UAE) Round 4  pts=4
+  Syed Naqvi (ITA) Round 4  pts=8
+  Tadiwanashe Marumani (ZIM) Round 1  pts=51
+  Tadiwanashe Marumani (ZIM) Round 2  pts=83
+  Tadiwanashe Marumani (ZIM) Round 4  pts=82
+  Tadiwanashe Marumani (ZIM) Round 5  pts=32
+  Tadiwanashe Marumani (ZIM) Round 6  pts=36
+  Tadiwanashe Marumani (ZIM) Round 7  pts=23
+  Tashinga Musekiwa (ZIM) Round 1  pts=12
+  Tashinga Musekiwa (ZIM) Round 2  pts=20
+  Tashinga Musekiwa (ZIM) Round 4  pts=13
+  Tashinga Musekiwa (ZIM) Round 5  pts=18
+  Tashinga Musekiwa (ZIM) Round 6  pts=25
+  Thomas Draca (ITA) Round 1  pts=33
+  Thomas Draca (ITA) Round 4  pts=46
+  Tilak Varma (IND) Round 8  pts=51
+  Tim Seifert (NZ) Round 8  pts=116
+  Tim Tector (IRE) Round 3  pts=13
+  ... and 54 more
+
+Total only in Fantasy: 554
