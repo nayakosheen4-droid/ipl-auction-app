@@ -12,6 +12,7 @@ let allTeams = [];
 let leftPanelView = 'players'; // 'players' or 'teams'
 let onlineTeams = []; // Track which teams are currently online
 let auctionState = null; // Latest auction state from server (used by markOut, validateMarkOut, etc.)
+let statePollIntervalId = null; // Periodic poll so UI stays in sync even if WebSocket drops a message
 
 // DOM Elements
 const loginScreen = document.getElementById('loginScreen');
@@ -217,7 +218,7 @@ function handleLogout() {
     if (ws) {
         ws.close();
     }
-    
+    stopStatePoll();
     // Clear session
     localStorage.removeItem('currentTeam');
     localStorage.removeItem('isAdmin');
@@ -233,7 +234,8 @@ function handleLogout() {
 function showAuctionScreen() {
     loginScreen.classList.add('hidden');
     auctionScreen.classList.remove('hidden');
-    
+    startStatePoll();
+
     if (isAdmin) {
         teamInfo.innerHTML = `
             <span style="color: #000; font-weight: bold;">
@@ -264,6 +266,29 @@ function showAuctionScreen() {
     }
 }
 
+// Periodic state poll – keeps UI in sync if WebSocket drops a message or connection is lost
+function startStatePoll() {
+    stopStatePoll();
+    statePollIntervalId = setInterval(async () => {
+        if (!currentTeam || !auctionScreen || auctionScreen.classList.contains('hidden')) return;
+        try {
+            const res = await fetch(`${API_BASE}/api/auction/state`);
+            if (!res.ok) return;
+            const state = await res.json();
+            updateAuctionState(state);
+            updateNominationInfo(state);
+            refreshLeftPanelFromServer();
+        } catch (_) { /* ignore */ }
+    }, 10000); // every 10 seconds
+}
+
+function stopStatePoll() {
+    if (statePollIntervalId) {
+        clearInterval(statePollIntervalId);
+        statePollIntervalId = null;
+    }
+}
+
 // Connect WebSocket
 function connectWebSocket() {
     ws = new WebSocket(WS_BASE);
@@ -285,9 +310,9 @@ function connectWebSocket() {
         console.log('WebSocket disconnected');
         setTimeout(() => {
             if (currentTeam) {
-                connectWebSocket();
+                connectWebSocket(); // Reconnect; next 'state' will refresh UI
             }
-        }, 3000);
+        }, 1500);
     };
     
     ws.onerror = (error) => {
@@ -295,12 +320,36 @@ function connectWebSocket() {
     };
 }
 
+// Sync allTeams with server state so budgets/RTM stay correct everywhere
+function syncTeamsFromState(state) {
+    if (!state || !state.teams || !Array.isArray(state.teams)) return;
+    state.teams.forEach(serverTeam => {
+        const local = allTeams.find(t => t.id === serverTeam.id);
+        if (local) {
+            local.budget = serverTeam.budget;
+            local.rtmUsed = serverTeam.rtmUsed;
+        }
+    });
+}
+
+// Refresh left panel (players/sold/teams) to match server
+function refreshLeftPanelFromServer() {
+    if (leftPanelView === 'players') {
+        loadAvailablePlayers();
+    } else if (leftPanelView === 'sold') {
+        displaySoldPlayers();
+    } else if (leftPanelView === 'teams') {
+        displayAllTeams();
+    }
+}
+
 // Handle WebSocket messages
 function handleWebSocketMessage(data) {
     switch (data.type) {
         case 'state':
             updateAuctionState(data.state);
-            updateNominationInfo(data.state); // Update nomination display
+            updateNominationInfo(data.state);
+            refreshLeftPanelFromServer(); // Full refresh on connect/reconnect
             break;
         case 'auction_start':
             updateAuctionState(data.state);
@@ -310,15 +359,15 @@ function handleWebSocketMessage(data) {
             break;
         case 'bid_update':
             updateAuctionState(data.state);
-            updateNominationInfo(data.state); // Update nomination display
+            updateNominationInfo(data.state);
             break;
         case 'team_out':
             updateAuctionState(data.state);
-            updateNominationInfo(data.state); // Update nomination display
+            updateNominationInfo(data.state);
             break;
         case 'team_unmarked':
             updateAuctionState(data.state);
-            updateNominationInfo(data.state); // Update nomination display
+            updateNominationInfo(data.state);
             showToast('Team marked back IN', 'info');
             break;
         case 'team_marked_back_in':
@@ -457,6 +506,7 @@ function updateNominationInfo(state) {
 // Update auction state
 function updateAuctionState(state) {
     auctionState = state; // Keep latest state for markOut / validateMarkOut
+    syncTeamsFromState(state); // Keep allTeams budgets/RTM in sync
     // Update nomination info
     updateNominationInfo(state);
     
